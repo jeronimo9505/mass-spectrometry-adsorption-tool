@@ -1,0 +1,64 @@
+{
+  "24082026  final zz30 monoliths 1st.asc": {
+    "target_gas": "CO2 (Carbon Dioxide)",
+    "ranges": [
+      {
+        "id": 1,
+        "type_name": "C1_Ads",
+        "start_min": 17.9,
+        "end_min": 27.9,
+        "baseline": "straight_line",
+        "color": {
+          "fill": "#ffff99",
+          "border": "#d4af37",
+          "label": "Adsorption"
+        }
+      },
+      {
+        "id": 2,
+        "type_name": "C1_Des",
+        "start_min": 28.27,
+        "end_min": 28.75,
+        "baseline": "horizontal_left",
+        "color": {
+          "fill": "#ff99ff",
+          "border": "#c77dff",
+          "label": "Desorption"
+        }
+      },
+      {
+        "id": 5,
+        "type_name": "C3_Ads",
+        "start_min": 116.15,
+        "end_min": 126.15,
+        "baseline": "straight_line",
+        "color": {
+          "fill": "#ffff99",
+          "border": "#d4af37",
+          "label": "Adsorption"
+        }
+      },
+      {
+        "id": 6,
+        "type_name": "C3_Des",
+        "start_min": 126.33,
+        "end_min": 127.1,
+        "baseline": "horizontal_left",
+        "color": {
+          "fill": "#ff99ff",
+          "border": "#c77dff",
+          "label": "Desorption"
+        }
+      }
+    ],
+    "capacity_params": {
+      "mass_g": 0.5055,
+      "water_pct": 21.4,
+      "c0": 0.15,
+      "flow_total": 100.0,
+      "temp_c": 24.0,
+      "ref_ads": 0.23,
+      "ref_des": 0.0
+    }
+  }
+}
