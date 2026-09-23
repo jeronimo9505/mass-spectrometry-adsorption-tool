@@ -1,0 +1,222 @@
+{
+  "REF_MONO_01": {
+    "sample_id": "REF_MONO_01",
+    "material_name": "Reference Monolith Valencia",
+    "operator": "Shayan / Jeronimo",
+    "date": "2026-08-28",
+    "mass_total_g": 0.92,
+    "water_loss_pct": 0.0,
+    "mass_active_g": 0.92,
+    "ref_ads": 0.0,
+    "ref_des": 0.0,
+    "c0": 0.15,
+    "flow_total": 100.0,
+    "temp_c": 24.0,
+    "notes": "Blank monolith without zeolite",
+    "status": "Registered",
+    "created_at": "2026-09-23 18:42:27",
+    "updated_at": "2026-09-23 18:42:27",
+    "characterizations": {
+      "mass_spec": {
+        "files": [
+          {
+            "id": 14,
+            "sample_id": "REF_MONO_01",
+            "technique": "mass_spec",
+            "filename": "28082026  ref monolith valencia zz20 sample final 3 cycles ads and desortion.asc",
+            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\REF_MONO_01\\mass_spec\\28082026  ref monolith valencia zz20 sample final 3 cycles ads and desortion.asc",
+            "size_bytes": 880836,
+            "description": "Measurement file for Reference Monolith Valencia",
+            "status": "Pending",
+            "uploaded_at": "2026-09-23 18:42:27",
+            "q_net_ads": null,
+            "q_net_des": null,
+            "recovery_pct": null,
+            "analyzed_at": null
+          }
+        ],
+        "notes": ""
+      },
+      "xrd": {
+        "files": [],
+        "notes": ""
+      },
+      "bet": {
+        "files": []
+      },
+      "raman": {
+        "files": [],
+        "notes": ""
+      },
+      "documents": {
+        "files": [],
+        "notes": ""
+      }
+    }
+  },
+  "ZZ10_01": {
+    "sample_id": "ZZ10_01",
+    "material_name": "ZZ10 Monolith",
+    "operator": "Shayan / Jeronimo",
+    "date": "2026-09-01",
+    "mass_total_g": 0.5,
+    "water_loss_pct": 21.4,
+    "mass_active_g": 0.393,
+    "ref_ads": 0.23,
+    "ref_des": 0.0,
+    "c0": 0.15,
+    "flow_total": 100.0,
+    "temp_c": 24.0,
+    "notes": "Full 3 continuous cycles",
+    "status": "Registered",
+    "created_at": "2026-09-23 18:42:27",
+    "updated_at": "2026-09-23 18:42:27",
+    "characterizations": {
+      "mass_spec": {
+        "files": [
+          {
+            "id": 13,
+            "sample_id": "ZZ10_01",
+            "technique": "mass_spec",
+            "filename": "01092026 zz10 monolith final full 3 cycles.asc",
+            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ10_01\\mass_spec\\01092026 zz10 monolith final full 3 cycles.asc",
+            "size_bytes": 1352744,
+            "description": "Measurement file for ZZ10 Monolith",
+            "status": "Pending",
+            "uploaded_at": "2026-09-23 18:42:27",
+            "q_net_ads": null,
+            "q_net_des": null,
+            "recovery_pct": null,
+            "analyzed_at": null
+          }
+        ],
+        "notes": ""
+      },
+      "xrd": {
+        "files": [],
+        "notes": ""
+      },
+      "bet": {
+        "files": []
+      },
+      "raman": {
+        "files": [],
+        "notes": ""
+      },
+      "documents": {
+        "files": [],
+        "notes": ""
+      }
+    }
+  },
+  "ZZ20_01": {
+    "sample_id": "ZZ20_01",
+    "material_name": "ZZ20 Monolith",
+    "operator": "Shayan / Jeronimo",
+    "date": "2026-08-28",
+    "mass_total_g": 0.5,
+    "water_loss_pct": 21.4,
+    "mass_active_g": 0.393,
+    "ref_ads": 0.23,
+    "ref_des": 0.0,
+    "c0": 0.15,
+    "flow_total": 100.0,
+    "temp_c": 24.0,
+    "notes": "Preliminary ZZ20 run",
+    "status": "Registered",
+    "created_at": "2026-09-23 18:42:27",
+    "updated_at": "2026-09-23 18:42:27",
+    "characterizations": {
+      "mass_spec": {
+        "files": [
+          {
+            "id": 12,
+            "sample_id": "ZZ20_01",
+            "technique": "mass_spec",
+            "filename": "21082026  zz20 monoliths 1st.asc",
+            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ20_01\\mass_spec\\21082026  zz20 monoliths 1st.asc",
+            "size_bytes": 1262256,
+            "description": "Measurement file for ZZ20 Monolith",
+            "status": "Pending",
+            "uploaded_at": "2026-09-23 18:42:27",
+            "q_net_ads": null,
+            "q_net_des": null,
+            "recovery_pct": null,
+            "analyzed_at": null
+          }
+        ],
+        "notes": ""
+      },
+      "xrd": {
+        "files": [],
+        "notes": ""
+      },
+      "bet": {
+        "files": []
+      },
+      "raman": {
+        "files": [],
+        "notes": ""
+      },
+      "documents": {
+        "files": [],
+        "notes": ""
+      }
+    }
+  },
+  "ZZ30_01": {
+    "sample_id": "ZZ30_01",
+    "material_name": "ZZ30 Monolith (B6 Zeo)",
+    "operator": "Shayan / Jeronimo",
+    "date": "2026-08-24",
+    "mass_total_g": 0.5055,
+    "water_loss_pct": 21.4,
+    "mass_active_g": 0.3973,
+    "ref_ads": 0.23,
+    "ref_des": 0.0,
+    "c0": 0.15,
+    "flow_total": 100.0,
+    "temp_c": 24.0,
+    "notes": "Complete cyclic adsorption/desorption run",
+    "status": "Registered",
+    "created_at": "2026-09-23 18:42:27",
+    "updated_at": "2026-09-23 18:42:27",
+    "characterizations": {
+      "mass_spec": {
+        "files": [
+          {
+            "id": 11,
+            "sample_id": "ZZ30_01",
+            "technique": "mass_spec",
+            "filename": "24082026  final zz30 monoliths 1st.asc",
+            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\mass_spec\\24082026  final zz30 monoliths 1st.asc",
+            "size_bytes": 1426094,
+            "description": "Measurement file for ZZ30 Monolith (B6 Zeo)",
+            "status": "Pending",
+            "uploaded_at": "2026-09-23 18:42:27",
+            "q_net_ads": null,
+            "q_net_des": null,
+            "recovery_pct": null,
+            "analyzed_at": null
+          }
+        ],
+        "notes": ""
+      },
+      "xrd": {
+        "files": [],
+        "notes": ""
+      },
+      "bet": {
+        "files": []
+      },
+      "raman": {
+        "files": [],
+        "notes": ""
+      },
+      "documents": {
+        "files": [],
+        "notes": ""
+      }
+    }
+  }
+}

@@ -1,62 +1,100 @@
-# Origin-Style Mass Spectrometry Integration & CO₂ Capacity Tool
+# Lab Vault & Mass Spectrometry Analysis Platform
 
-An interactive graphical application built in Python (Tkinter + Matplotlib + SciPy) for the analysis of mass spectrometry data (`.asc` files) from cyclic gas adsorption and desorption experiments (e.g. CO₂ capture on monoliths/zeolites).
+A modular desktop application built in Python (**Tkinter + Matplotlib + SciPy**) designed for materials laboratories, catalytic research, and gas adsorption characterization (e.g., cyclic $\text{CO}_2$ capture on monoliths, zeolites, and MOFs).
 
 ![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
+![SQLite](https://img.shields.io/badge/Database-SQLite3-003B57.svg)
+![UI](https://img.shields.io/badge/UI-English-green.svg)
+![License](https://img.shields.io/badge/License-MIT-teal.svg)
 
 ---
 
-## 🌟 Key Features
+## 🏛️ The Three Pillars Architecture
 
-### 1. Mass Spectrometry File Parsing (`.asc`)
-- Automatically parses multi-channel quadrupole mass spectrometry output files (`.asc`).
-- Maps mass-to-charge ratios ($m/z$):
-  - **$m/z = 14.13$**: $\text{N}^+ / \text{N}_2^{++}$
-  - **$m/z = 16.13$**: $\text{O}^+$
-  - **$m/z = 18.16$**: $\text{H}_2\text{O}$ (Water Vapor)
-  - **$m/z = 28.19$**: $\text{N}_2 / \text{CO}$
-  - **$m/z = 32.22$**: $\text{O}_2$
-  - **$m/z = 40.22$**: $\text{Ar}$
-  - **$m/z = 44.28$**: $\text{CO}_2$ (Carbon Dioxide)
-- Time units selectable in **Minutes (min)**, **Seconds (s)**, or **Cycles**.
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        LAB VAULT PLATFORM                              │
+└──────────────────────────────────┬─────────────────────────────────────┘
+                                   │
+         ┌─────────────────────────┼─────────────────────────┐
+         ▼                         ▼                         ▼
+┌──────────────────┐      ┌──────────────────┐      ┌──────────────────┐
+│  PILLAR 1:       │      │  PILLAR 2:       │      │  PILLAR 3:       │
+│  Sample Logbook  │◄────►│  Characterization│◄────►│  Mass Spectro-   │
+│  (Bitácora)      │      │  Hub             │      │  metry Tool      │
+└──────────────────┘      └──────────────────┘      └──────────────────┘
+```
 
-### 2. OriginPro-Style Integration & ROI Boxes
-- **Composite Simpson Integration Engine**: Exactly replicates OriginPro's peak integration algorithm.
-- **ROI Bands**:
-  - **Adsorption Boxes (Yellow)**: Negative consumption band below baseline, calculated with `Straight Line` baseline mode.
-  - **Desorption Boxes (Pink)**: Release peak above baseline, calculated with `Horizontal Line (Y=Left)` baseline mode.
-- **Full Width at Half Maximum (FWHM)** and duration ($dx$) computed for every peak.
-- **Interactive isolated dragging**: Drag, move, or resize individual boxes without moving or disturbing neighboring cycles. Fixed $\Delta x$ mode allows locking the cycle duration.
-- **Auto-Detect Cycle Pairs**: One-click algorithm detects transition steps to pair every adsorption and desorption phase across multi-cycle experiments.
+### 1. 📋 Pillar 1: Sample Logbook (Bitácora de Muestras)
+* **Sample Registry**: Track Sample ID, Material/Formulation, Operator, Synthesis Date, and notes.
+* **Mass Corrections**: Computes dry active mass ($m_{\text{active}} = m_{\text{total}} \times (1 - \text{Loss}\%)$) from moisture/binder loss.
+* **Real-time KPIs**: Live count of total samples, analyzed specimens, and average batch mass.
+* **Search & Filters**: Instantly filter samples by ID, material name, or researcher.
+* **Direct Actions**: Add, edit, delete, inspect folder, and jump directly to characterizations.
 
-### 3. Rigorous Physical CO₂ Capacity Calculation ($q$ in mmol/g)
-Directly synchronized with experimental and laboratory parameters:
-- **Temperature & Molar Volume Correction**:
-  $$V_{m,T_2} = V_{m,25^\circ\text{C}} \times \frac{T_2 + 273.15}{298.15}$$
-- **Total Molar Flow Rate**:
-  $$n_{\text{total}} = \frac{F_{\text{total}}}{V_{m,T_2}}$$
-- **Detector Calibration Factor ($k$)**:
-  $$k = \frac{C_0}{S_{\text{baseline}}}$$
-- **Moles Adsorbed / Desorbed**:
-  $$n(\text{CO}_2) = n_{\text{total}} \times k \times \text{Area}_{\text{integrated}}$$
-- **Active Mass Correction**:
-  Deducts water/binder mass loss percentage ($m_{\text{active}} = m_{\text{total}} \times (1 - \text{Loss}\%)$).
-- **Blank Reference Monolith Deduction**:
-  Subtracts reference baseline adsorption ($q_{\text{net}} = q_{\text{active}} - q_{\text{ref}}$).
-- **Desorption Recovery Ratio**:
-  $$\text{Recovery} = \frac{q_{\text{net,Des}}}{q_{\text{net,Ads}}} \times 100\%$$
+### 2. 🔬 Pillar 2: Multi-Characterization Hub
+* **Multi-Technique Support**:
+  * 🧪 **Mass Spectrometry / Gas Adsorption** (`.asc`, `.dat`, `.txt`, `.csv`)
+  * 🔬 **X-Ray Diffraction (XRD)** (`.raw`, `.xy`, `.dat`, `.csv`)
+  * 📐 **$\text{N}_2$ Physisorption / BET Surface Area** (`.xls`, `.xlsx`, `.csv`)
+  * 💡 **Raman Spectroscopy** (`.txt`, `.csv`, `.spc`)
+  * 🔥 **Thermogravimetric Analysis (TGA)** (`.txt`, `.csv`, `.xls`, `.xlsx`)
+  * 📁 **Documents & Reports** (`.pdf`, `.png`, `.docx`, `.xlsx`)
+* **Physical File Cloning**: When attaching an external measurement file, it is automatically cloned into the local machine vault under `<vault>/samples/<sample_id>/<technique>/`.
+* **Seamless Tool Launch**: One-click button (`📈 Open in MS Tool`) to open `.asc` files directly into Pillar 3.
 
-### 4. Persistence & Export
-- **JSON Auto-Save**: Save ROI bounds and experimental parameters per file (`saved_roi_selections.json`).
-- **CSV Export**: Export all integration results or full capacity reports with a single click.
-- **Clipboard Report**: Copy a formatted summary directly to your clipboard.
+### 3. 📈 Pillar 3: High-Precision Mass Spectrometry & Adsorption Tool
+* **Quadrupole MS Channel Mapping**:
+  * $m/z = 14.13$ ($\text{N}^+$), $16.13$ ($\text{O}^+$), $18.16$ ($\text{H}_2\text{O}$), $28.19$ ($\text{N}_2/\text{CO}$), $32.22$ ($\text{O}_2$), $40.22$ ($\text{Ar}$), $44.28$ ($\text{CO}_2$).
+* **OriginPro-Accurate Simpson Integration**:
+  * **Adsorption (Yellow ROI)**: Negative consumption band below baseline.
+  * **Desorption (Pink ROI)**: Release peak above baseline.
+  * **Full Width at Half Maximum (FWHM)** and duration ($\Delta t$) calculated for every peak.
+  * **Lock $\Delta t$ Mode**: Constrain or adjust peak duration via spinbox.
+  * **Auto-Detect Cycle Pairs**: Automatically identifies cycle transitions across multi-cycle runs.
+* **Rigorous Thermodynamic $\text{CO}_2$ Capacity ($q$ in mmol/g)**:
+  * Temperature-corrected molar gas volume ($V_m(T)$).
+  * Baseline detector calibration factor ($k = C_0 / S_{\text{baseline}}$).
+  * Subtraction of blank reference monolith adsorption ($q_{\text{net}} = q_{\text{active}} - q_{\text{ref}}$).
+  * Desorption Recovery Ratio ($\% = \frac{q_{\text{net,Des}}}{q_{\text{net,Ads}}} \times 100\%$).
+* **Direct Vault Synchronization**: Saving analysis updates the sample status to `Analyzed`, updates maximum capacity in the Logbook, and saves both in SQLite and as a portable JSON record.
+
+---
+
+## 💾 Storage Architecture & Directory Portability
+
+The application stores data in a clean, self-contained architecture backed by **SQLite** with synchronized **JSON**:
+
+```text
+<Selected Vault Folder>/
+├── vault.db                         # SQLite Database (Single Source of Truth)
+├── samples_logbook.json             # Portable synchronized JSON logbook
+└── samples/                         # Local storage for all cloned files
+    ├── <Sample_ID_1>/
+    │   ├── metadata.json            # Cached sample metadata
+    │   ├── mass_spec/
+    │   │   ├── raw_measurement.asc  # Cloned raw data file
+    │   │   ├── analyses/            # Saved ROI & capacity JSON records
+    │   │   └── reports/             # Generated TXT analytical reports
+    │   ├── xrd/                     # XRD files
+    │   ├── bet/                     # BET surface area isotherms & reports
+    │   ├── raman/                   # Raman spectra
+    │   ├── tga/                     # TGA thermograms
+    │   └── documents/               # Attached PDFs, SEM images, papers
+    └── <Sample_ID_2>/
+        └── ...
+```
+
+### 📁 Configurable Vault Location
+* You can configure the storage folder at any time using the header bar button **`📁 Change Folder...`** or via the menu `File -> Change Vault Directory...`.
+* **Automatic Architecture Recognition**: Regardless of where the folder is located (another drive, a shared folder, or a restored backup), the system automatically recognizes and reconciles the architecture, scanning and registering all samples, characterization files, and analyses into the database.
+* Use **`🔄 Re-scan`** at any time to discover files manually added or copied into sample directories.
 
 ---
 
 ## 🚀 Installation & Requirements
 
-Ensure you have Python 3.8+ installed. Install the necessary dependencies:
+Ensure you have **Python 3.8+** installed. Install the necessary dependencies:
 
 ```bash
 pip install numpy pandas matplotlib scipy openpyxl
@@ -64,31 +102,34 @@ pip install numpy pandas matplotlib scipy openpyxl
 
 ---
 
-## 💻 Usage
+## 💻 Quickstart
 
-Run the tool from your terminal:
+### Launch the Full Lab Vault Platform (Recommended)
+```bash
+python main.py
+```
 
+### Command-Line Arguments
+```bash
+# Pre-select a specific sample on startup:
+python main.py --sample ZZ30_01
+
+# Directly open an .asc file inside Pillar 3:
+python main.py "24082026  final zz30 monoliths 1st.asc"
+```
+
+### Standalone MS Plotter (Legacy)
 ```bash
 python asc_gas_plotter.py
 ```
 
-1. **Tab 1 (`📊 Data & Plot`)**: Select your `.asc` measurement file from the dropdown. Toggle individual gas channels or inspect the full mass spectrum.
-2. **Tab 2 (`📈 Adsorption / Desorption`)**: Click `Auto-Detect Cycle Pairs` or add custom Adsorption (Yellow) and Desorption (Pink) boxes. Adjust start times or $dx$ width.
-3. **Tab 3 (`🧪 CO₂ Capacity (q)`)**: View real-time capacity calculations ($q$ in mmol/g). Adjust sample mass, temperature, flow rates, and click `💾 Save Parameters with File` to store.
-
 ---
 
-## 📁 Repository Structure
+## 📖 Standard Operating Procedure (SOP)
 
-```text
-├── asc_gas_plotter.py                 # Main GUI Application
-├── Estructura_Archivos_Medicion.md    # Specification of .asc file data structure
-├── saved_roi_selections.json          # Pre-saved ROI selections and parameter presets
-├── ZZ 30 Ads des final.xlsx           # Analytical Excel reference calculations
-└── README.md                          # Project documentation
-```
+For detailed step-by-step lab instructions, mathematical derivations, and ROI integration best practices, see the comprehensive [WORKFLOW_GUIDE.md](WORKFLOW_GUIDE.md) (also accessible inside the application via `Help -> Open Workflow Guide`).
 
 ---
 
 ## 📄 License
-This project is open source and available under the [MIT License](LICENSE).
+This project is open-source and available under the [MIT License](LICENSE).

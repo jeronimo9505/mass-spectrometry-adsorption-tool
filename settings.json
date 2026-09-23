@@ -1,0 +1,5 @@
+{
+  "vault_dir": "data_vault",
+  "auto_open_browser": true,
+  "port": 8000
+}

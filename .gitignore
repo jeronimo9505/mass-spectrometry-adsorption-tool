@@ -1,5 +1,8 @@
 __pycache__/
 *.pyc
+*.pyo
 ~$*
 *.tmp
 .DS_Store
+scratch/
+*.log
