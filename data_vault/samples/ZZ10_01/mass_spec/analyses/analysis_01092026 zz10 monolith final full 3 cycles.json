@@ -1,0 +1,63 @@
+{
+  "sample_id": "ZZ10_01",
+  "filename": "01092026 zz10 monolith final full 3 cycles.asc",
+  "target_gas": "CO2 (m/z 44.28)",
+  "ranges": [
+    {
+      "id": 1,
+      "type_name": "Ads_1",
+      "phase": "adsorption",
+      "start_min": 105.36,
+      "end_min": 115.36,
+      "baseline": "straight_line",
+      "color": "#ffff99",
+      "calculated_area": -1.1535688769671412e-09,
+      "duration": 9.980499999999992,
+      "fwhm_val": 0.9332,
+      "baseline_y0": 7.52639e-10
+    },
+    {
+      "id": 2,
+      "type_name": "Des_2",
+      "phase": "desorption",
+      "start_min": 119.76,
+      "end_min": 120.49,
+      "baseline": "horizontal_left",
+      "color": "#ff99ff",
+      "calculated_area": 1.91731083344292e-10,
+      "duration": 0.716166666666652,
+      "fwhm_val": 0.4865,
+      "baseline_y0": 7.58926e-10
+    }
+  ],
+  "capacity": {
+    "temp_c": 24.0,
+    "Vm_exp": 24382.94,
+    "n_total_mol_min": 0.00410122748301108,
+    "k_factor": 199298734.18730626,
+    "mass_total_g": 0.297,
+    "water_loss_pct": 21.4,
+    "mass_active_g": 0.2334,
+    "c0": 0.15,
+    "flow_total_ml_min": 100.0,
+    "s_baseline_a": 7.52639e-10,
+    "ref_ads_mmol_g": 0.23,
+    "ref_des_mmol_g": 0.0,
+    "adsorption": {
+      "area_a_min": 1.1535688769671412e-09,
+      "n_mmol": 0.9429,
+      "q_raw_mmol_g": 3.1747,
+      "q_active_mmol_g": 4.0391,
+      "q_net_mmol_g": 3.8091
+    },
+    "desorption": {
+      "area_a_min": 1.91731083344292e-10,
+      "n_mmol": 0.1567,
+      "q_raw_mmol_g": 0.5277,
+      "q_active_mmol_g": 0.6713,
+      "q_net_mmol_g": 0.6713
+    },
+    "recovery_pct": 17.62
+  },
+  "analyzed_at": "2026-09-25 09:24:25"
+}

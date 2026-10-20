@@ -1,0 +1,27 @@
+========================================================================
+   MASS SPECTROMETRY CO2 ADSORPTION / DESORPTION REPORT
+========================================================================
+Sample ID:                Zeolite powder 1st ads desorption
+Material Name:            Zeolite powder 1st ads desorption
+Operator:                 Shayan
+Measurement Date:         28/09/2026
+Source File:              zeolite powder 28 09 2026 ads des 1st final cycle.asc
+------------------------------------------------------------------------
+1. EXPERIMENTAL PARAMETERS:
+  - Total Initial Mass:   0.6200 g
+  - Water / Binder Loss:  21.4 %
+  - Dry Active Mass:      0.4873 g
+  - Temperature:          24.0 °C (Vm=24382.94 mL/mol)
+  - Total Flow Rate:      100.0 mL/min
+  - Feed Fraction C0:     0.15
+  - Blank Ads Reference:  0.2300 mmol/g
+------------------------------------------------------------------------
+2. NET CO2 CAPACITIES (q):
+  - Net Adsorption:       3.6636 mmol/g  (1.8974 mmol)
+  - Net Desorption:       1.2727 mmol/g  (0.6202 mmol)
+  - Recovery Ratio:       34.74 %
+------------------------------------------------------------------------
+3. INTEGRATED SIMPSON ROI REGIONS:
+  [Ads_1] t=52.19-74.13 min (Δt=21.93) | Area=-2.4836e-09 A·min | FWHM=1.406
+  [Des_2] t=75.59-78.01 min (Δt=2.41) | Area=8.1182e-10 A·min | FWHM=1.029
+========================================================================

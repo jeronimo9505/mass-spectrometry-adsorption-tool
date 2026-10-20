@@ -1,0 +1,27 @@
+========================================================================
+   MASS SPECTROMETRY CO2 ADSORPTION / DESORPTION REPORT
+========================================================================
+Sample ID:                ZZ10_01
+Material Name:            ZZ10 Monolith
+Operator:                 Shayan / Jeronimo
+Measurement Date:         01/09/2026
+Source File:              01092026 zz10 monolith final full 3 cycles.asc
+------------------------------------------------------------------------
+1. EXPERIMENTAL PARAMETERS:
+  - Total Initial Mass:   0.5000 g
+  - Water / Binder Loss:  21.4 %
+  - Dry Active Mass:      0.3930 g
+  - Temperature:          24.0 °C (Vm=24382.94 mL/mol)
+  - Total Flow Rate:      100.0 mL/min
+  - Feed Fraction C0:     0.15
+  - Blank Ads Reference:  0.2300 mmol/g
+------------------------------------------------------------------------
+2. NET CO2 CAPACITIES (q):
+  - Net Adsorption:       2.1692 mmol/g  (0.9429 mmol)
+  - Net Desorption:       0.3988 mmol/g  (0.1567 mmol)
+  - Recovery Ratio:       18.38 %
+------------------------------------------------------------------------
+3. INTEGRATED SIMPSON ROI REGIONS:
+  [Ads_1] t=105.36-115.36 min (Δt=9.98) | Area=-1.1536e-09 A·min | FWHM=0.933
+  [Des_2] t=119.76-120.49 min (Δt=0.72) | Area=1.9173e-10 A·min | FWHM=0.486
+========================================================================

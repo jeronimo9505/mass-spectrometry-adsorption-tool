@@ -1,0 +1,31 @@
+========================================================================
+   MASS SPECTROMETRY CO2 ADSORPTION / DESORPTION REPORT
+========================================================================
+Sample ID:                Zeolite Powder Rapeat
+Material Name:            Zeolite Powder Rapeat
+Operator:                 Shayan
+Measurement Date:         15/10/2026
+Source File:              15 10 2026 zeolite powder repeat 1st ads des.asc
+------------------------------------------------------------------------
+1. EXPERIMENTAL PARAMETERS:
+  - Total Initial Mass:   0.6200 g
+  - Water / Binder Loss:  21.4 %
+  - Dry Active Mass:      0.4873 g
+  - Temperature:          24.0 °C (Vm=24382.94 mL/mol)
+  - Total Flow Rate:      100.0 mL/min
+  - Feed Fraction C0:     0.15
+  - Blank Ads Reference:  0.0000 mmol/g
+------------------------------------------------------------------------
+2. NET CO2 CAPACITIES (q):
+  - Net Adsorption:       3.5885 mmol/g  (1.7488 mmol)
+  - Net Desorption:       3.5799 mmol/g  (1.7445 mmol)
+  - Recovery Ratio:       99.76 %
+------------------------------------------------------------------------
+3. INTEGRATED SIMPSON ROI REGIONS:
+  [Ads_1] t=5.15-27.15 min (Δt=22.00) | Area=-2.2212e-09 A·min | FWHM=1.290
+  [Des_2] t=27.56-33.37 min (Δt=5.80) | Area=-2.2158e-09 A·min | FWHM=2.633
+  [Ads_3] t=55.18-77.20 min (Δt=22.01) | Area=-2.2159e-09 A·min | FWHM=1.322
+  [Des_4] t=77.59-83.40 min (Δt=5.80) | Area=-2.2163e-09 A·min | FWHM=2.690
+  [Ads_5] t=105.81-127.81 min (Δt=21.99) | Area=-2.2083e-09 A·min | FWHM=1.335
+  [Des_6] t=128.90-134.71 min (Δt=5.79) | Area=-2.1999e-09 A·min | FWHM=3.228
+========================================================================

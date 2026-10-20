@@ -1,0 +1,89 @@
+{
+  "sample_id": "ZZ30_01",
+  "filename": "24082026  final zz30 monoliths 1st.asc",
+  "target_gas": "CO2 (m/z 44.28)",
+  "ranges": [
+    {
+      "id": 1,
+      "type_name": "Ads_1",
+      "phase": "adsorption",
+      "start_min": 18.02,
+      "end_min": 28.0,
+      "baseline": "straight_line",
+      "color": "#ffff99",
+      "calculated_area": -1.5201202086193529e-09,
+      "duration": 9.957333333333331,
+      "fwhm_val": 1.6658,
+      "baseline_y0": 7.25178e-10
+    },
+    {
+      "id": 2,
+      "type_name": "Des_2",
+      "phase": "desorption",
+      "start_min": 28.21,
+      "end_min": 37.4,
+      "baseline": "horizontal_left",
+      "color": "#ff99ff",
+      "calculated_area": -5.029893958587166e-09,
+      "duration": 9.17933333333334,
+      "fwhm_val": 8.036,
+      "baseline_y0": 7.15864e-10
+    },
+    {
+      "id": 3,
+      "type_name": "Ads_3",
+      "phase": "adsorption",
+      "start_min": 78.08,
+      "end_min": 88.08,
+      "baseline": "straight_line",
+      "color": "#ffff99",
+      "calculated_area": -1.4812789909838283e-09,
+      "duration": 9.979000000000013,
+      "fwhm_val": 1.5953,
+      "baseline_y0": 7.32251e-10
+    },
+    {
+      "id": 4,
+      "type_name": "Des_4",
+      "phase": "desorption",
+      "start_min": 88.57,
+      "end_min": 94.55,
+      "baseline": "horizontal_left",
+      "color": "#ff99ff",
+      "calculated_area": -2.8900906944825797e-09,
+      "duration": 5.963499999999996,
+      "fwhm_val": 4.3408,
+      "baseline_y0": 7.22445e-10
+    }
+  ],
+  "capacity": {
+    "temp_c": 24.0,
+    "Vm_exp": 24382.94,
+    "n_total_mol_min": 0.00410122748301108,
+    "k_factor": 206845767.52190498,
+    "mass_total_g": 0.5055,
+    "water_loss_pct": 21.4,
+    "mass_active_g": 0.3973,
+    "c0": 0.15,
+    "flow_total_ml_min": 100.0,
+    "s_baseline_a": 7.25178e-10,
+    "ref_ads_mmol_g": 0.23,
+    "ref_des_mmol_g": 0.0,
+    "adsorption": {
+      "area_a_min": 1.5201202086193529e-09,
+      "n_mmol": 1.2896,
+      "q_raw_mmol_g": 2.551,
+      "q_active_mmol_g": 3.2456,
+      "q_net_mmol_g": 3.0156
+    },
+    "desorption": {
+      "area_a_min": 5.029893958587166e-09,
+      "n_mmol": 4.267,
+      "q_raw_mmol_g": 8.4411,
+      "q_active_mmol_g": 10.7393,
+      "q_net_mmol_g": 10.7393
+    },
+    "recovery_pct": 356.12
+  },
+  "analyzed_at": "2026-10-20 14:58:15"
+}

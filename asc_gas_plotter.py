@@ -1544,7 +1544,7 @@ class ASCGasPlotterApp:
                 fwhm_unit = r.get("fwhm_unit", "min")
                 t_name = r.get("type_name", f"R{r['id']}")
                 
-                tag_text = f"[{t_name}]\nArea={area_val:.5E} {area_unit}\nFWHM={fwhm_val:.5f} {fwhm_unit}" if fwhm_val > 0 else f"[{t_name}]\nArea={area_val:.5E} {area_unit}"
+                tag_text = f"[{t_name}]\nArea={area_val:.5E} {area_unit}\nFWHM={fwhm_val:.5f}" if fwhm_val > 0 else f"[{t_name}]\nArea={area_val:.5E} {area_unit}"
                 x_mid = (x_start_plot + x_end_plot) / 2.0
 
                 box_bg = "#ffffcc" if is_selected else "#ffffff"
@@ -1603,3 +1603,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

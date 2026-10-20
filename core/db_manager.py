@@ -446,9 +446,17 @@ class DBManager:
                         "files": self.get_technique_files(s_id, "bet"),
                         **self.get_properties(s_id, "bet")
                     },
-                    "raman": {
-                        "files": self.get_technique_files(s_id, "raman"),
-                        "notes": self.get_properties(s_id, "raman").get("notes", "")
+                    "tga": {
+                        "files": self.get_technique_files(s_id, "tga"),
+                        **self.get_properties(s_id, "tga")
+                    },
+                    "sem_tem": {
+                        "files": self.get_technique_files(s_id, "sem_tem"),
+                        **self.get_properties(s_id, "sem_tem")
+                    },
+                    "rheology": {
+                        "files": self.get_technique_files(s_id, "rheology"),
+                        **self.get_properties(s_id, "rheology")
                     },
                     "documents": {
                         "files": self.get_technique_files(s_id, "documents"),

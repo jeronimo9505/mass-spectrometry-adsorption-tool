@@ -233,7 +233,7 @@ class MainWindow(tk.Tk):
             "About Lab Vault",
             "Modular Laboratory System for Sample Management & Gas Adsorption Characterization.\n\n"
             "• Pillar 1: Sample Logbook & Synthesis Registry.\n"
-            "• Pillar 2: Multi-Characterization Hub (XRD, BET, Raman, TGA, Mass Spec).\n"
+            "• Pillar 2: Multi-Characterization Hub (XRD, BET, TGA, SEM/TEM, Rheology, Mass Spec).\n"
             "• Pillar 3: Origin-Style Mass Spectrometry Analysis Tool with Simpson integration, interactive draggable ROI boxes, and rigorous CO₂ capacity (q in mmol/g) calculation.\n\n"
             "Built with native Python Desktop (Tkinter + Matplotlib + SciPy)."
         )

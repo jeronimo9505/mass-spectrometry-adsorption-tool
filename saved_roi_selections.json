@@ -60,5 +60,45 @@
       "ref_ads": 0.23,
       "ref_des": 0.0
     }
+  },
+  "01092026 zz10 monolith 1st try.asc": {
+    "target_gas": "CO2 (Carbon Dioxide)",
+    "ranges": [
+      {
+        "id": 28,
+        "type_name": "Adsorption",
+        "start_min": 25.53,
+        "end_min": 35.53,
+        "baseline": "straight_line",
+        "color": {
+          "fill": "#ffff99",
+          "border": "#d4af37",
+          "label": "Adsorption",
+          "baseline": "straight_line"
+        }
+      },
+      {
+        "id": 29,
+        "type_name": "Desorption",
+        "start_min": 36.63,
+        "end_min": 36.8,
+        "baseline": "horizontal_left",
+        "color": {
+          "fill": "#ff99ff",
+          "border": "#c77dff",
+          "label": "Desorption",
+          "baseline": "horizontal_left"
+        }
+      }
+    ],
+    "capacity_params": {
+      "mass_g": 0.307,
+      "water_pct": 21.4,
+      "c0": 0.15,
+      "flow_total": 100.0,
+      "temp_c": 24.0,
+      "ref_ads": 0.23,
+      "ref_des": 0.0
+    }
   }
 }

@@ -1,0 +1,60 @@
+{
+  "sample_id": "ZZ20_01",
+  "material_name": "ZZ18.5 B6 Zeo",
+  "operator": "Shayan",
+  "date": "2026-08-28",
+  "mass_total_g": 0.379,
+  "water_loss_pct": 21.4,
+  "mass_active_g": 0.2979,
+  "ref_ads": 0.0,
+  "ref_des": 0.0,
+  "c0": 0.15,
+  "flow_total": 100.0,
+  "temp_c": 24.0,
+  "notes": "",
+  "status": "Registered",
+  "created_at": "2026-09-23 18:42:27",
+  "updated_at": "2026-10-20 13:19:53",
+  "characterizations": {
+    "mass_spec": {
+      "files": [
+        {
+          "id": 12,
+          "sample_id": "ZZ20_01",
+          "technique": "mass_spec",
+          "filename": "21082026  zz20 monoliths 1st.asc",
+          "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ20_01\\mass_spec\\21082026  zz20 monoliths 1st.asc",
+          "size_bytes": 1262256,
+          "description": "Measurement file for ZZ20 Monolith",
+          "status": "Pending",
+          "uploaded_at": "2026-09-23 18:42:27",
+          "q_net_ads": null,
+          "q_net_des": null,
+          "recovery_pct": null,
+          "analyzed_at": null
+        }
+      ],
+      "notes": ""
+    },
+    "xrd": {
+      "files": [],
+      "notes": ""
+    },
+    "bet": {
+      "files": []
+    },
+    "tga": {
+      "files": []
+    },
+    "sem_tem": {
+      "files": []
+    },
+    "rheology": {
+      "files": []
+    },
+    "documents": {
+      "files": [],
+      "notes": ""
+    }
+  }
+}

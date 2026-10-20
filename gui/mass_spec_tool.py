@@ -270,29 +270,59 @@ class MassSpecToolView(ttk.Frame):
         grid = ttk.Frame(p_frame)
         grid.pack(fill=tk.X)
 
+        # Wire traces and event handlers so ANY manual keystroke or arrow change immediately triggers live recalculation
+        self._trace_ids = []
+        for var in [self.cap_mass_var, self.cap_water_pct_var, self.cap_flow_total_var, self.cap_temp_var, self.cap_c0_var, self.cap_ref_ads_var, self.cap_ref_des_var]:
+            tid = var.trace_add("write", lambda *args: self.recalculate_capacity())
+            self._trace_ids.append((var, tid))
+
         row = 0
-        ttk.Label(grid, text="Total Mass (g):").grid(row=row, column=0, sticky="w", pady=2)
-        ttk.Spinbox(grid, from_=0.001, to=50.0, increment=0.001, textvariable=self.cap_mass_var, width=10, command=self.recalculate_capacity).grid(row=row, column=1, padx=4, pady=2)
+        ttk.Label(grid, text="Total Mass (g):", font=("Segoe UI", 9, "bold")).grid(row=row, column=0, sticky="w", pady=2)
+        sb_mass = ttk.Spinbox(grid, from_=0.0001, to=100.0, increment=0.001, textvariable=self.cap_mass_var, width=11, command=self.recalculate_capacity)
+        sb_mass.grid(row=row, column=1, padx=4, pady=2)
+        sb_mass.bind("<KeyRelease>", lambda e: self.recalculate_capacity())
+        sb_mass.bind("<Return>", lambda e: self.recalculate_capacity())
+        sb_mass.bind("<FocusOut>", lambda e: self.recalculate_capacity())
 
         ttk.Label(grid, text="Water Loss (%):").grid(row=row, column=2, sticky="w", pady=2)
-        ttk.Spinbox(grid, from_=0.0, to=100.0, increment=0.5, textvariable=self.cap_water_pct_var, width=10, command=self.recalculate_capacity).grid(row=row, column=3, padx=4, pady=2)
+        sb_water = ttk.Spinbox(grid, from_=0.0, to=100.0, increment=0.5, textvariable=self.cap_water_pct_var, width=11, command=self.recalculate_capacity)
+        sb_water.grid(row=row, column=3, padx=4, pady=2)
+        sb_water.bind("<KeyRelease>", lambda e: self.recalculate_capacity())
+        sb_water.bind("<Return>", lambda e: self.recalculate_capacity())
+        sb_water.bind("<FocusOut>", lambda e: self.recalculate_capacity())
         row += 1
 
         ttk.Label(grid, text="Total Flow (mL/min):").grid(row=row, column=0, sticky="w", pady=2)
-        ttk.Spinbox(grid, from_=1.0, to=2000.0, increment=10.0, textvariable=self.cap_flow_total_var, width=10, command=self.recalculate_capacity).grid(row=row, column=1, padx=4, pady=2)
+        sb_flow = ttk.Spinbox(grid, from_=1.0, to=5000.0, increment=5.0, textvariable=self.cap_flow_total_var, width=11, command=self.recalculate_capacity)
+        sb_flow.grid(row=row, column=1, padx=4, pady=2)
+        sb_flow.bind("<KeyRelease>", lambda e: self.recalculate_capacity())
+        sb_flow.bind("<Return>", lambda e: self.recalculate_capacity())
+        sb_flow.bind("<FocusOut>", lambda e: self.recalculate_capacity())
 
         ttk.Label(grid, text="Temp (°C):").grid(row=row, column=2, sticky="w", pady=2)
-        ttk.Spinbox(grid, from_=0.0, to=200.0, increment=1.0, textvariable=self.cap_temp_var, width=10, command=self.recalculate_capacity).grid(row=row, column=3, padx=4, pady=2)
+        sb_temp = ttk.Spinbox(grid, from_=0.0, to=500.0, increment=1.0, textvariable=self.cap_temp_var, width=11, command=self.recalculate_capacity)
+        sb_temp.grid(row=row, column=3, padx=4, pady=2)
+        sb_temp.bind("<KeyRelease>", lambda e: self.recalculate_capacity())
+        sb_temp.bind("<Return>", lambda e: self.recalculate_capacity())
+        sb_temp.bind("<FocusOut>", lambda e: self.recalculate_capacity())
         row += 1
 
         ttk.Label(grid, text="C₀ Fraction (0.15=15%):").grid(row=row, column=0, sticky="w", pady=2)
-        ttk.Spinbox(grid, from_=0.01, to=1.0, increment=0.01, textvariable=self.cap_c0_var, width=10, command=self.recalculate_capacity).grid(row=row, column=1, padx=4, pady=2)
+        sb_c0 = ttk.Spinbox(grid, from_=0.001, to=1.0, increment=0.01, textvariable=self.cap_c0_var, width=11, command=self.recalculate_capacity)
+        sb_c0.grid(row=row, column=1, padx=4, pady=2)
+        sb_c0.bind("<KeyRelease>", lambda e: self.recalculate_capacity())
+        sb_c0.bind("<Return>", lambda e: self.recalculate_capacity())
+        sb_c0.bind("<FocusOut>", lambda e: self.recalculate_capacity())
 
         ttk.Label(grid, text="Blank Ads Ref (mmol/g):").grid(row=row, column=2, sticky="w", pady=2)
-        ttk.Spinbox(grid, from_=0.0, to=5.0, increment=0.01, textvariable=self.cap_ref_ads_var, width=10, command=self.recalculate_capacity).grid(row=row, column=3, padx=4, pady=2)
+        sb_ref = ttk.Spinbox(grid, from_=0.0, to=10.0, increment=0.01, textvariable=self.cap_ref_ads_var, width=11, command=self.recalculate_capacity)
+        sb_ref.grid(row=row, column=3, padx=4, pady=2)
+        sb_ref.bind("<KeyRelease>", lambda e: self.recalculate_capacity())
+        sb_ref.bind("<Return>", lambda e: self.recalculate_capacity())
+        sb_ref.bind("<FocusOut>", lambda e: self.recalculate_capacity())
 
         # Results Display Card
-        res_frame = ttk.LabelFrame(scroll_c, text=" CO₂ Capacity Results (q) ", padding=8)
+        res_frame = ttk.LabelFrame(scroll_c, text=" CO₂ Capacity Results (q) — Live Recalculation ", padding=8)
         res_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 6))
 
         self.lbl_q_ads = ttk.Label(res_frame, text="Net Adsorption (q_net):   --- mmol/g", font=("Segoe UI", 10, "bold"), foreground="#d90429")
@@ -761,18 +791,39 @@ class MassSpecToolView(ttk.Frame):
             if b0 > 1e-12:
                 s_baseline = b0
 
+        def _safe_float(var, default=0.0):
+            try:
+                v = var.get()
+                return float(v)
+            except Exception:
+                try:
+                    return float(str(v).strip())
+                except Exception:
+                    return default
+
+        m_tot = _safe_float(self.cap_mass_var, 0.5055)
+        if m_tot <= 0.0:
+            return
+
+        w_pct = _safe_float(self.cap_water_pct_var, 0.0)
+        c0_val = _safe_float(self.cap_c0_var, 0.15)
+        flow_val = _safe_float(self.cap_flow_total_var, 100.0)
+        temp_val = _safe_float(self.cap_temp_var, 24.0)
+        ref_a = _safe_float(self.cap_ref_ads_var, 0.23)
+        ref_d = _safe_float(self.cap_ref_des_var, 0.0)
+
         try:
             res = compute_co2_capacity(
-                mass_total_g=float(self.cap_mass_var.get()),
-                water_loss_pct=float(self.cap_water_pct_var.get()),
-                c0=float(self.cap_c0_var.get()),
-                flow_total_ml_min=float(self.cap_flow_total_var.get()),
-                temp_c=float(self.cap_temp_var.get()),
+                mass_total_g=m_tot,
+                water_loss_pct=w_pct,
+                c0=c0_val,
+                flow_total_ml_min=flow_val,
+                temp_c=temp_val,
                 s_baseline_a=float(s_baseline),
                 area_ads_a_min=float(area_ads),
                 area_des_a_min=float(area_des),
-                ref_ads_mmol_g=float(self.cap_ref_ads_var.get()),
-                ref_des_mmol_g=float(self.cap_ref_des_var.get())
+                ref_ads_mmol_g=ref_a,
+                ref_des_mmol_g=ref_d
             )
             self.last_capacity_results = res
 
@@ -784,8 +835,18 @@ class MassSpecToolView(ttk.Frame):
             self.lbl_q_des.config(text=f"Net Desorption (q_net):   {q_des:.4f} mmol/g")
             self.lbl_recovery.config(text=f"Recovery Ratio:           {rec:.2f} %")
             self.lbl_details.config(
-                text=f"Vm_exp: {res['Vm_exp']} mL/mol | k: {res['k_factor']:.3e} A⁻¹ | Active Mass: {res['mass_active_g']} g"
+                text=f"Active Mass: {res['mass_active_g']} g (Total: {m_tot:.4f}g, Loss: {w_pct:.1f}%) | Vm: {res['Vm_exp']} mL/mol | k: {res['k_factor']:.3e} A⁻¹"
             )
+
+            # Auto-update active sample metadata if present
+            if self.current_sample_id and self.current_sample_id in self.vault.logbook:
+                s_data = self.vault.logbook[self.current_sample_id]
+                s_data["mass_total_g"] = m_tot
+                s_data["water_loss_pct"] = w_pct
+                s_data["mass_active_g"] = res["mass_active_g"]
+
+            # Keep report preview in sync
+            self.update_report_preview()
         except Exception:
             pass
 

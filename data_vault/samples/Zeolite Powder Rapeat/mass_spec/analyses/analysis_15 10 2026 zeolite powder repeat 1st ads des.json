@@ -1,0 +1,115 @@
+{
+  "sample_id": "Zeolite Powder Rapeat",
+  "filename": "15 10 2026 zeolite powder repeat 1st ads des.asc",
+  "target_gas": "CO2 (m/z 44.28)",
+  "ranges": [
+    {
+      "id": 1,
+      "type_name": "Ads_1",
+      "phase": "adsorption",
+      "start_min": 5.15,
+      "end_min": 27.15,
+      "baseline": "straight_line",
+      "color": "#ffff99",
+      "calculated_area": -2.2211936113005653e-09,
+      "duration": 21.99601666666667,
+      "fwhm_val": 1.29,
+      "baseline_y0": 7.81374e-10
+    },
+    {
+      "id": 2,
+      "type_name": "Des_2",
+      "phase": "desorption",
+      "start_min": 27.56,
+      "end_min": 33.37,
+      "baseline": "horizontal_left",
+      "color": "#ff99ff",
+      "calculated_area": -2.2158223690823597e-09,
+      "duration": 5.803166666666666,
+      "fwhm_val": 2.6332,
+      "baseline_y0": 7.63263e-10
+    },
+    {
+      "id": 3,
+      "type_name": "Ads_3",
+      "phase": "adsorption",
+      "start_min": 55.18,
+      "end_min": 77.2,
+      "baseline": "straight_line",
+      "color": "#ffff99",
+      "calculated_area": -2.215896295578151e-09,
+      "duration": 22.005000000000003,
+      "fwhm_val": 1.322,
+      "baseline_y0": 7.77532e-10
+    },
+    {
+      "id": 4,
+      "type_name": "Des_4",
+      "phase": "desorption",
+      "start_min": 77.59,
+      "end_min": 83.4,
+      "baseline": "horizontal_left",
+      "color": "#ff99ff",
+      "calculated_area": -2.216335646101126e-09,
+      "duration": 5.798500000000004,
+      "fwhm_val": 2.69,
+      "baseline_y0": 7.69697e-10
+    },
+    {
+      "id": 5,
+      "type_name": "Ads_5",
+      "phase": "adsorption",
+      "start_min": 105.81,
+      "end_min": 127.81,
+      "baseline": "straight_line",
+      "color": "#ffff99",
+      "calculated_area": -2.2083224627876304e-09,
+      "duration": 21.993833333333342,
+      "fwhm_val": 1.3355,
+      "baseline_y0": 7.6026e-10
+    },
+    {
+      "id": 6,
+      "type_name": "Des_6",
+      "phase": "desorption",
+      "start_min": 128.9,
+      "end_min": 134.71,
+      "baseline": "horizontal_left",
+      "color": "#ff99ff",
+      "calculated_area": -2.1998833328915296e-09,
+      "duration": 5.7934999999999945,
+      "fwhm_val": 3.2277,
+      "baseline_y0": 7.63152e-10
+    }
+  ],
+  "capacity": {
+    "temp_c": 24.0,
+    "Vm_exp": 24382.94,
+    "n_total_mol_min": 0.00410122748301108,
+    "k_factor": 191969530.5961038,
+    "mass_total_g": 0.62,
+    "water_loss_pct": 21.4,
+    "mass_active_g": 0.4873,
+    "c0": 0.15,
+    "flow_total_ml_min": 100.0,
+    "s_baseline_a": 7.81374e-10,
+    "ref_ads_mmol_g": 0.0,
+    "ref_des_mmol_g": 0.0,
+    "adsorption": {
+      "area_a_min": 2.2211936113005653e-09,
+      "n_mmol": 1.7488,
+      "q_raw_mmol_g": 2.8206,
+      "q_active_mmol_g": 3.5885,
+      "q_net_mmol_g": 3.5885
+    },
+    "desorption": {
+      "area_a_min": 2.2158223690823597e-09,
+      "n_mmol": 1.7445,
+      "q_raw_mmol_g": 2.8138,
+      "q_active_mmol_g": 3.5799,
+      "q_net_mmol_g": 3.5799
+    },
+    "recovery_pct": 99.76
+  },
+  "analyzed_at": "2026-10-20 13:17:50"
+}

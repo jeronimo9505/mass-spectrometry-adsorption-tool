@@ -1,0 +1,63 @@
+{
+  "sample_id": "Zeolite powder 1st ads desorption",
+  "filename": "zeolite powder 28 09 2026 ads des 1st final cycle.asc",
+  "target_gas": "CO2 (m/z 44.28)",
+  "ranges": [
+    {
+      "id": 1,
+      "type_name": "Ads_1",
+      "phase": "adsorption",
+      "start_min": 52.19,
+      "end_min": 74.13,
+      "baseline": "straight_line",
+      "color": "#ffff99",
+      "calculated_area": -2.4835727452670868e-09,
+      "duration": 21.928166666666662,
+      "fwhm_val": 1.4063,
+      "baseline_y0": 8.05231e-10
+    },
+    {
+      "id": 2,
+      "type_name": "Des_2",
+      "phase": "desorption",
+      "start_min": 75.59,
+      "end_min": 78.01,
+      "baseline": "straight_line",
+      "color": "#ff99ff",
+      "calculated_area": 8.118198340682738e-10,
+      "duration": 2.4073333333333267,
+      "fwhm_val": 1.0288,
+      "baseline_y0": 7.98743e-10
+    }
+  ],
+  "capacity": {
+    "temp_c": 24.0,
+    "Vm_exp": 24382.94,
+    "n_total_mol_min": 0.00410122748301108,
+    "k_factor": 186281948.90658703,
+    "mass_total_g": 0.62,
+    "water_loss_pct": 21.4,
+    "mass_active_g": 0.4873,
+    "c0": 0.15,
+    "flow_total_ml_min": 100.0,
+    "s_baseline_a": 8.05231e-10,
+    "ref_ads_mmol_g": 0.23,
+    "ref_des_mmol_g": 0.0,
+    "adsorption": {
+      "area_a_min": 2.4835727452670868e-09,
+      "n_mmol": 1.8974,
+      "q_raw_mmol_g": 3.0603,
+      "q_active_mmol_g": 3.8936,
+      "q_net_mmol_g": 3.6636
+    },
+    "desorption": {
+      "area_a_min": 8.118198340682738e-10,
+      "n_mmol": 0.6202,
+      "q_raw_mmol_g": 1.0004,
+      "q_active_mmol_g": 1.2727,
+      "q_net_mmol_g": 1.2727
+    },
+    "recovery_pct": 34.74
+  },
+  "analyzed_at": "2026-09-28 18:41:15"
+}

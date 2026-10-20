@@ -44,9 +44,14 @@
       "bet": {
         "files": []
       },
-      "raman": {
-        "files": [],
-        "notes": ""
+      "tga": {
+        "files": []
+      },
+      "sem_tem": {
+        "files": []
+      },
+      "rheology": {
+        "files": []
       },
       "documents": {
         "files": [],
@@ -68,9 +73,9 @@
     "flow_total": 100.0,
     "temp_c": 24.0,
     "notes": "Full 3 continuous cycles",
-    "status": "Registered",
+    "status": "Analyzed",
     "created_at": "2026-09-23 18:42:27",
-    "updated_at": "2026-09-23 18:42:27",
+    "updated_at": "2026-10-20 14:52:44",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -79,15 +84,15 @@
             "sample_id": "ZZ10_01",
             "technique": "mass_spec",
             "filename": "01092026 zz10 monolith final full 3 cycles.asc",
-            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ10_01\\mass_spec\\01092026 zz10 monolith final full 3 cycles.asc",
+            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\ZZ10_01\\mass_spec\\01092026 zz10 monolith final full 3 cycles.asc",
             "size_bytes": 1352744,
-            "description": "Measurement file for ZZ10 Monolith",
-            "status": "Pending",
+            "description": "",
+            "status": "Analyzed",
             "uploaded_at": "2026-09-23 18:42:27",
-            "q_net_ads": null,
-            "q_net_des": null,
-            "recovery_pct": null,
-            "analyzed_at": null
+            "q_net_ads": 3.8091,
+            "q_net_des": 0.6713,
+            "recovery_pct": 17.62,
+            "analyzed_at": "2026-10-20 14:52:44"
           }
         ],
         "notes": ""
@@ -99,9 +104,14 @@
       "bet": {
         "files": []
       },
-      "raman": {
-        "files": [],
-        "notes": ""
+      "tga": {
+        "files": []
+      },
+      "sem_tem": {
+        "files": []
+      },
+      "rheology": {
+        "files": []
       },
       "documents": {
         "files": [],
@@ -111,21 +121,21 @@
   },
   "ZZ20_01": {
     "sample_id": "ZZ20_01",
-    "material_name": "ZZ20 Monolith",
-    "operator": "Shayan / Jeronimo",
+    "material_name": "ZZ18.5 B6 Zeo",
+    "operator": "Shayan",
     "date": "2026-08-28",
-    "mass_total_g": 0.5,
+    "mass_total_g": 0.379,
     "water_loss_pct": 21.4,
-    "mass_active_g": 0.393,
-    "ref_ads": 0.23,
+    "mass_active_g": 0.2979,
+    "ref_ads": 0.0,
     "ref_des": 0.0,
     "c0": 0.15,
     "flow_total": 100.0,
     "temp_c": 24.0,
-    "notes": "Preliminary ZZ20 run",
+    "notes": "",
     "status": "Registered",
     "created_at": "2026-09-23 18:42:27",
-    "updated_at": "2026-09-23 18:42:27",
+    "updated_at": "2026-10-20 13:19:53",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -154,9 +164,14 @@
       "bet": {
         "files": []
       },
-      "raman": {
-        "files": [],
-        "notes": ""
+      "tga": {
+        "files": []
+      },
+      "sem_tem": {
+        "files": []
+      },
+      "rheology": {
+        "files": []
       },
       "documents": {
         "files": [],
@@ -178,9 +193,9 @@
     "flow_total": 100.0,
     "temp_c": 24.0,
     "notes": "Complete cyclic adsorption/desorption run",
-    "status": "Registered",
+    "status": "Analyzed",
     "created_at": "2026-09-23 18:42:27",
-    "updated_at": "2026-09-23 18:42:27",
+    "updated_at": "2026-10-20 14:58:15",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -189,15 +204,15 @@
             "sample_id": "ZZ30_01",
             "technique": "mass_spec",
             "filename": "24082026  final zz30 monoliths 1st.asc",
-            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\mass_spec\\24082026  final zz30 monoliths 1st.asc",
+            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\ZZ30_01\\mass_spec\\24082026  final zz30 monoliths 1st.asc",
             "size_bytes": 1426094,
-            "description": "Measurement file for ZZ30 Monolith (B6 Zeo)",
-            "status": "Pending",
+            "description": "",
+            "status": "Analyzed",
             "uploaded_at": "2026-09-23 18:42:27",
-            "q_net_ads": null,
-            "q_net_des": null,
-            "recovery_pct": null,
-            "analyzed_at": null
+            "q_net_ads": 3.0156,
+            "q_net_des": 10.7393,
+            "recovery_pct": 356.12,
+            "analyzed_at": "2026-10-20 14:58:15"
           }
         ],
         "notes": ""
@@ -209,9 +224,250 @@
       "bet": {
         "files": []
       },
-      "raman": {
+      "tga": {
+        "files": [
+          {
+            "id": 27,
+            "sample_id": "ZZ30_01",
+            "technique": "tga",
+            "filename": "Zeo B4 11-06-2026.xlsx",
+            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\ZZ30_01\\tga\\Zeo B4 11-06-2026.xlsx",
+            "size_bytes": 254843,
+            "description": "",
+            "status": "Pending",
+            "uploaded_at": "2026-09-27 17:48:08"
+          },
+          {
+            "id": 26,
+            "sample_id": "ZZ30_01",
+            "technique": "tga",
+            "filename": "Zeo B5 1-07-2026.xlsx",
+            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\ZZ30_01\\tga\\Zeo B5 1-07-2026.xlsx",
+            "size_bytes": 260013,
+            "description": "",
+            "status": "Pending",
+            "uploaded_at": "2026-09-27 17:47:48"
+          },
+          {
+            "id": 25,
+            "sample_id": "ZZ30_01",
+            "technique": "tga",
+            "filename": "Zeo B6 ii SG 27 07 2026.0011.xlsx",
+            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\ZZ30_01\\tga\\Zeo B6 ii SG 27 07 2026.0011.xlsx",
+            "size_bytes": 320815,
+            "description": "",
+            "status": "Pending",
+            "uploaded_at": "2026-09-27 17:47:19"
+          },
+          {
+            "id": 24,
+            "sample_id": "ZZ30_01",
+            "technique": "tga",
+            "filename": "Zeo B6 TGA i.png",
+            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\ZZ30_01\\tga\\Zeo B6 TGA i.png",
+            "size_bytes": 583628,
+            "description": "",
+            "status": "Pending",
+            "uploaded_at": "2026-09-27 17:28:45"
+          },
+          {
+            "id": 23,
+            "sample_id": "ZZ30_01",
+            "technique": "tga",
+            "filename": "Zeo B6 i SG 27 07 2026.001.xlsx",
+            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\ZZ30_01\\tga\\Zeo B6 i SG 27 07 2026.001.xlsx",
+            "size_bytes": 322381,
+            "description": "",
+            "status": "Pending",
+            "uploaded_at": "2026-09-27 17:21:14"
+          }
+        ]
+      },
+      "sem_tem": {
+        "files": []
+      },
+      "rheology": {
+        "files": []
+      },
+      "documents": {
         "files": [],
         "notes": ""
+      }
+    }
+  },
+  "Zeolite Powder Rapeat": {
+    "sample_id": "Zeolite Powder Rapeat",
+    "material_name": "Zeolite Powder Rapeat",
+    "operator": "Shayan",
+    "date": "2026-10-15",
+    "mass_total_g": 0.62,
+    "water_loss_pct": 21.4,
+    "mass_active_g": 0.4873,
+    "ref_ads": 0.23,
+    "ref_des": 0.0,
+    "c0": 0.15,
+    "flow_total": 100.0,
+    "temp_c": 24.0,
+    "notes": "Zeolite Powder Rapeat",
+    "status": "Analyzed",
+    "created_at": "2026-10-20 11:45:57",
+    "updated_at": "2026-10-20 14:52:44",
+    "characterizations": {
+      "mass_spec": {
+        "files": [
+          {
+            "id": 31,
+            "sample_id": "Zeolite Powder Rapeat",
+            "technique": "mass_spec",
+            "filename": "15 10 2026 zeolite powder repeat 1st ads des.asc",
+            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\Zeolite Powder Rapeat\\mass_spec\\15 10 2026 zeolite powder repeat 1st ads des.asc",
+            "size_bytes": 1286143,
+            "description": "",
+            "status": "Analyzed",
+            "uploaded_at": "2026-10-20 11:46:25",
+            "q_net_ads": 3.5885,
+            "q_net_des": 3.5799,
+            "recovery_pct": 99.76,
+            "analyzed_at": "2026-10-20 14:52:44"
+          }
+        ],
+        "notes": ""
+      },
+      "xrd": {
+        "files": [],
+        "notes": ""
+      },
+      "bet": {
+        "files": []
+      },
+      "tga": {
+        "files": []
+      },
+      "sem_tem": {
+        "files": []
+      },
+      "rheology": {
+        "files": []
+      },
+      "documents": {
+        "files": [],
+        "notes": ""
+      }
+    }
+  },
+  "Zeolite powder 1st ads desorption": {
+    "sample_id": "Zeolite powder 1st ads desorption",
+    "material_name": "Zeolite powder 1st ads desorption",
+    "operator": "Shayan",
+    "date": "2026-09-28",
+    "mass_total_g": 0.62,
+    "water_loss_pct": 21.4,
+    "mass_active_g": 0.4873,
+    "ref_ads": 0.23,
+    "ref_des": 0.0,
+    "c0": 0.15,
+    "flow_total": 100.0,
+    "temp_c": 24.0,
+    "notes": "",
+    "status": "Analyzed",
+    "created_at": "2026-09-28 18:38:26",
+    "updated_at": "2026-10-20 14:52:44",
+    "characterizations": {
+      "mass_spec": {
+        "files": [
+          {
+            "id": 28,
+            "sample_id": "Zeolite powder 1st ads desorption",
+            "technique": "mass_spec",
+            "filename": "zeolite powder 28 09 2026 ads des 1st final cycle.asc",
+            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\Zeolite powder 1st ads desorption\\mass_spec\\zeolite powder 28 09 2026 ads des 1st final cycle.asc",
+            "size_bytes": 895695,
+            "description": "",
+            "status": "Analyzed",
+            "uploaded_at": "2026-09-28 18:39:13",
+            "q_net_ads": 3.6636,
+            "q_net_des": 1.2727,
+            "recovery_pct": 34.74,
+            "analyzed_at": "2026-10-20 14:52:44"
+          }
+        ],
+        "notes": ""
+      },
+      "xrd": {
+        "files": [],
+        "notes": ""
+      },
+      "bet": {
+        "files": []
+      },
+      "tga": {
+        "files": []
+      },
+      "sem_tem": {
+        "files": []
+      },
+      "rheology": {
+        "files": []
+      },
+      "documents": {
+        "files": [],
+        "notes": ""
+      }
+    }
+  },
+  "aaa": {
+    "sample_id": "aaa",
+    "material_name": "aaa",
+    "operator": "Shayan / Jeronimo",
+    "date": "2026-09-23",
+    "mass_total_g": 0.5055,
+    "water_loss_pct": 21.4,
+    "mass_active_g": 0.3973,
+    "ref_ads": 0.23,
+    "ref_des": 0.0,
+    "c0": 0.15,
+    "flow_total": 100.0,
+    "temp_c": 24.0,
+    "notes": "",
+    "status": "Analyzed",
+    "created_at": "2026-09-23 18:52:29",
+    "updated_at": "2026-10-20 15:07:51",
+    "characterizations": {
+      "mass_spec": {
+        "files": [
+          {
+            "id": 16,
+            "sample_id": "aaa",
+            "technique": "mass_spec",
+            "filename": "24082026  final zz30 monoliths 1st.asc",
+            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\aaa\\mass_spec\\24082026  final zz30 monoliths 1st.asc",
+            "size_bytes": 1426094,
+            "description": "",
+            "status": "Analyzed",
+            "uploaded_at": "2026-09-23 19:00:40",
+            "q_net_ads": 3.0014,
+            "q_net_des": 12.7484,
+            "recovery_pct": 424.75,
+            "analyzed_at": "2026-10-20 15:07:51"
+          }
+        ],
+        "notes": ""
+      },
+      "xrd": {
+        "files": [],
+        "notes": ""
+      },
+      "bet": {
+        "files": []
+      },
+      "tga": {
+        "files": []
+      },
+      "sem_tem": {
+        "files": []
+      },
+      "rheology": {
+        "files": []
       },
       "documents": {
         "files": [],

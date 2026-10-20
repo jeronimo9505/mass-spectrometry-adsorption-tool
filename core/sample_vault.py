@@ -25,17 +25,23 @@ CHARACTERIZATION_TYPES = {
         "extensions": [".xls", ".xlsx", ".csv", ".txt"],
         "icon": "📐"
     },
-    "raman": {
-        "name": "Raman Spectroscopy",
-        "folder": "raman",
-        "extensions": [".txt", ".csv", ".spc"],
-        "icon": "💡"
-    },
     "tga": {
         "name": "Thermogravimetric Analysis (TGA)",
         "folder": "tga",
         "extensions": [".txt", ".csv", ".xls", ".xlsx"],
         "icon": "🔥"
+    },
+    "sem_tem": {
+        "name": "SEM / TEM Electron Microscopy",
+        "folder": "sem_tem",
+        "extensions": [".tif", ".tiff", ".png", ".jpg", ".dm3", ".dm4", ".txt", ".csv"],
+        "icon": "🔍"
+    },
+    "rheology": {
+        "name": "Rheological Properties (Slurry/Paste)",
+        "folder": "rheology",
+        "extensions": [".csv", ".xlsx", ".xls", ".txt", ".rfd"],
+        "icon": "🌊"
     },
     "documents": {
         "name": "Attached Documents & Reports",
