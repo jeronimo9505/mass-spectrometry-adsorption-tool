@@ -245,12 +245,6 @@ class SampleVault:
     def ensure_sample_folders(self, sample_id):
         sample_dir = self.get_sample_dir(sample_id)
         os.makedirs(sample_dir, exist_ok=True)
-        for tech, conf in CHARACTERIZATION_TYPES.items():
-            tech_folder = os.path.join(sample_dir, conf["folder"])
-            os.makedirs(tech_folder, exist_ok=True)
-            if tech == "mass_spec":
-                os.makedirs(os.path.join(tech_folder, "analyses"), exist_ok=True)
-                os.makedirs(os.path.join(tech_folder, "reports"), exist_ok=True)
 
     def create_or_update_sample(self, sample_id, metadata):
         sample_id = sample_id.strip()

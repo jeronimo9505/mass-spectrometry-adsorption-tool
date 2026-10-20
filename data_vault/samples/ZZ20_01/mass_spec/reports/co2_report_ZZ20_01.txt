@@ -1,0 +1,29 @@
+========================================================================
+   MASS SPECTROMETRY CO2 ADSORPTION / DESORPTION REPORT
+========================================================================
+Sample ID:                ZZ20_01
+Material Name:            ZZ18.5 B6 Zeo
+Operator:                 Shayan
+Measurement Date:         21/08/2026
+Source File:              21082026  zz20 monoliths 1st.asc
+------------------------------------------------------------------------
+1. EXPERIMENTAL PARAMETERS:
+  - Total Initial Mass:   0.3790 g
+  - Water / Binder Loss:  21.4 %
+  - Dry Active Mass:      0.2979 g
+  - Temperature:          24.0 °C (Vm=24382.94 mL/mol)
+  - Total Flow Rate:      100.0 mL/min
+  - Feed Fraction C0:     0.15
+  - Blank Ads Reference:  0.0000 mmol/g
+------------------------------------------------------------------------
+2. NET CO2 CAPACITIES (q):
+  - Net Adsorption:       4.5151 mmol/g  (1.3450 mmol)
+  - Net Desorption:       4.4867 mmol/g  (1.3366 mmol)
+  - Recovery Ratio:       99.37 %
+------------------------------------------------------------------------
+3. INTEGRATED SIMPSON ROI REGIONS:
+  [Ads_1] t=42.41-52.41 min (Δt=9.99) | Area=-1.6550e-09 A·min | FWHM=1.602
+  [Des_2] t=53.48-58.88 min (Δt=5.38) | Area=1.6446e-09 A·min | FWHM=1.610
+  [Ads_3] t=107.39-117.39 min (Δt=9.99) | Area=-1.6481e-09 A·min | FWHM=1.600
+  [Des_4] t=122.30-127.70 min (Δt=5.38) | Area=1.6103e-09 A·min | FWHM=1.475
+========================================================================

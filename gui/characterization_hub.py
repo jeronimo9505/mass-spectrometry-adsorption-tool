@@ -1,6 +1,8 @@
 import os
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
+from PIL import Image, ImageTk
+Image.MAX_IMAGE_PIXELS = None
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from core.sample_vault import CHARACTERIZATION_TYPES
@@ -321,17 +323,35 @@ class CharacterizationHubView(ttk.Frame):
             messagebox.showinfo("Select Sample", "Please select a sample in the logbook first.")
             return
 
-        fpath = filedialog.askopenfilename(
-            title=f"Select {CHARACTERIZATION_TYPES.get(tech_key, {}).get('name', tech_key)} File",
+        fpaths = filedialog.askopenfilenames(
+            title=f"Select {CHARACTERIZATION_TYPES.get(tech_key, {}).get('name', tech_key)} File(s)",
             filetypes=filetypes
         )
-        if fpath:
-            try:
-                self.vault.add_characterization_file(self.current_sample_id, tech_key, fpath)
+        if fpaths:
+            added = 0
+            errors = []
+            for fpath in fpaths:
+                try:
+                    self.vault.add_characterization_file(self.current_sample_id, tech_key, fpath)
+                    added += 1
+                except Exception as e:
+                    errors.append(f"{os.path.basename(fpath)}: {e}")
+
+            if tech_key == "sem_tem":
+                self._refresh_sem_tem_tab()
+            elif tech_key == "tga":
+                self._refresh_tga_tab()
+            elif tech_key == "bet":
+                self._refresh_bet_tab()
+            elif tech_key == "rheology":
+                self._refresh_rheology_tab()
+            else:
                 self._refresh_generic_table(tech_key)
-                messagebox.showinfo("File Attached", f"File '{os.path.basename(fpath)}' saved.")
-            except Exception as e:
-                messagebox.showerror("Error", f"Could not attach file:\n{e}")
+
+            if errors:
+                messagebox.showwarning("Attached with warnings", f"Attached {added} file(s).\nErrors encountered:\n" + "\n".join(errors))
+            else:
+                messagebox.showinfo("Files Attached", f"Successfully attached {added} file(s) to sample {self.current_sample_id}.")
 
     def on_save_tech_notes(self, tech_key):
         if not self.current_sample_id:
@@ -366,13 +386,29 @@ class CharacterizationHubView(ttk.Frame):
             return
         sel = tree.selection()
         if not sel:
-            messagebox.showinfo("Select File", "Please select a file to delete.")
+            messagebox.showinfo("Select File", "Please select file(s) to delete.")
             return
-        fn = tree.item(sel[0], "values")[0]
-        if messagebox.askyesno("Confirm Deletion", f"Delete '{fn}' from sample {self.current_sample_id}?"):
-            self.vault.delete_characterization_file(self.current_sample_id, tech_key, fn)
+
+        filenames = [tree.item(item_id, "values")[0] for item_id in sel]
+        if len(filenames) == 1:
+            msg = f"Delete '{filenames[0]}' from sample {self.current_sample_id}?"
+        else:
+            msg = f"Delete {len(filenames)} selected files from sample {self.current_sample_id}?"
+
+        if messagebox.askyesno("Confirm Deletion", msg):
+            for fn in filenames:
+                self.vault.delete_characterization_file(self.current_sample_id, tech_key, fn)
+
             if tech_key == "mass_spec":
                 self._refresh_mass_table()
+            elif tech_key == "sem_tem":
+                self._refresh_sem_tem_tab()
+            elif tech_key == "tga":
+                self._refresh_tga_tab()
+            elif tech_key == "bet":
+                self._refresh_bet_tab()
+            elif tech_key == "rheology":
+                self._refresh_rheology_tab()
             else:
                 self._refresh_generic_table(tech_key)
 
@@ -706,51 +742,134 @@ class CharacterizationHubView(ttk.Frame):
         toolbar = ttk.Frame(parent)
         toolbar.pack(fill=tk.X, pady=(0, 8))
 
-        filetypes = [("Microscopy Files", "*.tif;*.tiff;*.png;*.jpg;*.dm3;*.dm4;*.txt;*.csv"), ("All Files", "*.*")]
-        ttk.Button(toolbar, text="➕ Attach Micrograph / EDX", command=lambda: self.on_attach_generic_file("sem_tem", filetypes)).pack(side=tk.LEFT, padx=3)
-        ttk.Button(toolbar, text="🗑️ Delete File", command=lambda: self.on_delete_file("sem_tem")).pack(side=tk.LEFT, padx=3)
-        ttk.Button(toolbar, text="🔍 View Image / Open", command=lambda: self.on_open_selected_file("sem_tem")).pack(side=tk.LEFT, padx=3)
+        filetypes = [
+            ("Microscopy & Image Files", "*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.dm3;*.dm4;*.txt;*.csv"),
+            ("All Files", "*.*")
+        ]
+        ttk.Button(toolbar, text="➕ Attach Micrograph(s) / EDX", command=lambda: self.on_attach_generic_file("sem_tem", filetypes)).pack(side=tk.LEFT, padx=3)
+        ttk.Button(toolbar, text="🗑️ Delete Selected", command=lambda: self.on_delete_file("sem_tem")).pack(side=tk.LEFT, padx=3)
+        ttk.Button(toolbar, text="🔍 Open in External Viewer", command=lambda: self.on_open_selected_file("sem_tem")).pack(side=tk.LEFT, padx=3)
         ttk.Button(toolbar, text="📁 Open Folder", command=lambda: self.on_open_tech_folder("sem_tem")).pack(side=tk.LEFT, padx=3)
 
+        # Main Paned layout: Left (File list + morphology params) & Right (Interactive Image Viewer)
+        sem_pane = ttk.PanedWindow(parent, orient=tk.HORIZONTAL)
+        sem_pane.pack(fill=tk.BOTH, expand=True)
+
+        # Left Column Frame
+        left_frame = ttk.Frame(sem_pane, padding=(0, 0, 6, 0))
+        sem_pane.add(left_frame, weight=1)
+
         cols = ("fn", "uploaded", "size")
-        self.tree_sem = ttk.Treeview(parent, columns=cols, show="headings", selectmode="browse", height=5)
+        self.tree_sem = ttk.Treeview(left_frame, columns=cols, show="headings", selectmode="extended", height=7)
         self.tree_sem.heading("fn", text="Microscopy Micrograph / EDX File")
         self.tree_sem.heading("uploaded", text="Upload Date")
         self.tree_sem.heading("size", text="Size")
-        self.tree_sem.column("fn", width=280, anchor="w")
-        self.tree_sem.column("uploaded", width=140, anchor="center")
-        self.tree_sem.column("size", width=100, anchor="e")
-        self.tree_sem.pack(fill=tk.X, pady=(0, 10))
+        self.tree_sem.column("fn", width=220, anchor="w")
+        self.tree_sem.column("uploaded", width=110, anchor="center")
+        self.tree_sem.column("size", width=70, anchor="e")
+
+        sem_scroll = ttk.Scrollbar(left_frame, orient="vertical", command=self.tree_sem.yview)
+        self.tree_sem.configure(yscrollcommand=sem_scroll.set)
+        self.tree_sem.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        sem_scroll.pack(side=tk.LEFT, fill=tk.Y)
+
+        self.tree_sem.bind("<<TreeviewSelect>>", self.on_sem_image_selected)
+        self.tree_sem.bind("<Double-1>", lambda e: self.on_open_selected_file("sem_tem"))
 
         # SEM/TEM Parameters Frame
-        param_frame = ttk.LabelFrame(parent, text=" Morphological & Nanostructure Analysis (SEM / TEM) ", padding=10)
-        param_frame.pack(fill=tk.X)
+        param_frame = ttk.LabelFrame(left_frame, text=" Morphological & Nanostructure Analysis (SEM / TEM) ", padding=8)
+        param_frame.pack(side=tk.BOTTOM, fill=tk.X, pady=(8, 0))
 
         p_grid = ttk.Frame(param_frame)
         p_grid.pack(fill=tk.X)
 
-        ttk.Label(p_grid, text="Primary Particle Size (nm):").grid(row=0, column=0, sticky="w", pady=4)
+        ttk.Label(p_grid, text="Primary Particle Size (nm):").grid(row=0, column=0, sticky="w", pady=3)
         self.sem_particle_size_var = tk.DoubleVar(value=0.0)
-        ttk.Spinbox(p_grid, from_=0.0, to=50000.0, increment=1.0, textvariable=self.sem_particle_size_var, width=18).grid(row=0, column=1, sticky="w", padx=8, pady=4)
+        ttk.Spinbox(p_grid, from_=0.0, to=50000.0, increment=1.0, textvariable=self.sem_particle_size_var, width=14).grid(row=0, column=1, sticky="w", padx=4, pady=3)
 
-        ttk.Label(p_grid, text="Monolith Macropore Size (μm):").grid(row=0, column=2, sticky="w", padx=(16, 0), pady=4)
+        ttk.Label(p_grid, text="Macropore Size (μm):").grid(row=0, column=2, sticky="w", padx=(10, 0), pady=3)
         self.sem_macropore_var = tk.DoubleVar(value=0.0)
-        ttk.Spinbox(p_grid, from_=0.0, to=1000.0, increment=0.5, textvariable=self.sem_macropore_var, width=18).grid(row=0, column=3, sticky="w", padx=8, pady=4)
+        ttk.Spinbox(p_grid, from_=0.0, to=1000.0, increment=0.5, textvariable=self.sem_macropore_var, width=14).grid(row=0, column=3, sticky="w", padx=4, pady=3)
 
-        ttk.Label(p_grid, text="Wall / Skeleton Thickness (μm):").grid(row=1, column=0, sticky="w", pady=4)
+        ttk.Label(p_grid, text="Wall / Skeleton (μm):").grid(row=1, column=0, sticky="w", pady=3)
         self.sem_wall_thick_var = tk.DoubleVar(value=0.0)
-        ttk.Spinbox(p_grid, from_=0.0, to=1000.0, increment=0.1, textvariable=self.sem_wall_thick_var, width=18).grid(row=1, column=1, sticky="w", padx=8, pady=4)
+        ttk.Spinbox(p_grid, from_=0.0, to=1000.0, increment=0.1, textvariable=self.sem_wall_thick_var, width=14).grid(row=1, column=1, sticky="w", padx=4, pady=3)
 
-        ttk.Label(p_grid, text="Morphology Type:").grid(row=1, column=2, sticky="w", padx=(16, 0), pady=4)
+        ttk.Label(p_grid, text="Morphology Type:").grid(row=1, column=2, sticky="w", padx=(10, 0), pady=3)
         self.sem_morphology_var = tk.StringVar(value="Porous Monolith")
-        ttk.Combobox(p_grid, values=["Porous Monolith", "Spherical Beads", "Fibrous / Nanowires", "Platelets / Sheets", "Hierarchical Core-Shell", "Amorphous Aggregate"], textvariable=self.sem_morphology_var, width=16).grid(row=1, column=3, sticky="w", padx=8, pady=4)
+        ttk.Combobox(p_grid, values=["Porous Monolith", "Spherical Beads", "Fibrous / Nanowires", "Platelets / Sheets", "Hierarchical Core-Shell", "Amorphous Aggregate"], textvariable=self.sem_morphology_var, width=14).grid(row=1, column=3, sticky="w", padx=4, pady=3)
 
-        ttk.Label(p_grid, text="EDX Elemental Ratio / Notes:").grid(row=2, column=0, sticky="w", pady=4)
+        ttk.Label(p_grid, text="EDX Ratio / Notes:").grid(row=2, column=0, sticky="w", pady=3)
         self.sem_edx_notes_var = tk.StringVar(value="")
-        ttk.Entry(p_grid, textvariable=self.sem_edx_notes_var, width=45).grid(row=2, column=1, columnspan=3, sticky="w", padx=8, pady=4)
+        ttk.Entry(p_grid, textvariable=self.sem_edx_notes_var, width=38).grid(row=2, column=1, columnspan=3, sticky="w", padx=4, pady=3)
 
-        btn_save_sem = ttk.Button(param_frame, text="💾 Save SEM / TEM Parameters", command=self.on_save_sem_params)
-        btn_save_sem.pack(anchor="e", pady=(8, 0))
+        btn_save_sem = ttk.Button(param_frame, text="💾 Save SEM Parameters", command=self.on_save_sem_params)
+        btn_save_sem.pack(anchor="e", pady=(6, 0))
+
+        # Right Column Frame: Integrated Micrograph Viewer
+        right_frame = ttk.LabelFrame(sem_pane, text=" Micrograph Preview ", padding=6)
+        sem_pane.add(right_frame, weight=2)
+
+        self.sem_preview_info = ttk.Label(right_frame, text="Select an image from the list on the left to preview.", font=("Segoe UI", 9, "italic"))
+        self.sem_preview_info.pack(side=tk.TOP, anchor="w", pady=(0, 4))
+
+        self.sem_canvas = tk.Canvas(right_frame, bg="#1e1e1e", highlightthickness=0)
+        self.sem_canvas.pack(fill=tk.BOTH, expand=True)
+        self.sem_canvas.bind("<Configure>", self._on_sem_canvas_resize)
+
+        self._current_sem_img_path = None
+        self._current_sem_photo = None
+
+    def on_sem_image_selected(self, event=None):
+        sel = self.tree_sem.selection()
+        if not sel or not self.current_sample_id:
+            return
+        fn = self.tree_sem.item(sel[0], "values")[0]
+        fpath = self.vault.get_characterization_file_path(self.current_sample_id, "sem_tem", fn)
+        if fpath and os.path.exists(fpath):
+            self.display_sem_image(fpath)
+
+    def display_sem_image(self, fpath):
+        self._current_sem_img_path = fpath
+        fn = os.path.basename(fpath)
+        ext = os.path.splitext(fn)[1].lower()
+
+        if ext not in [".tif", ".tiff", ".png", ".jpg", ".jpeg", ".bmp", ".gif"]:
+            self.sem_canvas.delete("all")
+            self.sem_preview_info.config(text=f"📄 {fn} (Non-image file — use 'Open in External Viewer')")
+            return
+
+        try:
+            with Image.open(fpath) as pil_img:
+                orig_w, orig_h = pil_img.size
+                canv_w = max(self.sem_canvas.winfo_width(), 200)
+                canv_h = max(self.sem_canvas.winfo_height(), 200)
+
+                # Maintain aspect ratio
+                ratio = min(canv_w / orig_w, canv_h / orig_h)
+                new_w = max(int(orig_w * ratio), 1)
+                new_h = max(int(orig_h * ratio), 1)
+
+                resized = pil_img.resize((new_w, new_h), Image.Resampling.LANCZOS)
+                self._current_sem_photo = ImageTk.PhotoImage(resized)
+
+                self.sem_canvas.delete("all")
+                # Center image on canvas
+                cx = canv_w // 2
+                cy = canv_h // 2
+                self.sem_canvas.create_image(cx, cy, image=self._current_sem_photo, anchor="center")
+
+                sz_kb = os.path.getsize(fpath) / 1024.0
+                self.sem_preview_info.config(
+                    text=f"🖼️ {fn}  |  Resolution: {orig_w} × {orig_h} px  |  Size: {sz_kb:.1f} KB"
+                )
+        except Exception as e:
+            self.sem_canvas.delete("all")
+            self.sem_preview_info.config(text=f"⚠️ Could not preview image: {e}")
+
+    def _on_sem_canvas_resize(self, event=None):
+        if self._current_sem_img_path and os.path.exists(self._current_sem_img_path):
+            self.display_sem_image(self._current_sem_img_path)
 
     def _refresh_sem_tem_tab(self):
         for item in self.tree_sem.get_children():
@@ -762,11 +881,15 @@ class CharacterizationHubView(ttk.Frame):
             self.sem_wall_thick_var.set(0.0)
             self.sem_morphology_var.set("Porous Monolith")
             self.sem_edx_notes_var.set("")
+            self.sem_canvas.delete("all")
+            self.sem_preview_info.config(text="Select a sample to view microscopy images.")
+            self._current_sem_img_path = None
             return
 
         data = self.vault.logbook[self.current_sample_id]
         tech_data = data.get("characterizations", {}).get("sem_tem", {})
-        for f in tech_data.get("files", []):
+        files = tech_data.get("files", [])
+        for f in files:
             sz = f.get("size_bytes", 0) / 1024.0
             self.tree_sem.insert("", tk.END, values=(
                 f.get("filename", "-"),
@@ -779,6 +902,16 @@ class CharacterizationHubView(ttk.Frame):
         self.sem_wall_thick_var.set(float(tech_data.get("wall_thickness_um", 0.0)))
         self.sem_morphology_var.set(tech_data.get("morphology", "Porous Monolith"))
         self.sem_edx_notes_var.set(tech_data.get("edx_notes", ""))
+
+        # Auto-select and preview first image if available
+        children = self.tree_sem.get_children()
+        if children:
+            self.tree_sem.selection_set(children[0])
+            self.on_sem_image_selected()
+        else:
+            self.sem_canvas.delete("all")
+            self.sem_preview_info.config(text="No micrograph images attached. Click '+ Attach Micrograph(s)' to add.")
+            self._current_sem_img_path = None
 
     def on_save_sem_params(self):
         if not self.current_sample_id:
@@ -799,55 +932,138 @@ class CharacterizationHubView(ttk.Frame):
         toolbar = ttk.Frame(parent)
         toolbar.pack(fill=tk.X, pady=(0, 8))
 
-        filetypes = [("Rheometer Files", "*.csv;*.xlsx;*.xls;*.txt;*.rfd"), ("All Files", "*.*")]
-        ttk.Button(toolbar, text="➕ Attach Rheology Curve", command=lambda: self.on_attach_generic_file("rheology", filetypes)).pack(side=tk.LEFT, padx=3)
-        ttk.Button(toolbar, text="🗑️ Delete File", command=lambda: self.on_delete_file("rheology")).pack(side=tk.LEFT, padx=3)
-        ttk.Button(toolbar, text="📂 Open File", command=lambda: self.on_open_selected_file("rheology")).pack(side=tk.LEFT, padx=3)
+        filetypes = [
+            ("Rheology & Graph Files", "*.png;*.jpg;*.jpeg;*.tif;*.tiff;*.bmp;*.csv;*.xlsx;*.xls;*.txt;*.rfd"),
+            ("All Files", "*.*")
+        ]
+        ttk.Button(toolbar, text="➕ Attach Rheology Curve / Graph(s)", command=lambda: self.on_attach_generic_file("rheology", filetypes)).pack(side=tk.LEFT, padx=3)
+        ttk.Button(toolbar, text="🗑️ Delete Selected", command=lambda: self.on_delete_file("rheology")).pack(side=tk.LEFT, padx=3)
+        ttk.Button(toolbar, text="🔍 Open in External Viewer", command=lambda: self.on_open_selected_file("rheology")).pack(side=tk.LEFT, padx=3)
         ttk.Button(toolbar, text="📁 Open Folder", command=lambda: self.on_open_tech_folder("rheology")).pack(side=tk.LEFT, padx=3)
 
+        # Main Paned layout: Left (File list + rheological parameters) & Right (Interactive Curve / Graph Viewer)
+        rheo_pane = ttk.PanedWindow(parent, orient=tk.HORIZONTAL)
+        rheo_pane.pack(fill=tk.BOTH, expand=True)
+
+        # Left Column Frame
+        left_frame = ttk.Frame(rheo_pane, padding=(0, 0, 6, 0))
+        rheo_pane.add(left_frame, weight=1)
+
         cols = ("fn", "uploaded", "size")
-        self.tree_rheo = ttk.Treeview(parent, columns=cols, show="headings", selectmode="browse", height=5)
-        self.tree_rheo.heading("fn", text="Rheology Flow / Oscillation Data File")
+        self.tree_rheo = ttk.Treeview(left_frame, columns=cols, show="headings", selectmode="extended", height=7)
+        self.tree_rheo.heading("fn", text="Rheology Curve / Graph File")
         self.tree_rheo.heading("uploaded", text="Upload Date")
         self.tree_rheo.heading("size", text="Size")
-        self.tree_rheo.column("fn", width=280, anchor="w")
-        self.tree_rheo.column("uploaded", width=140, anchor="center")
-        self.tree_rheo.column("size", width=100, anchor="e")
-        self.tree_rheo.pack(fill=tk.X, pady=(0, 10))
+        self.tree_rheo.column("fn", width=220, anchor="w")
+        self.tree_rheo.column("uploaded", width=110, anchor="center")
+        self.tree_rheo.column("size", width=70, anchor="e")
+
+        rheo_scroll = ttk.Scrollbar(left_frame, orient="vertical", command=self.tree_rheo.yview)
+        self.tree_rheo.configure(yscrollcommand=rheo_scroll.set)
+        self.tree_rheo.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        rheo_scroll.pack(side=tk.LEFT, fill=tk.Y)
+
+        self.tree_rheo.bind("<<TreeviewSelect>>", self.on_rheology_file_selected)
+        self.tree_rheo.bind("<Double-1>", lambda e: self.on_open_selected_file("rheology"))
 
         # Rheology Key Parameters Box
-        param_frame = ttk.LabelFrame(parent, text=" Rheological Parameters (Slurry, Paste & Printability) ", padding=10)
-        param_frame.pack(fill=tk.X)
+        param_frame = ttk.LabelFrame(left_frame, text=" Rheological Parameters (Slurry, Paste & Printability) ", padding=8)
+        param_frame.pack(side=tk.BOTTOM, fill=tk.X, pady=(8, 0))
 
         p_grid = ttk.Frame(param_frame)
         p_grid.pack(fill=tk.X)
 
-        ttk.Label(p_grid, text="Zero-Shear Viscosity η₀ (Pa·s):").grid(row=0, column=0, sticky="w", pady=4)
+        ttk.Label(p_grid, text="Zero-Shear Viscosity η₀ (Pa·s):").grid(row=0, column=0, sticky="w", pady=3)
         self.rheo_visc_var = tk.DoubleVar(value=0.0)
-        ttk.Spinbox(p_grid, from_=0.0, to=100000.0, increment=1.0, textvariable=self.rheo_visc_var, width=18).grid(row=0, column=1, sticky="w", padx=8, pady=4)
+        ttk.Spinbox(p_grid, from_=0.0, to=100000.0, increment=1.0, textvariable=self.rheo_visc_var, width=14).grid(row=0, column=1, sticky="w", padx=4, pady=3)
 
-        ttk.Label(p_grid, text="Yield Stress τ₀ (Pa):").grid(row=0, column=2, sticky="w", padx=(16, 0), pady=4)
+        ttk.Label(p_grid, text="Yield Stress τ₀ (Pa):").grid(row=0, column=2, sticky="w", padx=(10, 0), pady=3)
         self.rheo_yield_var = tk.DoubleVar(value=0.0)
-        ttk.Spinbox(p_grid, from_=0.0, to=10000.0, increment=0.5, textvariable=self.rheo_yield_var, width=18).grid(row=0, column=3, sticky="w", padx=8, pady=4)
+        ttk.Spinbox(p_grid, from_=0.0, to=10000.0, increment=0.5, textvariable=self.rheo_yield_var, width=14).grid(row=0, column=3, sticky="w", padx=4, pady=3)
 
-        ttk.Label(p_grid, text="Storage Modulus G' (Pa):").grid(row=1, column=0, sticky="w", pady=4)
+        ttk.Label(p_grid, text="Storage Modulus G' (Pa):").grid(row=1, column=0, sticky="w", pady=3)
         self.rheo_gp_var = tk.DoubleVar(value=0.0)
-        ttk.Spinbox(p_grid, from_=0.0, to=500000.0, increment=10.0, textvariable=self.rheo_gp_var, width=18).grid(row=1, column=1, sticky="w", padx=8, pady=4)
+        ttk.Spinbox(p_grid, from_=0.0, to=500000.0, increment=10.0, textvariable=self.rheo_gp_var, width=14).grid(row=1, column=1, sticky="w", padx=4, pady=3)
 
-        ttk.Label(p_grid, text="Loss Modulus G'' (Pa):").grid(row=1, column=2, sticky="w", padx=(16, 0), pady=4)
+        ttk.Label(p_grid, text="Loss Modulus G'' (Pa):").grid(row=1, column=2, sticky="w", padx=(10, 0), pady=3)
         self.rheo_gpp_var = tk.DoubleVar(value=0.0)
-        ttk.Spinbox(p_grid, from_=0.0, to=500000.0, increment=10.0, textvariable=self.rheo_gpp_var, width=18).grid(row=1, column=3, sticky="w", padx=8, pady=4)
+        ttk.Spinbox(p_grid, from_=0.0, to=500000.0, increment=10.0, textvariable=self.rheo_gpp_var, width=14).grid(row=1, column=3, sticky="w", padx=4, pady=3)
 
-        ttk.Label(p_grid, text="Loss Factor (tan δ = G''/G'):").grid(row=2, column=0, sticky="w", pady=4)
+        ttk.Label(p_grid, text="Loss Factor (tan δ):").grid(row=2, column=0, sticky="w", pady=3)
         self.rheo_tan_delta_var = tk.DoubleVar(value=0.0)
-        ttk.Spinbox(p_grid, from_=0.0, to=10.0, increment=0.01, textvariable=self.rheo_tan_delta_var, width=18).grid(row=2, column=1, sticky="w", padx=8, pady=4)
+        ttk.Spinbox(p_grid, from_=0.0, to=10.0, increment=0.01, textvariable=self.rheo_tan_delta_var, width=14).grid(row=2, column=1, sticky="w", padx=4, pady=3)
 
-        ttk.Label(p_grid, text="Flow Behavior:").grid(row=2, column=2, sticky="w", padx=(16, 0), pady=4)
+        ttk.Label(p_grid, text="Flow Behavior:").grid(row=2, column=2, sticky="w", padx=(10, 0), pady=3)
         self.rheo_behavior_var = tk.StringVar(value="Shear-Thinning (Pseudoplastic)")
-        ttk.Combobox(p_grid, values=["Shear-Thinning (Pseudoplastic)", "Newtonian", "Shear-Thickening (Dilatant)", "Bingham Plastic", "Viscoelastic Gel"], textvariable=self.rheo_behavior_var, width=24).grid(row=2, column=3, sticky="w", padx=8, pady=4)
+        ttk.Combobox(p_grid, values=["Shear-Thinning (Pseudoplastic)", "Newtonian", "Shear-Thickening (Dilatant)", "Bingham Plastic", "Viscoelastic Gel"], textvariable=self.rheo_behavior_var, width=18).grid(row=2, column=3, sticky="w", padx=4, pady=3)
 
         btn_save_rheo = ttk.Button(param_frame, text="💾 Save Rheology Parameters", command=self.on_save_rheology_params)
-        btn_save_rheo.pack(anchor="e", pady=(8, 0))
+        btn_save_rheo.pack(anchor="e", pady=(6, 0))
+
+        # Right Column Frame: Integrated Rheology Curve / Graph Viewer
+        right_frame = ttk.LabelFrame(rheo_pane, text=" Rheology Curve & Viscosity Graph Preview ", padding=6)
+        rheo_pane.add(right_frame, weight=2)
+
+        self.rheo_preview_info = ttk.Label(right_frame, text="Select a rheology graph from the list on the left to preview.", font=("Segoe UI", 9, "italic"))
+        self.rheo_preview_info.pack(side=tk.TOP, anchor="w", pady=(0, 4))
+
+        self.rheo_canvas = tk.Canvas(right_frame, bg="#ffffff", highlightthickness=1, highlightbackground="#d3d3d3")
+        self.rheo_canvas.pack(fill=tk.BOTH, expand=True)
+        self.rheo_canvas.bind("<Configure>", self._on_rheo_canvas_resize)
+
+        self._current_rheo_img_path = None
+        self._current_rheo_photo = None
+
+    def on_rheology_file_selected(self, event=None):
+        sel = self.tree_rheo.selection()
+        if not sel or not self.current_sample_id:
+            return
+        fn = self.tree_rheo.item(sel[0], "values")[0]
+        fpath = self.vault.get_characterization_file_path(self.current_sample_id, "rheology", fn)
+        if fpath and os.path.exists(fpath):
+            self.display_rheology_image(fpath)
+
+    def display_rheology_image(self, fpath):
+        self._current_rheo_img_path = fpath
+        fn = os.path.basename(fpath)
+        ext = os.path.splitext(fn)[1].lower()
+
+        if ext not in [".tif", ".tiff", ".png", ".jpg", ".jpeg", ".bmp", ".gif"]:
+            self.rheo_canvas.delete("all")
+            self.rheo_preview_info.config(text=f"📄 {fn} (Raw data file — use 'Open in External Viewer')")
+            return
+
+        try:
+            with Image.open(fpath) as pil_img:
+                orig_w, orig_h = pil_img.size
+                canv_w = max(self.rheo_canvas.winfo_width(), 200)
+                canv_h = max(self.rheo_canvas.winfo_height(), 200)
+
+                # Maintain aspect ratio
+                ratio = min(canv_w / orig_w, canv_h / orig_h)
+                new_w = max(int(orig_w * ratio), 1)
+                new_h = max(int(orig_h * ratio), 1)
+
+                resized = pil_img.resize((new_w, new_h), Image.Resampling.LANCZOS)
+                self._current_rheo_photo = ImageTk.PhotoImage(resized)
+
+                self.rheo_canvas.delete("all")
+                # Center image on canvas
+                cx = canv_w // 2
+                cy = canv_h // 2
+                self.rheo_canvas.create_image(cx, cy, image=self._current_rheo_photo, anchor="center")
+
+                sz_kb = os.path.getsize(fpath) / 1024.0
+                self.rheo_preview_info.config(
+                    text=f"📊 {fn}  |  Resolution: {orig_w} × {orig_h} px  |  Size: {sz_kb:.1f} KB"
+                )
+        except Exception as e:
+            self.rheo_canvas.delete("all")
+            self.rheo_preview_info.config(text=f"⚠️ Could not preview image: {e}")
+
+    def _on_rheo_canvas_resize(self, event=None):
+        if self._current_rheo_img_path and os.path.exists(self._current_rheo_img_path):
+            self.display_rheology_image(self._current_rheo_img_path)
 
     def _refresh_rheology_tab(self):
         for item in self.tree_rheo.get_children():
@@ -860,11 +1076,15 @@ class CharacterizationHubView(ttk.Frame):
             self.rheo_gpp_var.set(0.0)
             self.rheo_tan_delta_var.set(0.0)
             self.rheo_behavior_var.set("Shear-Thinning (Pseudoplastic)")
+            self.rheo_canvas.delete("all")
+            self.rheo_preview_info.config(text="Select a sample to inspect rheology curves.")
+            self._current_rheo_img_path = None
             return
 
         data = self.vault.logbook[self.current_sample_id]
         tech_data = data.get("characterizations", {}).get("rheology", {})
-        for f in tech_data.get("files", []):
+        files = tech_data.get("files", [])
+        for f in files:
             sz = f.get("size_bytes", 0) / 1024.0
             self.tree_rheo.insert("", tk.END, values=(
                 f.get("filename", "-"),
@@ -878,6 +1098,16 @@ class CharacterizationHubView(ttk.Frame):
         self.rheo_gpp_var.set(float(tech_data.get("loss_modulus_gpp_pa", 0.0)))
         self.rheo_tan_delta_var.set(float(tech_data.get("loss_factor_tan_delta", 0.0)))
         self.rheo_behavior_var.set(tech_data.get("flow_behavior", "Shear-Thinning (Pseudoplastic)"))
+
+        # Auto-select and preview first image if available
+        children = self.tree_rheo.get_children()
+        if children:
+            self.tree_rheo.selection_set(children[0])
+            self.on_rheology_file_selected()
+        else:
+            self.rheo_canvas.delete("all")
+            self.rheo_preview_info.config(text="No rheology curves attached. Click '+ Attach Rheology Curve / Graph(s)' to add.")
+            self._current_rheo_img_path = None
 
     def on_save_rheology_params(self):
         if not self.current_sample_id:

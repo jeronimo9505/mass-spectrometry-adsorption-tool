@@ -14,18 +14,18 @@ Source File:              15 10 2026 zeolite powder repeat 1st ads des.asc
   - Temperature:          24.0 °C (Vm=24382.94 mL/mol)
   - Total Flow Rate:      100.0 mL/min
   - Feed Fraction C0:     0.15
-  - Blank Ads Reference:  0.0000 mmol/g
+  - Blank Ads Reference:  0.2300 mmol/g
 ------------------------------------------------------------------------
 2. NET CO2 CAPACITIES (q):
-  - Net Adsorption:       3.5885 mmol/g  (1.7488 mmol)
-  - Net Desorption:       3.5799 mmol/g  (1.7445 mmol)
-  - Recovery Ratio:       99.76 %
+  - Net Adsorption:       3.3585 mmol/g  (1.7488 mmol)
+  - Net Desorption:       3.5897 mmol/g  (1.7494 mmol)
+  - Recovery Ratio:       106.88 %
 ------------------------------------------------------------------------
 3. INTEGRATED SIMPSON ROI REGIONS:
   [Ads_1] t=5.15-27.15 min (Δt=22.00) | Area=-2.2212e-09 A·min | FWHM=1.290
-  [Des_2] t=27.56-33.37 min (Δt=5.80) | Area=-2.2158e-09 A·min | FWHM=2.633
+  [Des_2] t=27.54-32.70 min (Δt=5.14) | Area=2.2219e-09 A·min | FWHM=2.158
   [Ads_3] t=55.18-77.20 min (Δt=22.01) | Area=-2.2159e-09 A·min | FWHM=1.322
-  [Des_4] t=77.59-83.40 min (Δt=5.80) | Area=-2.2163e-09 A·min | FWHM=2.690
+  [Des_4] t=77.66-84.26 min (Δt=6.58) | Area=2.1957e-09 A·min | FWHM=2.973
   [Ads_5] t=105.81-127.81 min (Δt=21.99) | Area=-2.2083e-09 A·min | FWHM=1.335
-  [Des_6] t=128.90-134.71 min (Δt=5.79) | Area=-2.1999e-09 A·min | FWHM=3.228
+  [Des_6] t=129.02-135.00 min (Δt=5.96) | Area=2.1287e-09 A·min | FWHM=2.255
 ========================================================================

@@ -20,14 +20,14 @@
       "id": 2,
       "type_name": "Des_2",
       "phase": "desorption",
-      "start_min": 27.56,
-      "end_min": 33.37,
-      "baseline": "horizontal_left",
+      "start_min": 27.54,
+      "end_min": 32.7,
+      "baseline": "raw_zero",
       "color": "#ff99ff",
-      "calculated_area": -2.2158223690823597e-09,
-      "duration": 5.803166666666666,
-      "fwhm_val": 2.6332,
-      "baseline_y0": 7.63263e-10
+      "calculated_area": 2.221938476844615e-09,
+      "duration": 5.140333333333331,
+      "fwhm_val": 2.158,
+      "baseline_y0": 0.0
     },
     {
       "id": 3,
@@ -46,14 +46,14 @@
       "id": 4,
       "type_name": "Des_4",
       "phase": "desorption",
-      "start_min": 77.59,
-      "end_min": 83.4,
-      "baseline": "horizontal_left",
+      "start_min": 77.66,
+      "end_min": 84.26,
+      "baseline": "raw_zero",
       "color": "#ff99ff",
-      "calculated_area": -2.216335646101126e-09,
-      "duration": 5.798500000000004,
-      "fwhm_val": 2.69,
-      "baseline_y0": 7.69697e-10
+      "calculated_area": 2.1956742283364978e-09,
+      "duration": 6.582499999999996,
+      "fwhm_val": 2.9732,
+      "baseline_y0": 0.0
     },
     {
       "id": 5,
@@ -72,14 +72,14 @@
       "id": 6,
       "type_name": "Des_6",
       "phase": "desorption",
-      "start_min": 128.9,
-      "end_min": 134.71,
-      "baseline": "horizontal_left",
+      "start_min": 129.02,
+      "end_min": 135.0,
+      "baseline": "raw_zero",
       "color": "#ff99ff",
-      "calculated_area": -2.1998833328915296e-09,
-      "duration": 5.7934999999999945,
-      "fwhm_val": 3.2277,
-      "baseline_y0": 7.63152e-10
+      "calculated_area": 2.128723735979097e-09,
+      "duration": 5.955500000000001,
+      "fwhm_val": 2.2548,
+      "baseline_y0": 0.0
     }
   ],
   "capacity": {
@@ -93,23 +93,23 @@
     "c0": 0.15,
     "flow_total_ml_min": 100.0,
     "s_baseline_a": 7.81374e-10,
-    "ref_ads_mmol_g": 0.0,
+    "ref_ads_mmol_g": 0.23,
     "ref_des_mmol_g": 0.0,
     "adsorption": {
       "area_a_min": 2.2211936113005653e-09,
       "n_mmol": 1.7488,
       "q_raw_mmol_g": 2.8206,
       "q_active_mmol_g": 3.5885,
-      "q_net_mmol_g": 3.5885
+      "q_net_mmol_g": 3.3585
     },
     "desorption": {
-      "area_a_min": 2.2158223690823597e-09,
-      "n_mmol": 1.7445,
-      "q_raw_mmol_g": 2.8138,
-      "q_active_mmol_g": 3.5799,
-      "q_net_mmol_g": 3.5799
+      "area_a_min": 2.221938476844615e-09,
+      "n_mmol": 1.7494,
+      "q_raw_mmol_g": 2.8215,
+      "q_active_mmol_g": 3.5897,
+      "q_net_mmol_g": 3.5897
     },
-    "recovery_pct": 99.76
+    "recovery_pct": 106.88
   },
-  "analyzed_at": "2026-10-20 13:17:50"
+  "analyzed_at": "2026-10-20 15:58:03"
 }
