@@ -137,7 +137,8 @@ class MainWindow(tk.Tk):
             self.main_notebook,
             vault=self.vault,
             on_select_sample_callback=self.on_sample_selected_in_logbook,
-            on_open_mass_spec_callback=self.on_open_mass_spec
+            on_open_mass_spec_callback=self.on_open_mass_spec,
+            on_open_technique_callback=self.on_open_technique
         )
         self.main_notebook.add(self.tab_logbook, text=" 📋 1. Sample Logbook ")
 
@@ -157,20 +158,36 @@ class MainWindow(tk.Tk):
         )
         self.main_notebook.add(self.tab_tool, text=" 📈 3. Mass Spectrometry Tool (MID) ")
 
+        self.main_notebook.bind("<<NotebookTabChanged>>", self.on_main_tab_changed)
         self.update_vault_header()
 
     # ==================== INTER-MODULE NAVIGATION ====================
 
+    def on_main_tab_changed(self, event=None):
+        try:
+            current_tab = self.main_notebook.select()
+            if current_tab == str(self.tab_hub):
+                self.tab_hub.refresh_active_tab()
+        except Exception:
+            pass
+
+    def on_open_technique(self, sample_id, tech_key):
+        self.active_sample_id = sample_id
+        if sample_id:
+            self.tab_hub.set_sample(sample_id, lazy=False)
+            self.tab_hub.show_technique(tech_key)
+            self.main_notebook.select(1)  # Switch to Pillar 2 (Hub)
+
     def on_sample_selected_in_logbook(self, sample_id, switch_tab=False):
         self.active_sample_id = sample_id
         if sample_id:
-            self.tab_hub.set_sample(sample_id)
+            self.tab_hub.set_sample(sample_id, lazy=(not switch_tab))
             if switch_tab:
                 self.main_notebook.select(1)  # Switch to Pillar 2 (Hub)
 
     def on_open_mass_spec(self, sample_id, asc_filepath):
         self.active_sample_id = sample_id
-        self.tab_hub.set_sample(sample_id)
+        self.tab_hub.set_sample(sample_id, lazy=True)
         # Load sample and file in Tool (Pillar 3)
         self.tab_tool.load_sample_and_file(sample_id, asc_filepath)
         # Switch to Pillar 3
@@ -179,7 +196,7 @@ class MainWindow(tk.Tk):
     def on_analysis_saved(self, sample_id):
         # Refresh logbook and hub tables
         self.tab_logbook.refresh_table()
-        self.tab_hub.set_sample(sample_id)
+        self.tab_hub.set_sample(sample_id, lazy=False)
 
     # ==================== MENU COMMANDS ====================
 

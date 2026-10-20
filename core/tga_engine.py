@@ -17,6 +17,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.ticker import AutoMinorLocator
 
+_TGA_CACHE = {}
+
 def load_tga_data(file_path):
     """
     Loads raw TGA data from Excel or CSV/TXT.
@@ -26,8 +28,21 @@ def load_tga_data(file_path):
             'temperature', 'weight', 'deriv_weight' (optional: 'time')
         meta: dict with metadata
     """
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"TGA data file not found: {file_path}")
+
+    # Check cache
+    mtime = os.path.getmtime(file_path)
+    cache_key = (os.path.abspath(file_path), mtime)
+    if cache_key in _TGA_CACHE:
+        cached_df, cached_meta = _TGA_CACHE[cache_key]
+        return cached_df.copy(), dict(cached_meta)
+
     ext = os.path.splitext(file_path)[1].lower()
-    
+    if ext not in [".xlsx", ".xls", ".csv", ".txt", ".dat"]:
+        raise ValueError(f"Unsupported file format '{ext}' for TGA curve parsing. Supported: .xlsx, .xls, .csv, .txt")
+
+    raw_df = None
     if ext in [".xlsx", ".xls"]:
         # Try reading with multi-index header [0, 1] first
         try:
@@ -48,6 +63,9 @@ def load_tga_data(file_path):
                     break
             except Exception:
                 continue
+
+    if raw_df is None or raw_df.empty:
+        raise ValueError(f"Could not parse valid tabular data from {file_path}")
 
     # Locate Columns
     temp_col = None
@@ -137,6 +155,7 @@ def load_tga_data(file_path):
         "w_max": float(clean_df["weight"].max())
     }
 
+    _TGA_CACHE[cache_key] = (clean_df.copy(), dict(meta))
     return clean_df, meta
 
 

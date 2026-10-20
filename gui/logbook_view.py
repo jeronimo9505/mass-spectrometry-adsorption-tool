@@ -136,11 +136,12 @@ class LogbookView(ttk.Frame):
     Module 1: Sample Logbook View.
     Displays sample list, KPI summaries, and allows creating, editing and managing samples.
     """
-    def __init__(self, parent, vault, on_select_sample_callback=None, on_open_mass_spec_callback=None):
+    def __init__(self, parent, vault, on_select_sample_callback=None, on_open_mass_spec_callback=None, on_open_technique_callback=None):
         super().__init__(parent, padding=8)
         self.vault = vault
         self.on_select_sample_callback = on_select_sample_callback
         self.on_open_mass_spec_callback = on_open_mass_spec_callback
+        self.on_open_technique_callback = on_open_technique_callback
         self.active_sample_id = None
 
         self.create_widgets()
@@ -162,7 +163,7 @@ class LogbookView(ttk.Frame):
 
         # 2. Search & Action Toolbar
         toolbar = ttk.Frame(self)
-        toolbar.pack(fill=tk.X, pady=(4, 8))
+        toolbar.pack(fill=tk.X, pady=(4, 6))
 
         ttk.Label(toolbar, text="🔍 Search:").pack(side=tk.LEFT, padx=(0, 4))
         self.search_var = tk.StringVar()
@@ -183,15 +184,32 @@ class LogbookView(ttk.Frame):
         )
         self.btn_go_hub.pack(side=tk.RIGHT, padx=4)
 
+        # 2b. Contextual Characterization Technique Bar (Direct 1-click jump buttons)
+        self.tech_bar = tk.Frame(self, bg="#edf2f7", bd=1, relief="solid", padx=10, pady=5)
+        self.tech_bar.pack(fill=tk.X, pady=(0, 6))
+
+        self.lbl_tech_header = tk.Label(
+            self.tech_bar, 
+            text="🏷️ Active Sample:", 
+            font=("Segoe UI", 9, "bold"), 
+            bg="#edf2f7", 
+            fg="#1d3557"
+        )
+        self.lbl_tech_header.pack(side=tk.LEFT, padx=(0, 8))
+
+        self.tech_buttons_frame = tk.Frame(self.tech_bar, bg="#edf2f7")
+        self.tech_buttons_frame.pack(side=tk.LEFT, fill=tk.X, expand=True)
+
         # 3. Main Samples Treeview Table
         table_frame = ttk.Frame(self)
         table_frame.pack(fill=tk.BOTH, expand=True)
 
-        columns = ("id", "material", "date", "operator", "mass_tot", "water", "mass_act", "status", "files_cnt")
+        columns = ("id", "material", "techs", "date", "operator", "mass_tot", "water", "mass_act", "status", "files_cnt")
         self.tree = ttk.Treeview(table_frame, columns=columns, show="headings", selectmode="browse")
 
         self.tree.heading("id", text="Sample ID")
         self.tree.heading("material", text="Material / Formulation")
+        self.tree.heading("techs", text="Characterizations")
         self.tree.heading("date", text="Date")
         self.tree.heading("operator", text="Operator")
         self.tree.heading("mass_tot", text="Total Mass (g)")
@@ -200,15 +218,16 @@ class LogbookView(ttk.Frame):
         self.tree.heading("status", text="Status")
         self.tree.heading("files_cnt", text="Files")
 
-        self.tree.column("id", width=110, anchor="center")
-        self.tree.column("material", width=220, anchor="w")
-        self.tree.column("date", width=95, anchor="center")
-        self.tree.column("operator", width=140, anchor="w")
-        self.tree.column("mass_tot", width=95, anchor="e")
-        self.tree.column("water", width=80, anchor="e")
-        self.tree.column("mass_act", width=105, anchor="e")
-        self.tree.column("status", width=95, anchor="center")
-        self.tree.column("files_cnt", width=75, anchor="center")
+        self.tree.column("id", width=105, anchor="center")
+        self.tree.column("material", width=175, anchor="w")
+        self.tree.column("techs", width=165, anchor="w")
+        self.tree.column("date", width=90, anchor="center")
+        self.tree.column("operator", width=130, anchor="w")
+        self.tree.column("mass_tot", width=90, anchor="e")
+        self.tree.column("water", width=75, anchor="e")
+        self.tree.column("mass_act", width=100, anchor="e")
+        self.tree.column("status", width=90, anchor="center")
+        self.tree.column("files_cnt", width=65, anchor="center")
 
         scroll_y = ttk.Scrollbar(table_frame, orient=tk.VERTICAL, command=self.tree.yview)
         scroll_x = ttk.Scrollbar(table_frame, orient=tk.HORIZONTAL, command=self.tree.xview)
@@ -262,9 +281,27 @@ class LogbookView(ttk.Frame):
             if mass_tot > 0:
                 masses.append(mass_tot)
 
-            # Count total attached files across all characterizations
-            total_files = 0
+            # Characterizations badges
             chars = data.get("characterizations", {})
+            TECH_BADGES = [
+                ("mass_spec", "🧪 MS"),
+                ("xrd", "🔬 XRD"),
+                ("bet", "📐 BET"),
+                ("tga", "🔥 TGA"),
+                ("sem_tem", "🔍 SEM"),
+                ("rheology", "🌊 Rheo"),
+                ("documents", "📁 Docs"),
+            ]
+            t_badges = []
+            for t_k, t_lbl in TECH_BADGES:
+                cnt = len(chars.get(t_k, {}).get("files", []))
+                if cnt == 0 and t_k == "mass_spec" and "files" in data:
+                    cnt = len([f for f in data.get("files", []) if f.get("filename", "").lower().endswith(".asc")])
+                if cnt > 0:
+                    t_badges.append(f"{t_lbl}({cnt})")
+            techs_str = "  ".join(t_badges) if t_badges else "—"
+
+            total_files = 0
             for tech, tdata in chars.items():
                 total_files += len(tdata.get("files", []))
             if total_files == 0 and "files" in data:
@@ -273,6 +310,7 @@ class LogbookView(ttk.Frame):
             item_id = self.tree.insert("", tk.END, values=(
                 s_id,
                 mat,
+                techs_str,
                 data.get("date", "-"),
                 op,
                 f"{mass_tot:.4f}",
@@ -292,6 +330,9 @@ class LogbookView(ttk.Frame):
         avg_mass = (sum(masses) / len(masses)) if masses else 0.0
         self.card_mass.val_label.config(text=f"{avg_mass:.3f} g")
 
+        # Update contextual technique buttons
+        self.update_technique_buttons(self.active_sample_id)
+
     def filter_table(self):
         self.refresh_table()
 
@@ -305,8 +346,97 @@ class LogbookView(ttk.Frame):
         s_id = self.get_selected_sample_id()
         if s_id:
             self.active_sample_id = s_id
+            self.update_technique_buttons(s_id)
             if self.on_select_sample_callback:
                 self.on_select_sample_callback(s_id)
+
+    def update_technique_buttons(self, s_id):
+        for w in self.tech_buttons_frame.winfo_children():
+            w.destroy()
+
+        if not s_id or s_id not in self.vault.logbook:
+            self.lbl_tech_header.config(text="🏷️ No Sample Selected")
+            lbl_none = tk.Label(
+                self.tech_buttons_frame,
+                text="Click on any sample row below to inspect and jump directly to its characterizations.",
+                font=("Segoe UI", 9, "italic"),
+                bg="#edf2f7",
+                fg="#6c757d"
+            )
+            lbl_none.pack(side=tk.LEFT)
+            return
+
+        data = self.vault.logbook[s_id]
+        chars = data.get("characterizations", {})
+
+        self.lbl_tech_header.config(text=f"🏷️ [{s_id}] Characterizations:")
+
+        TECH_SPECS = [
+            ("mass_spec", "🧪 Mass Spec", "#1d3557", "#ffffff"),
+            ("xrd", "🔬 XRD", "#6a4c93", "#ffffff"),
+            ("bet", "📐 BET", "#00796b", "#ffffff"),
+            ("tga", "🔥 TGA", "#c0392b", "#ffffff"),
+            ("sem_tem", "🔍 SEM / TEM", "#2e7d32", "#ffffff"),
+            ("rheology", "🌊 Rheology", "#0277bd", "#ffffff"),
+            ("documents", "📁 Docs", "#455a64", "#ffffff"),
+        ]
+
+        found_any = False
+        for tech_key, btn_label, fg_col, bg_col in TECH_SPECS:
+            f_list = chars.get(tech_key, {}).get("files", [])
+            if not f_list and tech_key == "mass_spec" and "files" in data:
+                f_list = [f for f in data.get("files", []) if f.get("filename", "").lower().endswith(".asc")]
+
+            if f_list:
+                found_any = True
+                btn = tk.Button(
+                    self.tech_buttons_frame,
+                    text=f"{btn_label} ({len(f_list)}) ➔",
+                    font=("Segoe UI", 8, "bold"),
+                    fg=fg_col,
+                    bg=bg_col,
+                    activebackground=fg_col,
+                    activeforeground="#ffffff",
+                    relief=tk.RAISED,
+                    bd=1,
+                    padx=7,
+                    pady=2,
+                    cursor="hand2",
+                    command=lambda tk=tech_key: self.on_technique_click(tk)
+                )
+                btn.pack(side=tk.LEFT, padx=3)
+
+        if not found_any:
+            lbl_empty = tk.Label(
+                self.tech_buttons_frame,
+                text="No characterization files attached to this sample yet.",
+                font=("Segoe UI", 9, "italic"),
+                bg="#edf2f7",
+                fg="#6c757d"
+            )
+            lbl_empty.pack(side=tk.LEFT, padx=(0, 6))
+
+            btn_attach = tk.Button(
+                self.tech_buttons_frame,
+                text="➕ Open Hub to Attach Files ➔",
+                font=("Segoe UI", 8, "bold"),
+                fg="#2a9d8f",
+                bg="#ffffff",
+                relief=tk.RAISED,
+                bd=1,
+                padx=6,
+                pady=2,
+                cursor="hand2",
+                command=self.on_go_to_hub
+            )
+            btn_attach.pack(side=tk.LEFT)
+
+    def on_technique_click(self, tech_key):
+        if self.active_sample_id:
+            if self.on_open_technique_callback:
+                self.on_open_technique_callback(self.active_sample_id, tech_key)
+            else:
+                self.on_go_to_hub()
 
     def on_new_sample(self):
         dialog = SampleDialog(self.winfo_toplevel(), title="Register New Sample")

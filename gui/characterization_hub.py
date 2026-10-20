@@ -19,6 +19,7 @@ class CharacterizationHubView(ttk.Frame):
         self.vault = vault
         self.on_open_mass_spec_callback = on_open_mass_spec_callback
         self.current_sample_id = None
+        self._refreshed_tabs = set()
 
         self.create_widgets()
 
@@ -84,15 +85,16 @@ class CharacterizationHubView(ttk.Frame):
         self.tech_notebook.add(self.tab_docs, text=" 📁 Documents & Reports ")
         self._build_generic_tab(self.tab_docs, "documents", "Supplementary Files (PDF, Images, Reports):", [("Documents", "*.pdf;*.png;*.jpg;*.xlsx;*.docx;*.txt"), ("All Files", "*.*")])
 
-    def set_sample(self, sample_id):
-        self.current_sample_id = sample_id
-        if not sample_id or sample_id not in self.vault.logbook:
+        # Listen to tab change for lazy loading heavy tabs (TGA)
+        self.tech_notebook.bind("<<NotebookTabChanged>>", self.on_tech_tab_changed)
+
+    def _update_banner(self):
+        if not self.current_sample_id or self.current_sample_id not in self.vault.logbook:
             self.lbl_banner_title.config(text="🏷️ Active Sample: [ None Selected ]")
             self.lbl_banner_details.config(text="Select a sample in the 'Logbook' tab to inspect and attach characterization files.")
-            self.refresh_all_tabs()
             return
 
-        data = self.vault.logbook[sample_id]
+        data = self.vault.logbook[self.current_sample_id]
         mat = data.get("material_name", "-")
         mass_tot = float(data.get("mass_total_g", 0.0))
         water = float(data.get("water_loss_pct", 0.0))
@@ -100,20 +102,82 @@ class CharacterizationHubView(ttk.Frame):
         op = data.get("operator", "-")
         date_str = data.get("date", "-")
 
-        self.lbl_banner_title.config(text=f"🏷️ Sample: {sample_id} — {mat}")
+        self.lbl_banner_title.config(text=f"🏷️ Sample: {self.current_sample_id} — {mat}")
         self.lbl_banner_details.config(
             text=f"Date: {date_str}  |  Operator: {op}  |  Total Mass: {mass_tot:.4f} g  |  Water Loss: {water:.1f}%  |  Active Mass: {mass_act:.4f} g"
         )
-        self.refresh_all_tabs()
+
+    def set_sample(self, sample_id, lazy=False):
+        """
+        Sets the active sample in the Characterization Hub.
+        If lazy=True (e.g. user browsing samples in Tab 1 Logbook), only the banner updates.
+        Sub-tabs are refreshed strictly on-demand when the user actually navigates to them.
+        """
+        if self.current_sample_id != sample_id:
+            self.current_sample_id = sample_id
+            self._refreshed_tabs.clear()
+            self._update_banner()
+            if not lazy:
+                self.refresh_active_tab()
+        else:
+            self._update_banner()
+            if not lazy:
+                self.refresh_active_tab()
+
+    def refresh_active_tab(self):
+        """
+        Refreshes strictly the currently selected sub-tab in the Hub.
+        Prevents loading/parsing all characterizations simultaneously.
+        """
+        if not self.current_sample_id or self.current_sample_id not in self.vault.logbook:
+            return
+
+        try:
+            current_tab_id = self.tech_notebook.select()
+        except Exception:
+            return
+
+        tab_map = {
+            str(self.tab_mass): ("mass_spec", self._refresh_mass_table),
+            str(self.tab_xrd): ("xrd", lambda: self._refresh_generic_table("xrd")),
+            str(self.tab_bet): ("bet", self._refresh_bet_tab),
+            str(self.tab_tga): ("tga", self._refresh_tga_tab),
+            str(self.tab_sem_tem): ("sem_tem", self._refresh_sem_tem_tab),
+            str(self.tab_rheology): ("rheology", self._refresh_rheology_tab),
+            str(self.tab_docs): ("documents", lambda: self._refresh_generic_table("documents")),
+        }
+
+        entry = tab_map.get(current_tab_id)
+        if entry:
+            tech_key, refresh_fn = entry
+            if tech_key not in self._refreshed_tabs:
+                refresh_fn()
+                self._refreshed_tabs.add(tech_key)
+
+    def on_tech_tab_changed(self, event=None):
+        """Called whenever user clicks a different technique sub-tab."""
+        self.refresh_active_tab()
 
     def refresh_all_tabs(self):
-        self._refresh_mass_table()
-        self._refresh_generic_table("xrd")
-        self._refresh_bet_tab()
-        self._refresh_tga_tab()
-        self._refresh_sem_tem_tab()
-        self._refresh_rheology_tab()
-        self._refresh_generic_table("documents")
+        """Forces full refresh of all tabs (e.g. on manual vault rescan)."""
+        self._refreshed_tabs.clear()
+        self.refresh_active_tab()
+
+    def show_technique(self, tech_key):
+        """Switches to the specified characterization technique tab and refreshes it."""
+        tab_map = {
+            "mass_spec": self.tab_mass,
+            "xrd": self.tab_xrd,
+            "bet": self.tab_bet,
+            "tga": self.tab_tga,
+            "sem_tem": self.tab_sem_tem,
+            "rheology": self.tab_rheology,
+            "documents": self.tab_docs,
+        }
+        tab = tab_map.get(tech_key)
+        if tab:
+            self.tech_notebook.select(tab)
+            self.refresh_active_tab()
 
     # ==================== TAB: MASS SPECTROMETRY ====================
 
@@ -427,7 +491,8 @@ class CharacterizationHubView(ttk.Frame):
 
         ttk.Button(top_frame, text="➕ Attach BET Isotherm (.xls, .csv)", command=lambda: self.on_attach_generic_file("bet", [("BET Data", "*.xls;*.xlsx;*.csv;*.txt")])).pack(side=tk.LEFT, padx=3)
         ttk.Button(top_frame, text="🗑️ Delete File", command=lambda: self.on_delete_file("bet")).pack(side=tk.LEFT, padx=3)
-        ttk.Button(top_frame, text="📂 View in Folder", command=lambda: self.on_open_tech_folder("bet")).pack(side=tk.LEFT, padx=3)
+        ttk.Button(top_frame, text="📂 Open File", command=lambda: self.on_open_selected_file("bet")).pack(side=tk.LEFT, padx=3)
+        ttk.Button(top_frame, text="📁 View in Folder", command=lambda: self.on_open_tech_folder("bet")).pack(side=tk.LEFT, padx=3)
 
         # Table of BET files
         cols = ("fn", "uploaded", "size")
@@ -439,6 +504,7 @@ class CharacterizationHubView(ttk.Frame):
         self.tree_bet.column("uploaded", width=140, anchor="center")
         self.tree_bet.column("size", width=100, anchor="e")
         self.tree_bet.pack(fill=tk.X, pady=(0, 10))
+        self.tree_bet.bind("<Double-1>", lambda e: self.on_open_selected_file("bet"))
 
         # BET Key Parameters Box
         param_frame = ttk.LabelFrame(parent, text=" BET Textural Properties & Porosity ", padding=10)
@@ -516,6 +582,7 @@ class CharacterizationHubView(ttk.Frame):
         filetypes = [("TGA Files", "*.xlsx;*.xls;*.csv;*.txt"), ("All Files", "*.*")]
         ttk.Button(toolbar, text="➕ Attach TGA File", command=lambda: self.on_attach_tga_file(filetypes)).pack(side=tk.LEFT, padx=2)
         ttk.Button(toolbar, text="🗑️ Delete File", command=lambda: self.on_delete_file("tga")).pack(side=tk.LEFT, padx=2)
+        ttk.Button(toolbar, text="📂 Open File", command=lambda: self.on_open_selected_file("tga")).pack(side=tk.LEFT, padx=2)
         ttk.Button(toolbar, text="📁 Folder", command=lambda: self.on_open_tech_folder("tga")).pack(side=tk.LEFT, padx=2)
 
         # Table of files
@@ -527,6 +594,7 @@ class CharacterizationHubView(ttk.Frame):
         self.tree_tga.column("size", width=70, anchor="e")
         self.tree_tga.pack(fill=tk.X, pady=(0, 6))
         self.tree_tga.bind("<<TreeviewSelect>>", self.on_tga_file_selected)
+        self.tree_tga.bind("<Double-1>", lambda e: self.on_open_selected_file("tga"))
 
         # Automated Plot & Analysis Actions
         act_row = ttk.Frame(left_side)
@@ -616,8 +684,58 @@ class CharacterizationHubView(ttk.Frame):
             return
         fn = self.tree_tga.item(sel[0], "values")[0]
         fpath = self.vault.get_characterization_file_path(self.current_sample_id, "tga", fn)
-        if fpath and os.path.exists(fpath):
+        if not fpath or not os.path.exists(fpath):
+            return
+
+        ext = os.path.splitext(fn)[1].lower()
+        if ext in [".xlsx", ".xls", ".csv", ".txt", ".dat"]:
             self.load_and_display_tga(fpath)
+        elif ext in [".png", ".jpg", ".jpeg", ".bmp", ".tif", ".tiff", ".gif"]:
+            self._display_tga_image_notice(fpath, fn)
+        else:
+            self._display_tga_document_notice(fpath, fn)
+
+    def _display_tga_image_notice(self, fpath, fn):
+        self.current_tga_df = None
+        self.current_tga_meta = {}
+        self.tga_fig.clear()
+        ax = self.tga_fig.add_subplot(111)
+        ax.set_facecolor("#f8f9fa")
+        ax.set_xticks([])
+        ax.set_yticks([])
+        for spine in ax.spines.values():
+            spine.set_color("#dee2e6")
+        ax.text(
+            0.5, 0.62,
+            f"🖼️ Attached Graphic / Image\n\n{fn}",
+            ha="center", va="center", fontsize=11, fontweight="bold", color="#1d3557"
+        )
+        ax.text(
+            0.5, 0.40,
+            "This file is an image (not tabular numerical TGA data).\n\n"
+            "• Double-click this row or click '📂 Open File'\n"
+            "  to inspect in full resolution with your system image viewer.\n"
+            "• Select a spreadsheet (.xlsx/.csv) to display dual-panel curves.",
+            ha="center", va="center", fontsize=9, color="#495057", linespacing=1.4
+        )
+        self.tga_canvas.draw_idle()
+
+    def _display_tga_document_notice(self, fpath, fn):
+        self.current_tga_df = None
+        self.current_tga_meta = {}
+        self.tga_fig.clear()
+        ax = self.tga_fig.add_subplot(111)
+        ax.set_facecolor("#f8f9fa")
+        ax.set_xticks([])
+        ax.set_yticks([])
+        for spine in ax.spines.values():
+            spine.set_color("#dee2e6")
+        ax.text(
+            0.5, 0.55,
+            f"📄 Attached Document\n\n{fn}\n\nClick '📂 Open File' or double-click to view.",
+            ha="center", va="center", fontsize=10, fontweight="bold", color="#1d3557"
+        )
+        self.tga_canvas.draw_idle()
 
     def on_plot_current_tga(self):
         sel = self.tree_tga.selection()
@@ -625,11 +743,18 @@ class CharacterizationHubView(ttk.Frame):
         if not fn:
             children = self.tree_tga.get_children()
             if children:
-                fn = self.tree_tga.item(children[0], "values")[0]
+                # Find first tabular file
+                for c in children:
+                    cand = self.tree_tga.item(c, "values")[0]
+                    if os.path.splitext(cand)[1].lower() in [".xlsx", ".xls", ".csv", ".txt", ".dat"]:
+                        fn = cand
+                        self.tree_tga.selection_set(c)
+                        break
+                if not fn:
+                    fn = self.tree_tga.item(children[0], "values")[0]
+                    self.tree_tga.selection_set(children[0])
         if fn and self.current_sample_id:
-            fpath = self.vault.get_characterization_file_path(self.current_sample_id, "tga", fn)
-            if fpath and os.path.exists(fpath):
-                self.load_and_display_tga(fpath)
+            self.on_tga_file_selected()
         elif self.current_tga_df is not None:
             title = self.tga_plot_title_var.get().strip() or "TGA / DTG Analysis"
             plot_tga_dual_panel(self.current_tga_df, self.current_tga_meta, title=title, fig=self.tga_fig)
@@ -713,14 +838,11 @@ class CharacterizationHubView(ttk.Frame):
         self.tga_delta_w_var.set(float(tech_data.get("delta_weight_pct", 0.0)))
         self.tga_atmosphere_var.set(tech_data.get("atmosphere", "N2"))
 
-        # If files exist, auto-select and render the first file
-        children = self.tree_tga.get_children()
-        if children:
-            self.tree_tga.selection_set(children[0])
-            fn = self.tree_tga.item(children[0], "values")[0]
-            fpath = self.vault.get_characterization_file_path(self.current_sample_id, "tga", fn)
-            if fpath and os.path.exists(fpath):
-                self.load_and_display_tga(fpath)
+        # Clear previous plot cache / canvas so stale data is not displayed
+        self.current_tga_df = None
+        self.current_tga_meta = {}
+        self.tga_fig.clear()
+        self.tga_canvas.draw_idle()
 
     def on_save_tga_params(self):
         if not self.current_sample_id:
