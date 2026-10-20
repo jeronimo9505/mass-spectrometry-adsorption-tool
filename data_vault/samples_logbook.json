@@ -75,7 +75,7 @@
     "notes": "Full 3 continuous cycles",
     "status": "Analyzed",
     "created_at": "2026-09-23 18:42:27",
-    "updated_at": "2026-10-20 19:27:37",
+    "updated_at": "2026-10-20 19:40:28",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -92,7 +92,7 @@
             "q_net_ads": 3.8091,
             "q_net_des": 0.6713,
             "recovery_pct": 17.62,
-            "analyzed_at": "2026-10-20 19:27:37"
+            "analyzed_at": "2026-10-20 19:40:28"
           }
         ],
         "notes": ""
@@ -133,9 +133,9 @@
     "flow_total": 100.0,
     "temp_c": 24.0,
     "notes": "",
-    "status": "Registered",
+    "status": "Analyzed",
     "created_at": "2026-09-23 18:42:27",
-    "updated_at": "2026-10-20 13:19:53",
+    "updated_at": "2026-10-20 19:40:28",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -147,12 +147,12 @@
             "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ20_01\\mass_spec\\21082026  zz20 monoliths 1st.asc",
             "size_bytes": 1262256,
             "description": "Measurement file for ZZ20 Monolith",
-            "status": "Pending",
+            "status": "Analyzed",
             "uploaded_at": "2026-09-23 18:42:27",
-            "q_net_ads": null,
-            "q_net_des": null,
-            "recovery_pct": null,
-            "analyzed_at": null
+            "q_net_ads": 4.5151,
+            "q_net_des": 4.4867,
+            "recovery_pct": 99.37,
+            "analyzed_at": "2026-10-20 19:40:28"
           }
         ],
         "notes": ""
@@ -195,7 +195,7 @@
     "notes": "Complete cyclic adsorption/desorption run",
     "status": "Analyzed",
     "created_at": "2026-09-23 18:42:27",
-    "updated_at": "2026-10-20 19:27:37",
+    "updated_at": "2026-10-20 19:40:29",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -212,7 +212,7 @@
             "q_net_ads": 3.0156,
             "q_net_des": 10.7393,
             "recovery_pct": 356.12,
-            "analyzed_at": "2026-10-20 19:27:37"
+            "analyzed_at": "2026-10-20 19:40:29"
           }
         ],
         "notes": ""
@@ -286,188 +286,188 @@
       "sem_tem": {
         "files": [
           {
-            "id": 80,
+            "id": 66,
             "sample_id": "ZZ30_01",
             "technique": "sem_tem",
-            "filename": "Poros pequenos_008.tif",
-            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\ZZ30_01\\sem_tem\\Poros pequenos_008.tif",
-            "size_bytes": 5054657,
-            "description": "",
+            "filename": "Poros pequenos_001.tif",
+            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\sem_tem\\Poros pequenos_001.tif",
+            "size_bytes": 5054645,
+            "description": "Discovered sem_tem file",
             "status": "Pending",
-            "uploaded_at": "2026-10-20 17:40:48"
+            "uploaded_at": "2026-10-20 19:40:28"
           },
           {
-            "id": 79,
-            "sample_id": "ZZ30_01",
-            "technique": "sem_tem",
-            "filename": "Poros pequenos_007.tif",
-            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\ZZ30_01\\sem_tem\\Poros pequenos_007.tif",
-            "size_bytes": 5054653,
-            "description": "",
-            "status": "Pending",
-            "uploaded_at": "2026-10-20 17:40:37"
-          },
-          {
-            "id": 78,
-            "sample_id": "ZZ30_01",
-            "technique": "sem_tem",
-            "filename": "Poros pequenos_006.tif",
-            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\ZZ30_01\\sem_tem\\Poros pequenos_006.tif",
-            "size_bytes": 5054649,
-            "description": "",
-            "status": "Pending",
-            "uploaded_at": "2026-10-20 17:40:31"
-          },
-          {
-            "id": 77,
-            "sample_id": "ZZ30_01",
-            "technique": "sem_tem",
-            "filename": "Poros pequenos_005.tif",
-            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\ZZ30_01\\sem_tem\\Poros pequenos_005.tif",
-            "size_bytes": 5054653,
-            "description": "",
-            "status": "Pending",
-            "uploaded_at": "2026-10-20 17:40:07"
-          },
-          {
-            "id": 75,
-            "sample_id": "ZZ30_01",
-            "technique": "sem_tem",
-            "filename": "Poros pequenos_004.tif",
-            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\ZZ30_01\\sem_tem\\Poros pequenos_004.tif",
-            "size_bytes": 5054651,
-            "description": "",
-            "status": "Pending",
-            "uploaded_at": "2026-10-20 17:38:39"
-          },
-          {
-            "id": 74,
-            "sample_id": "ZZ30_01",
-            "technique": "sem_tem",
-            "filename": "Poros pequenos_003.tif",
-            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\ZZ30_01\\sem_tem\\Poros pequenos_003.tif",
-            "size_bytes": 5054647,
-            "description": "",
-            "status": "Pending",
-            "uploaded_at": "2026-10-20 17:38:32"
-          },
-          {
-            "id": 73,
+            "id": 67,
             "sample_id": "ZZ30_01",
             "technique": "sem_tem",
             "filename": "Poros pequenos_002.tif",
-            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\ZZ30_01\\sem_tem\\Poros pequenos_002.tif",
+            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\sem_tem\\Poros pequenos_002.tif",
             "size_bytes": 5054647,
-            "description": "",
+            "description": "Discovered sem_tem file",
             "status": "Pending",
-            "uploaded_at": "2026-10-20 17:38:23"
+            "uploaded_at": "2026-10-20 19:40:28"
+          },
+          {
+            "id": 68,
+            "sample_id": "ZZ30_01",
+            "technique": "sem_tem",
+            "filename": "Poros pequenos_003.tif",
+            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\sem_tem\\Poros pequenos_003.tif",
+            "size_bytes": 5054647,
+            "description": "Discovered sem_tem file",
+            "status": "Pending",
+            "uploaded_at": "2026-10-20 19:40:28"
+          },
+          {
+            "id": 69,
+            "sample_id": "ZZ30_01",
+            "technique": "sem_tem",
+            "filename": "Poros pequenos_004.tif",
+            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\sem_tem\\Poros pequenos_004.tif",
+            "size_bytes": 5054651,
+            "description": "Discovered sem_tem file",
+            "status": "Pending",
+            "uploaded_at": "2026-10-20 19:40:28"
+          },
+          {
+            "id": 70,
+            "sample_id": "ZZ30_01",
+            "technique": "sem_tem",
+            "filename": "Poros pequenos_005.tif",
+            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\sem_tem\\Poros pequenos_005.tif",
+            "size_bytes": 5054653,
+            "description": "Discovered sem_tem file",
+            "status": "Pending",
+            "uploaded_at": "2026-10-20 19:40:28"
+          },
+          {
+            "id": 71,
+            "sample_id": "ZZ30_01",
+            "technique": "sem_tem",
+            "filename": "Poros pequenos_006.tif",
+            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\sem_tem\\Poros pequenos_006.tif",
+            "size_bytes": 5054649,
+            "description": "Discovered sem_tem file",
+            "status": "Pending",
+            "uploaded_at": "2026-10-20 19:40:28"
           },
           {
             "id": 72,
             "sample_id": "ZZ30_01",
             "technique": "sem_tem",
-            "filename": "Poros pequenos_001.tif",
-            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\ZZ30_01\\sem_tem\\Poros pequenos_001.tif",
-            "size_bytes": 5054645,
-            "description": "",
+            "filename": "Poros pequenos_007.tif",
+            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\sem_tem\\Poros pequenos_007.tif",
+            "size_bytes": 5054653,
+            "description": "Discovered sem_tem file",
             "status": "Pending",
-            "uploaded_at": "2026-10-20 17:38:00"
+            "uploaded_at": "2026-10-20 19:40:28"
+          },
+          {
+            "id": 73,
+            "sample_id": "ZZ30_01",
+            "technique": "sem_tem",
+            "filename": "Poros pequenos_008.tif",
+            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\sem_tem\\Poros pequenos_008.tif",
+            "size_bytes": 5054657,
+            "description": "Discovered sem_tem file",
+            "status": "Pending",
+            "uploaded_at": "2026-10-20 19:40:28"
           }
         ]
       },
       "rheology": {
         "files": [
           {
-            "id": 81,
+            "id": 74,
             "sample_id": "ZZ30_01",
             "technique": "rheology",
             "filename": "Batch 1 Zeolite.png",
-            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\ZZ30_01\\rheology\\Batch 1 Zeolite.png",
+            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\rheology\\Batch 1 Zeolite.png",
             "size_bytes": 480076,
-            "description": "",
+            "description": "Discovered rheology file",
             "status": "Pending",
-            "uploaded_at": "2026-10-20 17:52:40"
+            "uploaded_at": "2026-10-20 19:40:28"
           },
           {
-            "id": 82,
+            "id": 75,
             "sample_id": "ZZ30_01",
             "technique": "rheology",
             "filename": "Batch 2 Zeolite.png",
-            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\ZZ30_01\\rheology\\Batch 2 Zeolite.png",
+            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\rheology\\Batch 2 Zeolite.png",
             "size_bytes": 513958,
-            "description": "",
+            "description": "Discovered rheology file",
             "status": "Pending",
-            "uploaded_at": "2026-10-20 17:52:40"
+            "uploaded_at": "2026-10-20 19:40:28"
           },
           {
-            "id": 83,
+            "id": 76,
             "sample_id": "ZZ30_01",
             "technique": "rheology",
             "filename": "Batch 3 Zeolite.png",
-            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\ZZ30_01\\rheology\\Batch 3 Zeolite.png",
+            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\rheology\\Batch 3 Zeolite.png",
             "size_bytes": 508271,
-            "description": "",
+            "description": "Discovered rheology file",
             "status": "Pending",
-            "uploaded_at": "2026-10-20 17:52:40"
+            "uploaded_at": "2026-10-20 19:40:28"
           },
           {
-            "id": 84,
+            "id": 77,
             "sample_id": "ZZ30_01",
             "technique": "rheology",
             "filename": "Batch 4 zeolite.png",
-            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\ZZ30_01\\rheology\\Batch 4 zeolite.png",
+            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\rheology\\Batch 4 zeolite.png",
             "size_bytes": 504295,
-            "description": "",
+            "description": "Discovered rheology file",
             "status": "Pending",
-            "uploaded_at": "2026-10-20 17:52:40"
+            "uploaded_at": "2026-10-20 19:40:28"
           }
         ]
       },
       "documents": {
         "files": [
           {
-            "id": 87,
-            "sample_id": "ZZ30_01",
-            "technique": "documents",
-            "filename": "Shayan_Gul_Research_Plan.docx",
-            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\ZZ30_01\\documents\\Shayan_Gul_Research_Plan.docx",
-            "size_bytes": 35248,
-            "description": "",
-            "status": "Pending",
-            "uploaded_at": "2026-10-20 18:06:53"
-          },
-          {
-            "id": 88,
-            "sample_id": "ZZ30_01",
-            "technique": "documents",
-            "filename": "Shayan_Gul_Research_Plan.pdf",
-            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\ZZ30_01\\documents\\Shayan_Gul_Research_Plan.pdf",
-            "size_bytes": 231203,
-            "description": "",
-            "status": "Pending",
-            "uploaded_at": "2026-10-20 18:06:53"
-          },
-          {
-            "id": 86,
-            "sample_id": "ZZ30_01",
-            "technique": "documents",
-            "filename": "Shayan_Gul_Data_Management_Plan.pdf",
-            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\ZZ30_01\\documents\\Shayan_Gul_Data_Management_Plan.pdf",
-            "size_bytes": 256499,
-            "description": "",
-            "status": "Pending",
-            "uploaded_at": "2026-10-20 18:06:26"
-          },
-          {
-            "id": 85,
+            "id": 78,
             "sample_id": "ZZ30_01",
             "technique": "documents",
             "filename": "Shayan_Gul_Data_Management_Plan.docx",
-            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\ZZ30_01\\documents\\Shayan_Gul_Data_Management_Plan.docx",
+            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\documents\\Shayan_Gul_Data_Management_Plan.docx",
             "size_bytes": 35370,
-            "description": "",
+            "description": "Discovered documents file",
             "status": "Pending",
-            "uploaded_at": "2026-10-20 18:06:25"
+            "uploaded_at": "2026-10-20 19:40:28"
+          },
+          {
+            "id": 79,
+            "sample_id": "ZZ30_01",
+            "technique": "documents",
+            "filename": "Shayan_Gul_Data_Management_Plan.pdf",
+            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\documents\\Shayan_Gul_Data_Management_Plan.pdf",
+            "size_bytes": 256499,
+            "description": "Discovered documents file",
+            "status": "Pending",
+            "uploaded_at": "2026-10-20 19:40:28"
+          },
+          {
+            "id": 80,
+            "sample_id": "ZZ30_01",
+            "technique": "documents",
+            "filename": "Shayan_Gul_Research_Plan.docx",
+            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\documents\\Shayan_Gul_Research_Plan.docx",
+            "size_bytes": 35248,
+            "description": "Discovered documents file",
+            "status": "Pending",
+            "uploaded_at": "2026-10-20 19:40:28"
+          },
+          {
+            "id": 81,
+            "sample_id": "ZZ30_01",
+            "technique": "documents",
+            "filename": "Shayan_Gul_Research_Plan.pdf",
+            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\documents\\Shayan_Gul_Research_Plan.pdf",
+            "size_bytes": 231203,
+            "description": "Discovered documents file",
+            "status": "Pending",
+            "uploaded_at": "2026-10-20 19:40:28"
           }
         ],
         "notes": ""
@@ -490,7 +490,7 @@
     "notes": "Zeolite Powder Rapeat",
     "status": "Analyzed",
     "created_at": "2026-10-20 11:45:57",
-    "updated_at": "2026-10-20 19:27:37",
+    "updated_at": "2026-10-20 19:40:29",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -507,7 +507,7 @@
             "q_net_ads": 3.4169,
             "q_net_des": 3.6934,
             "recovery_pct": 108.09,
-            "analyzed_at": "2026-10-20 19:27:37"
+            "analyzed_at": "2026-10-20 19:40:29"
           }
         ],
         "notes": ""
@@ -550,7 +550,7 @@
     "notes": "",
     "status": "Analyzed",
     "created_at": "2026-09-28 18:38:26",
-    "updated_at": "2026-10-20 19:27:37",
+    "updated_at": "2026-10-20 19:40:29",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -567,7 +567,7 @@
             "q_net_ads": 3.6636,
             "q_net_des": 1.2727,
             "recovery_pct": 34.74,
-            "analyzed_at": "2026-10-20 19:27:37"
+            "analyzed_at": "2026-10-20 19:40:29"
           }
         ],
         "notes": ""
@@ -610,7 +610,7 @@
     "notes": "",
     "status": "Analyzed",
     "created_at": "2026-09-23 18:52:29",
-    "updated_at": "2026-10-20 19:27:37",
+    "updated_at": "2026-10-20 19:40:29",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -627,7 +627,7 @@
             "q_net_ads": 3.0014,
             "q_net_des": 12.7484,
             "recovery_pct": 424.75,
-            "analyzed_at": "2026-10-20 19:27:37"
+            "analyzed_at": "2026-10-20 19:40:29"
           }
         ],
         "notes": ""
