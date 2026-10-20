@@ -14,11 +14,12 @@ from tkinter import ttk, filedialog, messagebox
 
 from core.asc_parser import GAS_MAPPING, load_asc_dataframe
 from core.integration_engine import calculate_roi_integration, auto_detect_cycle_pairs
-from core.capacity_calculator import compute_co2_capacity
+from core.capacity_calculator import compute_co2_capacity, compute_co2_capacity_breakdown
 
 ROI_PRESETS = {
+    "baseline_signal": {"fill": "#cce5ff", "border": "#3399ff", "label": "Baseline", "baseline": "mean_signal"},
     "adsorption": {"fill": "#ffff99", "border": "#d4af37", "label": "Adsorption", "baseline": "straight_line"},
-    "desorption": {"fill": "#ff99ff", "border": "#c77dff", "label": "Desorption", "baseline": "horizontal_left"},
+    "desorption": {"fill": "#ff99ff", "border": "#c77dff", "label": "Desorption", "baseline": "raw_zero"},
     "general": {"fill": "#99ff99", "border": "#38b000", "label": "General", "baseline": "straight_line"}
 }
 
@@ -48,19 +49,32 @@ class MassSpecToolView(ttk.Frame):
         self.drag_initial_x = None
         self.drag_initial_range = None
 
-        # Capacity Parameters
-        self.cap_mass_var = tk.DoubleVar(value=0.5055)
+        # Capacity Parameters (Matching Excel experimental parameters)
+        self.cap_mass_mg_var = tk.DoubleVar(value=620.0)
+        self.cap_mass_var = tk.DoubleVar(value=0.62)
         self.cap_water_pct_var = tk.DoubleVar(value=21.4)
         self.cap_c0_var = tk.DoubleVar(value=0.15)
+        self.cap_flow_co2_var = tk.DoubleVar(value=15.0)
+        self.cap_flow_n2_var = tk.DoubleVar(value=85.0)
         self.cap_flow_total_var = tk.DoubleVar(value=100.0)
         self.cap_temp_var = tk.DoubleVar(value=24.0)
-        self.cap_ref_ads_var = tk.DoubleVar(value=0.23)
+        self.cap_temp_ref_var = tk.DoubleVar(value=25.0)
+        self.cap_vm25_var = tk.DoubleVar(value=24465.0)
+        self.cap_ref_ads_var = tk.DoubleVar(value=0.00)
         self.cap_ref_des_var = tk.DoubleVar(value=0.00)
-        self.cap_s_baseline_var = tk.DoubleVar(value=7.25e-10)
+        self.cap_s_baseline_var = tk.DoubleVar(value=0.0)
+        self.cap_k_mode_var = tk.StringVar(value="ads_first_point")
         self.cap_area_ads_var = tk.DoubleVar(value=1.5054e-9)
         self.cap_area_des_var = tk.DoubleVar(value=1.06058e-10)
         self.cap_auto_sync_var = tk.BooleanVar(value=True)
+        self._updating_mass = False
+        self._updating_flow = False
         self.last_capacity_results = {}
+
+        # Suggested Δt for Auto-Detection (Configurable)
+        self.autodetect_dt_ads_var = tk.DoubleVar(value=22.0)
+        self.autodetect_dt_des_var = tk.DoubleVar(value=8.0)
+        self.autodetect_dt_base_var = tk.DoubleVar(value=2.0)
 
         self.create_widgets()
 
@@ -69,7 +83,7 @@ class MassSpecToolView(ttk.Frame):
         main_paned.pack(fill=tk.BOTH, expand=True, padx=4, pady=4)
 
         # Left Control Panel
-        left_frame = ttk.Frame(main_paned, width=470)
+        left_frame = ttk.Frame(main_paned, width=640)
         main_paned.add(left_frame, weight=0)
 
         # Right Matplotlib Plot Panel
@@ -179,8 +193,20 @@ class MassSpecToolView(ttk.Frame):
 
         b_row1 = ttk.Frame(btn_box)
         b_row1.pack(fill=tk.X, pady=2)
+        ttk.Button(b_row1, text="🔵 + Baseline Signal", command=self.add_baseline_box).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=2)
         ttk.Button(b_row1, text="🟡 + Adsorption", command=self.add_adsorption_box).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=2)
         ttk.Button(b_row1, text="🟣 + Desorption", command=self.add_desorption_box).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=2)
+
+        # Suggested Δt for Auto-Detection
+        dt_frame = ttk.Frame(btn_box)
+        dt_frame.pack(fill=tk.X, pady=(4, 2))
+        ttk.Label(dt_frame, text="Suggested Δt (min):", font=("Segoe UI", 8, "bold")).pack(side=tk.LEFT, padx=(0, 4))
+        ttk.Label(dt_frame, text="Ads:").pack(side=tk.LEFT, padx=(2, 1))
+        ttk.Spinbox(dt_frame, from_=1.0, to=120.0, increment=1.0, textvariable=self.autodetect_dt_ads_var, width=5).pack(side=tk.LEFT, padx=(0, 4))
+        ttk.Label(dt_frame, text="Des (max):").pack(side=tk.LEFT, padx=(2, 1))
+        ttk.Spinbox(dt_frame, from_=1.0, to=60.0, increment=0.5, textvariable=self.autodetect_dt_des_var, width=4).pack(side=tk.LEFT, padx=(0, 4))
+        ttk.Label(dt_frame, text="Base:").pack(side=tk.LEFT, padx=(2, 1))
+        ttk.Spinbox(dt_frame, from_=0.5, to=30.0, increment=0.5, textvariable=self.autodetect_dt_base_var, width=4).pack(side=tk.LEFT, padx=(0, 2))
 
         b_row2 = ttk.Frame(btn_box)
         b_row2.pack(fill=tk.X, pady=2)
@@ -249,7 +275,7 @@ class MassSpecToolView(ttk.Frame):
         b_combo = ttk.Combobox(
             adj_grid, 
             textvariable=self.roi_baseline_var, 
-            values=["straight_line", "horizontal_left", "avg_ads_baseline", "raw_zero"],
+            values=["straight_line", "raw_zero", "horizontal_left", "mean_signal", "avg_ads_baseline"],
             state="readonly", 
             width=14
         )
@@ -258,88 +284,185 @@ class MassSpecToolView(ttk.Frame):
 
         ttk.Button(adj_grid, text="🗑️ Delete ROI", command=self.remove_selected_range).grid(row=2, column=3, sticky="e", pady=2)
 
+        # Confirm & Advance Button to Tab 3
+        btn_confirm = ttk.Button(
+            parent,
+            text="💾 Confirm Integration & Proceed to CO₂ Capacity ➡️",
+            command=self.on_confirm_integration_and_proceed
+        )
+        btn_confirm.pack(fill=tk.X, pady=(6, 2))
+
     # ==================== TAB 3: CAPACITY CALCULATOR ====================
 
     def _build_tab_capacity(self, parent):
         scroll_c = ttk.Frame(parent)
         scroll_c.pack(fill=tk.BOTH, expand=True)
 
-        p_frame = ttk.LabelFrame(scroll_c, text=" Assay & Sample Parameters ", padding=6)
-        p_frame.pack(fill=tk.X, pady=(0, 6))
+        # Top Action Button: User-requested "Usar 1er punto de cada Ads como Baseline"
+        btn_use_ads_base = ttk.Button(
+            scroll_c,
+            text="🎯 Usar 1er punto de cada Ads como Baseline (Ciclo a Ciclo)",
+            command=self.use_ads_first_point_baseline
+        )
+        btn_use_ads_base.pack(fill=tk.X, pady=(0, 4))
+
+        # 1. Assay & Sample Parameters Frame
+        p_frame = ttk.LabelFrame(scroll_c, text=" Assay & Sample Parameters (Excel Model) ", padding=5)
+        p_frame.pack(fill=tk.X, pady=(0, 4))
 
         grid = ttk.Frame(p_frame)
         grid.pack(fill=tk.X)
 
-        # Wire traces and event handlers so ANY manual keystroke or arrow change immediately triggers live recalculation
+        # Connect synchronization between mg and g, and flows
         self._trace_ids = []
-        for var in [self.cap_mass_var, self.cap_water_pct_var, self.cap_flow_total_var, self.cap_temp_var, self.cap_c0_var, self.cap_ref_ads_var, self.cap_ref_des_var]:
+        t1 = self.cap_mass_mg_var.trace_add("write", self._on_mass_mg_change)
+        t2 = self.cap_mass_var.trace_add("write", self._on_mass_g_change)
+        t3 = self.cap_flow_co2_var.trace_add("write", self._on_flow_parts_change)
+        t4 = self.cap_flow_n2_var.trace_add("write", self._on_flow_parts_change)
+        self._trace_ids.extend([
+            (self.cap_mass_mg_var, t1),
+            (self.cap_mass_var, t2),
+            (self.cap_flow_co2_var, t3),
+            (self.cap_flow_n2_var, t4)
+        ])
+
+        for var in [self.cap_water_pct_var, self.cap_temp_var, self.cap_temp_ref_var, self.cap_vm25_var, self.cap_c0_var, self.cap_ref_ads_var, self.cap_ref_des_var, self.cap_k_mode_var]:
             tid = var.trace_add("write", lambda *args: self.recalculate_capacity())
             self._trace_ids.append((var, tid))
 
-        row = 0
-        ttk.Label(grid, text="Total Mass (g):", font=("Segoe UI", 9, "bold")).grid(row=row, column=0, sticky="w", pady=2)
-        sb_mass = ttk.Spinbox(grid, from_=0.0001, to=100.0, increment=0.001, textvariable=self.cap_mass_var, width=11, command=self.recalculate_capacity)
-        sb_mass.grid(row=row, column=1, padx=4, pady=2)
-        sb_mass.bind("<KeyRelease>", lambda e: self.recalculate_capacity())
-        sb_mass.bind("<Return>", lambda e: self.recalculate_capacity())
-        sb_mass.bind("<FocusOut>", lambda e: self.recalculate_capacity())
+        # Row 0: Sample Mass (mg) and Sample Mass (g)
+        ttk.Label(grid, text="Mass (mg):", font=("Segoe UI", 8, "bold")).grid(row=0, column=0, sticky="w", pady=1)
+        sb_mass_mg = ttk.Spinbox(grid, from_=0.1, to=100000.0, increment=10.0, textvariable=self.cap_mass_mg_var, width=8)
+        sb_mass_mg.grid(row=0, column=1, padx=2, pady=1)
+        sb_mass_mg.bind("<KeyRelease>", lambda e: self._on_mass_mg_change())
 
-        ttk.Label(grid, text="Water Loss (%):").grid(row=row, column=2, sticky="w", pady=2)
-        sb_water = ttk.Spinbox(grid, from_=0.0, to=100.0, increment=0.5, textvariable=self.cap_water_pct_var, width=11, command=self.recalculate_capacity)
-        sb_water.grid(row=row, column=3, padx=4, pady=2)
+        ttk.Label(grid, text="Mass (g):", font=("Segoe UI", 8, "bold")).grid(row=0, column=2, sticky="w", pady=1)
+        sb_mass = ttk.Spinbox(grid, from_=0.0001, to=100.0, increment=0.01, textvariable=self.cap_mass_var, width=8)
+        sb_mass.grid(row=0, column=3, padx=2, pady=1)
+        sb_mass.bind("<KeyRelease>", lambda e: self._on_mass_g_change())
+
+        # Row 1: Water Loss % and Dry Mass (g)
+        ttk.Label(grid, text="Water Loss (%):", font=("Segoe UI", 8)).grid(row=1, column=0, sticky="w", pady=1)
+        sb_water = ttk.Spinbox(grid, from_=0.0, to=100.0, increment=0.5, textvariable=self.cap_water_pct_var, width=8, command=self.recalculate_capacity)
+        sb_water.grid(row=1, column=1, padx=2, pady=1)
         sb_water.bind("<KeyRelease>", lambda e: self.recalculate_capacity())
-        sb_water.bind("<Return>", lambda e: self.recalculate_capacity())
-        sb_water.bind("<FocusOut>", lambda e: self.recalculate_capacity())
-        row += 1
 
-        ttk.Label(grid, text="Total Flow (mL/min):").grid(row=row, column=0, sticky="w", pady=2)
-        sb_flow = ttk.Spinbox(grid, from_=1.0, to=5000.0, increment=5.0, textvariable=self.cap_flow_total_var, width=11, command=self.recalculate_capacity)
-        sb_flow.grid(row=row, column=1, padx=4, pady=2)
+        ttk.Label(grid, text="Dry Mass (g):", font=("Segoe UI", 8)).grid(row=1, column=2, sticky="w", pady=1)
+        self.lbl_param_dry_mass = ttk.Label(grid, text="0.4873 g", font=("Segoe UI", 8, "bold"), foreground="#1d3557")
+        self.lbl_param_dry_mass.grid(row=1, column=3, sticky="w", padx=2, pady=1)
+
+        # Row 2: CO2 Flow (mL/min) and N2 Flow (mL/min)
+        ttk.Label(grid, text="CO₂ Flow (mL/min):", font=("Segoe UI", 8)).grid(row=2, column=0, sticky="w", pady=1)
+        sb_co2 = ttk.Spinbox(grid, from_=0.0, to=1000.0, increment=1.0, textvariable=self.cap_flow_co2_var, width=8)
+        sb_co2.grid(row=2, column=1, padx=2, pady=1)
+        sb_co2.bind("<KeyRelease>", lambda e: self._on_flow_parts_change())
+
+        ttk.Label(grid, text="N₂ Flow (mL/min):", font=("Segoe UI", 8)).grid(row=2, column=2, sticky="w", pady=1)
+        sb_n2 = ttk.Spinbox(grid, from_=0.0, to=5000.0, increment=5.0, textvariable=self.cap_flow_n2_var, width=8)
+        sb_n2.grid(row=2, column=3, padx=2, pady=1)
+        sb_n2.bind("<KeyRelease>", lambda e: self._on_flow_parts_change())
+
+        # Row 3: Total Flow and C0 fraction
+        ttk.Label(grid, text="Total Flow (mL/min):", font=("Segoe UI", 8)).grid(row=3, column=0, sticky="w", pady=1)
+        sb_flow = ttk.Spinbox(grid, from_=1.0, to=6000.0, increment=5.0, textvariable=self.cap_flow_total_var, width=8, command=self.recalculate_capacity)
+        sb_flow.grid(row=3, column=1, padx=2, pady=1)
         sb_flow.bind("<KeyRelease>", lambda e: self.recalculate_capacity())
-        sb_flow.bind("<Return>", lambda e: self.recalculate_capacity())
-        sb_flow.bind("<FocusOut>", lambda e: self.recalculate_capacity())
 
-        ttk.Label(grid, text="Temp (°C):").grid(row=row, column=2, sticky="w", pady=2)
-        sb_temp = ttk.Spinbox(grid, from_=0.0, to=500.0, increment=1.0, textvariable=self.cap_temp_var, width=11, command=self.recalculate_capacity)
-        sb_temp.grid(row=row, column=3, padx=4, pady=2)
-        sb_temp.bind("<KeyRelease>", lambda e: self.recalculate_capacity())
-        sb_temp.bind("<Return>", lambda e: self.recalculate_capacity())
-        sb_temp.bind("<FocusOut>", lambda e: self.recalculate_capacity())
-        row += 1
-
-        ttk.Label(grid, text="C₀ Fraction (0.15=15%):").grid(row=row, column=0, sticky="w", pady=2)
-        sb_c0 = ttk.Spinbox(grid, from_=0.001, to=1.0, increment=0.01, textvariable=self.cap_c0_var, width=11, command=self.recalculate_capacity)
-        sb_c0.grid(row=row, column=1, padx=4, pady=2)
+        ttk.Label(grid, text="C₀ (Feed Fract):", font=("Segoe UI", 8)).grid(row=3, column=2, sticky="w", pady=1)
+        sb_c0 = ttk.Spinbox(grid, from_=0.001, to=1.0, increment=0.01, textvariable=self.cap_c0_var, width=8, command=self.recalculate_capacity)
+        sb_c0.grid(row=3, column=3, padx=2, pady=1)
         sb_c0.bind("<KeyRelease>", lambda e: self.recalculate_capacity())
-        sb_c0.bind("<Return>", lambda e: self.recalculate_capacity())
-        sb_c0.bind("<FocusOut>", lambda e: self.recalculate_capacity())
 
-        ttk.Label(grid, text="Blank Ads Ref (mmol/g):").grid(row=row, column=2, sticky="w", pady=2)
-        sb_ref = ttk.Spinbox(grid, from_=0.0, to=10.0, increment=0.01, textvariable=self.cap_ref_ads_var, width=11, command=self.recalculate_capacity)
-        sb_ref.grid(row=row, column=3, padx=4, pady=2)
-        sb_ref.bind("<KeyRelease>", lambda e: self.recalculate_capacity())
-        sb_ref.bind("<Return>", lambda e: self.recalculate_capacity())
-        sb_ref.bind("<FocusOut>", lambda e: self.recalculate_capacity())
+        # Row 4: Temp T2 and Ref Temp T1
+        ttk.Label(grid, text="Temp T₂ (°C):", font=("Segoe UI", 8)).grid(row=4, column=0, sticky="w", pady=1)
+        sb_temp = ttk.Spinbox(grid, from_=0.0, to=500.0, increment=1.0, textvariable=self.cap_temp_var, width=8, command=self.recalculate_capacity)
+        sb_temp.grid(row=4, column=1, padx=2, pady=1)
+        sb_temp.bind("<KeyRelease>", lambda e: self.recalculate_capacity())
 
-        # Results Display Card
-        res_frame = ttk.LabelFrame(scroll_c, text=" CO₂ Capacity Results (q) — Live Recalculation ", padding=8)
-        res_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 6))
+        ttk.Label(grid, text="Ref T₁ (°C):", font=("Segoe UI", 8)).grid(row=4, column=2, sticky="w", pady=1)
+        sb_t1 = ttk.Spinbox(grid, from_=0.0, to=100.0, increment=1.0, textvariable=self.cap_temp_ref_var, width=8, command=self.recalculate_capacity)
+        sb_t1.grid(row=4, column=3, padx=2, pady=1)
+        sb_t1.bind("<KeyRelease>", lambda e: self.recalculate_capacity())
 
-        self.lbl_q_ads = ttk.Label(res_frame, text="Net Adsorption (q_net):   --- mmol/g", font=("Segoe UI", 10, "bold"), foreground="#d90429")
-        self.lbl_q_ads.pack(anchor="w", pady=3)
+        # Row 5: Vm,25 and Vm,exp
+        ttk.Label(grid, text="Vₘ,25 (mL/mol):", font=("Segoe UI", 8)).grid(row=5, column=0, sticky="w", pady=1)
+        sb_vm = ttk.Spinbox(grid, from_=1000.0, to=50000.0, increment=50.0, textvariable=self.cap_vm25_var, width=8, command=self.recalculate_capacity)
+        sb_vm.grid(row=5, column=1, padx=2, pady=1)
+        sb_vm.bind("<KeyRelease>", lambda e: self.recalculate_capacity())
 
-        self.lbl_q_des = ttk.Label(res_frame, text="Net Desorption (q_net):   --- mmol/g", font=("Segoe UI", 10, "bold"), foreground="#7209b7")
-        self.lbl_q_des.pack(anchor="w", pady=3)
+        ttk.Label(grid, text="Vₘ,exp (mL/mol):", font=("Segoe UI", 8)).grid(row=5, column=2, sticky="w", pady=1)
+        self.lbl_param_vm_exp = ttk.Label(grid, text="24382.9", font=("Segoe UI", 8), foreground="#457b9d")
+        self.lbl_param_vm_exp.grid(row=5, column=3, sticky="w", padx=2, pady=1)
 
-        self.lbl_recovery = ttk.Label(res_frame, text="Recovery Ratio:           --- %", font=("Segoe UI", 10, "bold"), foreground="#2a9d8f")
-        self.lbl_recovery.pack(anchor="w", pady=3)
+        # Row 6: Blank References
+        ttk.Label(grid, text="Blank Ads (mmol/g):", font=("Segoe UI", 8)).grid(row=6, column=0, sticky="w", pady=1)
+        sb_ref_a = ttk.Spinbox(grid, from_=0.0, to=10.0, increment=0.01, textvariable=self.cap_ref_ads_var, width=8, command=self.recalculate_capacity)
+        sb_ref_a.grid(row=6, column=1, padx=2, pady=1)
+        sb_ref_a.bind("<KeyRelease>", lambda e: self.recalculate_capacity())
 
-        self.lbl_details = ttk.Label(res_frame, text="Vm_exp: - | k_factor: - | Active Mass: -", font=("Segoe UI", 8))
-        self.lbl_details.pack(anchor="w", pady=(8, 0))
+        ttk.Label(grid, text="Blank Des (mmol/g):", font=("Segoe UI", 8)).grid(row=6, column=2, sticky="w", pady=1)
+        sb_ref_d = ttk.Spinbox(grid, from_=0.0, to=10.0, increment=0.01, textvariable=self.cap_ref_des_var, width=8, command=self.recalculate_capacity)
+        sb_ref_d.grid(row=6, column=3, padx=2, pady=1)
+        sb_ref_d.bind("<KeyRelease>", lambda e: self.recalculate_capacity())
 
-        # Save to sample button
+        # Row 7: k Calculation Mode Selector (Radiobuttons)
+        mode_f = ttk.LabelFrame(scroll_c, text=" k Factor & Baseline Calculation Mode ", padding=4)
+        mode_f.pack(fill=tk.X, pady=(0, 4))
+        
+        ttk.Radiobutton(mode_f, text="1er Punto de Adsorción (Ciclo a Ciclo)", variable=self.cap_k_mode_var, value="ads_first_point", command=self.recalculate_capacity).pack(anchor="w")
+        ttk.Radiobutton(mode_f, text="Región Meseta 'Baseline Signal'", variable=self.cap_k_mode_var, value="baseline_plateau", command=self.recalculate_capacity).pack(anchor="w")
+        ttk.Radiobutton(mode_f, text="Promedio Global (Modo Excel clásico)", variable=self.cap_k_mode_var, value="global_average", command=self.recalculate_capacity).pack(anchor="w")
+
+        # 2. Analytical Breakdown Table (Matching Excel analytical model)
+        table_frame = ttk.LabelFrame(scroll_c, text=" Analytical Breakdown (Excel Model) ", padding=4)
+        table_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 4))
+
+        bd_cols = ("step", "origin_area", "abs_area", "s_base", "k_factor", "n_mol", "n_mmol", "q_100", "q_dry")
+        self.tree_breakdown = ttk.Treeview(table_frame, columns=bd_cols, show="headings", height=6)
+        self.tree_breakdown.heading("step", text="Step")
+        self.tree_breakdown.heading("origin_area", text="Origin Area")
+        self.tree_breakdown.heading("abs_area", text="|A| (A·min)")
+        self.tree_breakdown.heading("s_base", text="S_base (A)")
+        self.tree_breakdown.heading("k_factor", text="k (A⁻¹)")
+        self.tree_breakdown.heading("n_mol", text="nCO₂ (mol)")
+        self.tree_breakdown.heading("n_mmol", text="nCO₂ (mmol)")
+        self.tree_breakdown.heading("q_100", text="q (100% Mass)")
+        self.tree_breakdown.heading("q_dry", text="q (Dry Mass)")
+
+        self.tree_breakdown.column("step", width=50, anchor="w")
+        self.tree_breakdown.column("origin_area", width=78, anchor="e")
+        self.tree_breakdown.column("abs_area", width=78, anchor="e")
+        self.tree_breakdown.column("s_base", width=72, anchor="e")
+        self.tree_breakdown.column("k_factor", width=70, anchor="e")
+        self.tree_breakdown.column("n_mol", width=68, anchor="e")
+        self.tree_breakdown.column("n_mmol", width=64, anchor="e")
+        self.tree_breakdown.column("q_100", width=68, anchor="e")
+        self.tree_breakdown.column("q_dry", width=68, anchor="e")
+
+        sb_y = ttk.Scrollbar(table_frame, orient=tk.VERTICAL, command=self.tree_breakdown.yview)
+        self.tree_breakdown.configure(yscrollcommand=sb_y.set)
+        self.tree_breakdown.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        sb_y.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # 3. Results Display Card (Average Recalculation)
+        res_frame = ttk.LabelFrame(scroll_c, text=" CO₂ Capacity Results (q) — Summary Averages ", padding=6)
+        res_frame.pack(fill=tk.X, pady=(0, 4))
+
+        self.lbl_q_ads = ttk.Label(res_frame, text="Net Adsorption (q_net):   --- mmol/g", font=("Segoe UI", 9, "bold"), foreground="#d90429")
+        self.lbl_q_ads.pack(anchor="w", pady=1)
+
+        self.lbl_q_des = ttk.Label(res_frame, text="Net Desorption (q_net):   --- mmol/g", font=("Segoe UI", 9, "bold"), foreground="#7209b7")
+        self.lbl_q_des.pack(anchor="w", pady=1)
+
+        self.lbl_recovery = ttk.Label(res_frame, text="Recovery Ratio:           --- %", font=("Segoe UI", 9, "bold"), foreground="#2a9d8f")
+        self.lbl_recovery.pack(anchor="w", pady=1)
+
+        self.lbl_details = ttk.Label(res_frame, text="Active Mass: - | Vm: - | k: - | S_baseline: -", font=("Segoe UI", 8))
+        self.lbl_details.pack(anchor="w", pady=(3, 0))
+
+        # 4. Save to sample button
         btn_save_res = ttk.Button(scroll_c, text="💾 SAVE ANALYSIS TO SAMPLE", command=self.on_save_analysis_to_sample)
-        btn_save_res.pack(fill=tk.X, pady=(4, 0))
+        btn_save_res.pack(fill=tk.X, pady=(2, 0))
 
     # ==================== TAB 4: REPORT ====================
 
@@ -496,6 +619,9 @@ class MassSpecToolView(ttk.Frame):
                 elif b_mode == "avg_ads_baseline":
                     b_val = getattr(self, "current_avg_baseline", y1)
                     baseline = np.full_like(sub_y, b_val)
+                elif b_mode == "mean_signal":
+                    mean_val = float(np.mean(sub_y))
+                    baseline = np.full_like(sub_y, mean_val)
                 else:
                     baseline = np.zeros_like(sub_y)
 
@@ -508,10 +634,16 @@ class MassSpecToolView(ttk.Frame):
 
                 # ROI vertical span box
                 self.ax.axvspan(x_s, x_e, color=f_color, alpha=0.25 if not is_sel else 0.4, zorder=1)
-                # Fill between curve and baseline
-                self.ax.fill_between(sub_x, baseline, sub_y, color="#6c757d", alpha=0.35, zorder=2)
-                # Baseline plot
-                self.ax.plot(sub_x, baseline, color="#d90429" if is_sel else "#457b9d", linestyle="-", linewidth=1.5, zorder=3)
+                
+                if b_mode == "mean_signal":
+                    # For baseline signal plateau, draw horizontal dashed line
+                    self.ax.plot(sub_x, baseline, color="#0077b6" if not is_sel else "#d90429", linestyle="--", linewidth=2.0, zorder=3)
+                else:
+                    # Fill between curve and baseline
+                    self.ax.fill_between(sub_x, baseline, sub_y, color="#6c757d", alpha=0.35, zorder=2)
+                    # Baseline plot
+                    self.ax.plot(sub_x, baseline, color="#d90429" if is_sel else "#457b9d", linestyle="-", linewidth=1.5, zorder=3)
+                
                 # Vertical boundary lines
                 self.ax.axvline(x_s, color=b_color, linestyle="-", linewidth=2.0 if is_sel else 1.2, zorder=4)
                 self.ax.axvline(x_e, color=b_color, linestyle="-", linewidth=2.0 if is_sel else 1.2, zorder=4)
@@ -544,11 +676,74 @@ class MassSpecToolView(ttk.Frame):
                 return col
         return "'0/6'"
 
+    def add_baseline_box(self, s_min=None, e_min=None, name=None):
+        self._add_box_with_preset(s_min, e_min, "baseline_signal", name)
+
     def add_adsorption_box(self, s_min=None, e_min=None, name=None):
         self._add_box_with_preset(s_min, e_min, "adsorption", name)
 
     def add_desorption_box(self, s_min=None, e_min=None, name=None):
         self._add_box_with_preset(s_min, e_min, "desorption", name)
+
+    def use_ads_first_point_baseline(self):
+        self.cap_k_mode_var.set("ads_first_point")
+        self.recalculate_and_plot()
+        self.recalculate_capacity()
+        ads_count = sum(1 for r in self.ranges_list if r.get("phase") == "adsorption")
+        if ads_count > 0:
+            messagebox.showinfo(
+                "Baseline Synchronized", 
+                f"✅ Se sincronizó el baseline de cada ciclo usando el 1er punto de cada Adsorción ({ads_count} ciclos).\n\n"
+                f"Cada ciclo aplica automáticamente su propio valor de baseline (S_baseline) tanto a la Adsorción como a la Desorción correspondiente."
+            )
+        else:
+            messagebox.showwarning(
+                "No Adsorption ROIs", 
+                "No se encontraron regiones de Adsorción definidas. Agrega regiones o pulsa '⚡ AUTO-DETECT CYCLES' en la pestaña 'Regions & Integration'."
+            )
+
+    def _on_mass_mg_change(self, *args):
+        if self._updating_mass:
+            return
+        try:
+            self._updating_mass = True
+            mg = float(self.cap_mass_mg_var.get())
+            self.cap_mass_var.set(round(mg / 1000.0, 5))
+        except Exception:
+            pass
+        finally:
+            self._updating_mass = False
+        self.recalculate_capacity()
+
+    def _on_mass_g_change(self, *args):
+        if self._updating_mass:
+            return
+        try:
+            self._updating_mass = True
+            g = float(self.cap_mass_var.get())
+            self.cap_mass_mg_var.set(round(g * 1000.0, 2))
+        except Exception:
+            pass
+        finally:
+            self._updating_mass = False
+        self.recalculate_capacity()
+
+    def _on_flow_parts_change(self, *args):
+        if self._updating_flow:
+            return
+        try:
+            self._updating_flow = True
+            f_co2 = float(self.cap_flow_co2_var.get())
+            f_n2 = float(self.cap_flow_n2_var.get())
+            f_tot = f_co2 + f_n2
+            self.cap_flow_total_var.set(round(f_tot, 2))
+            if f_tot > 0:
+                self.cap_c0_var.set(round(f_co2 / f_tot, 4))
+        except Exception:
+            pass
+        finally:
+            self._updating_flow = False
+        self.recalculate_capacity()
 
     def _add_box_with_preset(self, s_min, e_min, preset_key, name=None):
         preset = ROI_PRESETS[preset_key]
@@ -576,7 +771,20 @@ class MassSpecToolView(ttk.Frame):
         if self.current_df is None:
             return
         col = self.get_selected_integ_col()
-        detected = auto_detect_cycle_pairs(self.current_df, target_col=col)
+        try:
+            dt_ads = float(self.autodetect_dt_ads_var.get())
+            dt_des = float(self.autodetect_dt_des_var.get())
+            dt_base = float(self.autodetect_dt_base_var.get())
+        except Exception:
+            dt_ads, dt_des, dt_base = 22.0, 8.0, 2.0
+
+        detected = auto_detect_cycle_pairs(
+            self.current_df,
+            target_col=col,
+            dt_ads=dt_ads,
+            dt_des=dt_des,
+            dt_base=dt_base
+        )
         if not detected:
             messagebox.showinfo("Auto-Detect", "No distinct cycle transitions detected. You can add boxes manually.")
             return
@@ -597,6 +805,14 @@ class MassSpecToolView(ttk.Frame):
             del self.ranges_list[self.selected_range_idx]
             self.selected_range_idx = None
             self.recalculate_and_plot()
+
+    def on_confirm_integration_and_proceed(self):
+        if not self.ranges_list:
+            messagebox.showwarning("No ROIs", "No integration regions defined yet. Add regions or click Auto-Detect.")
+            return
+        self.recalculate_and_plot()
+        self.recalculate_capacity()
+        self.notebook.select(2)
 
     def recalculate_and_plot(self):
         if self.current_df is None:
@@ -619,6 +835,10 @@ class MassSpecToolView(ttk.Frame):
             r["duration"] = res["duration"]
             r["fwhm_val"] = res["fwhm"]
             r["baseline_y0"] = res["baseline_y0"]
+            r["y1"] = res["y1"]
+            r["y2"] = res["y2"]
+            if "mean_signal" in res:
+                r["mean_signal"] = res["mean_signal"]
 
         # Refresh Treeview
         for item in self.tree_ranges.get_children():
@@ -627,14 +847,21 @@ class MassSpecToolView(ttk.Frame):
         for idx, r in enumerate(self.ranges_list):
             t_name = r.get("type_name", f"ROI_{idx+1}")
             ar = r.get("calculated_area", 0.0)
+            if r.get("phase") == "baseline_signal" or r.get("baseline") == "mean_signal":
+                mean_sig = r.get("mean_signal", r.get("baseline_y0", 0.0))
+                area_str = f"Sig: {mean_sig:.3e}"
+                fwhm_str = "-"
+            else:
+                area_str = f"{ar:.4e}"
+                fwhm_str = f"{r.get('fwhm_val', 0.0):.3f}"
             item_id = self.tree_ranges.insert("", tk.END, values=(
                 r["id"],
                 t_name,
                 f"{r['start_min']:.2f}",
                 f"{r['end_min']:.2f}",
                 f"{r['duration']:.2f}",
-                f"{ar:.4e}",
-                f"{r.get('fwhm_val', 0.0):.3f}"
+                area_str,
+                fwhm_str
             ))
             if idx == self.selected_range_idx:
                 self.tree_ranges.selection_set(item_id)
@@ -779,18 +1006,6 @@ class MassSpecToolView(ttk.Frame):
     # ==================== CO2 CAPACITY CALCULATION ====================
 
     def recalculate_capacity(self):
-        ads_areas = [abs(r.get("calculated_area", 0.0)) for r in self.ranges_list if r.get("phase") == "adsorption"]
-        des_areas = [abs(r.get("calculated_area", 0.0)) for r in self.ranges_list if r.get("phase") == "desorption"]
-
-        area_ads = ads_areas[0] if ads_areas else self.cap_area_ads_var.get()
-        area_des = des_areas[0] if des_areas else self.cap_area_des_var.get()
-
-        s_baseline = self.cap_s_baseline_var.get()
-        if self.ranges_list:
-            b0 = self.ranges_list[0].get("baseline_y0", 0.0)
-            if b0 > 1e-12:
-                s_baseline = b0
-
         def _safe_float(var, default=0.0):
             try:
                 v = var.get()
@@ -801,7 +1016,7 @@ class MassSpecToolView(ttk.Frame):
                 except Exception:
                     return default
 
-        m_tot = _safe_float(self.cap_mass_var, 0.5055)
+        m_tot = _safe_float(self.cap_mass_var, 0.62)
         if m_tot <= 0.0:
             return
 
@@ -809,33 +1024,108 @@ class MassSpecToolView(ttk.Frame):
         c0_val = _safe_float(self.cap_c0_var, 0.15)
         flow_val = _safe_float(self.cap_flow_total_var, 100.0)
         temp_val = _safe_float(self.cap_temp_var, 24.0)
-        ref_a = _safe_float(self.cap_ref_ads_var, 0.23)
+        ref_a = _safe_float(self.cap_ref_ads_var, 0.0)
         ref_d = _safe_float(self.cap_ref_des_var, 0.0)
+        s_base_in = _safe_float(self.cap_s_baseline_var, 0.0)
 
         try:
-            res = compute_co2_capacity(
+            res = compute_co2_capacity_breakdown(
+                ranges_list=self.ranges_list,
                 mass_total_g=m_tot,
                 water_loss_pct=w_pct,
                 c0=c0_val,
                 flow_total_ml_min=flow_val,
                 temp_c=temp_val,
-                s_baseline_a=float(s_baseline),
-                area_ads_a_min=float(area_ads),
-                area_des_a_min=float(area_des),
+                temp_ref_c=_safe_float(self.cap_temp_ref_var, 25.0),
+                vm_ref=_safe_float(self.cap_vm25_var, 24465.0),
+                s_baseline_a=s_base_in if s_base_in > 1e-12 else None,
+                k_mode=self.cap_k_mode_var.get(),
                 ref_ads_mmol_g=ref_a,
                 ref_des_mmol_g=ref_d
             )
-            self.last_capacity_results = res
 
-            q_ads = res["adsorption"]["q_net_mmol_g"]
-            q_des = res["desorption"]["q_net_mmol_g"]
-            rec = res["recovery_pct"]
+            consts = res["constants"]
+            avgs = res["averages"]
+            ads_stat = avgs["ads"]
+            des_stat = avgs["des"]
 
-            self.lbl_q_ads.config(text=f"Net Adsorption (q_net):   {q_ads:.4f} mmol/g")
-            self.lbl_q_des.config(text=f"Net Desorption (q_net):   {q_des:.4f} mmol/g")
+            # Store for Database / JSON logbook compatibility
+            self.last_capacity_results = {
+                "temp_c": consts["temp_c"],
+                "Vm_exp": consts["Vm_exp"],
+                "n_total_mol_min": consts["n_total_mol_min"],
+                "k_factor": consts["k_factor"],
+                "mass_total_g": consts["mass_total_g"],
+                "water_loss_pct": consts["water_loss_pct"],
+                "mass_active_g": consts["mass_active_g"],
+                "c0": consts["c0"],
+                "flow_total_ml_min": consts["flow_total_ml_min"],
+                "s_baseline_a": consts["s_baseline_a"],
+                "ref_ads_mmol_g": consts["ref_ads_mmol_g"],
+                "ref_des_mmol_g": consts["ref_des_mmol_g"],
+                "adsorption": {
+                    "area_a_min": ads_stat["abs_area_mean"],
+                    "n_mmol": round(ads_stat["n_mmol_mean"], 4),
+                    "q_raw_mmol_g": round(ads_stat["q_100_mean"], 4),
+                    "q_active_mmol_g": round(ads_stat["q_dry_mean"], 4),
+                    "q_net_mmol_g": round(ads_stat["q_net_mean"], 4)
+                },
+                "desorption": {
+                    "area_a_min": des_stat["abs_area_mean"],
+                    "n_mmol": round(des_stat["n_mmol_mean"], 4),
+                    "q_raw_mmol_g": round(des_stat["q_100_mean"], 4),
+                    "q_active_mmol_g": round(des_stat["q_dry_mean"], 4),
+                    "q_net_mmol_g": round(des_stat["q_net_mean"], 4)
+                },
+                "recovery_pct": avgs["recovery_pct"],
+                "constants": consts,
+                "rows": res["rows"],
+                "averages": avgs
+            }
+
+            # Update dry mass and Vm labels if present
+            if hasattr(self, "lbl_param_dry_mass"):
+                self.lbl_param_dry_mass.config(text=f"{consts['mass_active_g']:.4f} g")
+            if hasattr(self, "lbl_param_vm_exp"):
+                self.lbl_param_vm_exp.config(text=f"{consts['Vm_exp']:.1f}")
+
+            # Update Treeview breakdown table
+            if hasattr(self, "tree_breakdown"):
+                for item in self.tree_breakdown.get_children():
+                    self.tree_breakdown.delete(item)
+                for row in res["rows"]:
+                    self.tree_breakdown.insert("", tk.END, values=(
+                        row["type_name"],
+                        f"{row['origin_area']:.4e}",
+                        f"{row['abs_area']:.4e}",
+                        f"{row['s_baseline']:.4e}",
+                        f"{row['k_factor']:.3e}",
+                        f"{row['n_mol']:.4e}",
+                        f"{row['n_mmol']:.4f}",
+                        f"{row['q_100']:.4f}",
+                        f"{row['q_dry']:.4f}"
+                    ))
+
+            # Update Summary Labels
+            ads_q_net = ads_stat["q_net_mean"]
+            ads_q_dry = ads_stat["q_dry_mean"]
+            ads_q_100 = ads_stat["q_100_mean"]
+
+            des_q_net = des_stat["q_net_mean"]
+            des_q_dry = des_stat["q_dry_mean"]
+            des_q_100 = des_stat["q_100_mean"]
+
+            rec = avgs["recovery_pct"]
+
+            self.lbl_q_ads.config(
+                text=f"Net Adsorption (q_net):   {ads_q_net:.4f} mmol/g  (Dry: {ads_q_dry:.4f} | 100%: {ads_q_100:.4f})"
+            )
+            self.lbl_q_des.config(
+                text=f"Net Desorption (q_net):   {des_q_net:.4f} mmol/g  (Dry: {des_q_dry:.4f} | 100%: {des_q_100:.4f})"
+            )
             self.lbl_recovery.config(text=f"Recovery Ratio:           {rec:.2f} %")
             self.lbl_details.config(
-                text=f"Active Mass: {res['mass_active_g']} g (Total: {m_tot:.4f}g, Loss: {w_pct:.1f}%) | Vm: {res['Vm_exp']} mL/mol | k: {res['k_factor']:.3e} A⁻¹"
+                text=f"Active Mass: {consts['mass_active_g']} g (Total: {m_tot:.4f}g, Loss: {w_pct:.1f}%) | Vm: {consts['Vm_exp']} mL/mol\nMode: {consts.get('k_mode', 'ads_first_point')} | Global k: {consts['k_factor']:.3e} A⁻¹ | S_baseline: {consts['s_baseline_a']:.4e} A"
             )
 
             # Auto-update active sample metadata if present
@@ -843,7 +1133,7 @@ class MassSpecToolView(ttk.Frame):
                 s_data = self.vault.logbook[self.current_sample_id]
                 s_data["mass_total_g"] = m_tot
                 s_data["water_loss_pct"] = w_pct
-                s_data["mass_active_g"] = res["mass_active_g"]
+                s_data["mass_active_g"] = consts["mass_active_g"]
 
             # Keep report preview in sync
             self.update_report_preview()
@@ -899,40 +1189,59 @@ class MassSpecToolView(ttk.Frame):
     def update_report_preview(self):
         meta = self.vault.logbook.get(self.current_sample_id, {}) if self.current_sample_id else {}
         cap = self.last_capacity_results
+        consts = cap.get("constants", {})
+        avgs = cap.get("averages", {})
+        rows = cap.get("rows", [])
 
         lines = [
-            "=" * 72,
+            "=" * 78,
             f"   MASS SPECTROMETRY CO2 ADSORPTION / DESORPTION REPORT",
-            "=" * 72,
+            "=" * 78,
             f"Sample ID:                {self.current_sample_id or '-'}",
             f"Material Name:            {meta.get('material_name', '-')}",
             f"Operator:                 {meta.get('operator', '-')}",
             f"Measurement Date:         {self.current_file_info.get('date', '-')}",
             f"Source File:              {os.path.basename(self.current_fpath) if self.current_fpath else '-'}",
-            "-" * 72,
+            "-" * 78,
             "1. EXPERIMENTAL PARAMETERS:",
-            f"  - Total Initial Mass:   {cap.get('mass_total_g', 0.0):.4f} g",
-            f"  - Water / Binder Loss:  {cap.get('water_loss_pct', 0.0):.1f} %",
-            f"  - Dry Active Mass:      {cap.get('mass_active_g', 0.0):.4f} g",
-            f"  - Temperature:          {cap.get('temp_c', 24.0):.1f} °C (Vm={cap.get('Vm_exp', 0.0)} mL/mol)",
-            f"  - Total Flow Rate:      {cap.get('flow_total_ml_min', 100.0):.1f} mL/min",
-            f"  - Feed Fraction C0:     {cap.get('c0', 0.15):.2f}",
-            f"  - Blank Ads Reference:  {cap.get('ref_ads_mmol_g', 0.23):.4f} mmol/g",
-            "-" * 72,
-            "2. NET CO2 CAPACITIES (q):",
-            f"  - Net Adsorption:       {cap.get('adsorption', {}).get('q_net_mmol_g', 0.0):.4f} mmol/g  ({cap.get('adsorption', {}).get('n_mmol', 0.0):.4f} mmol)",
-            f"  - Net Desorption:       {cap.get('desorption', {}).get('q_net_mmol_g', 0.0):.4f} mmol/g  ({cap.get('desorption', {}).get('n_mmol', 0.0):.4f} mmol)",
-            f"  - Recovery Ratio:       {cap.get('recovery_pct', 0.0):.2f} %",
-            "-" * 72,
-            "3. INTEGRATED SIMPSON ROI REGIONS:"
+            f"  - Total Initial Mass:   {consts.get('mass_total_g', cap.get('mass_total_g', 0.0)):.4f} g",
+            f"  - Water / Binder Loss:  {consts.get('water_loss_pct', cap.get('water_loss_pct', 0.0)):.1f} %",
+            f"  - Dry Active Mass:      {consts.get('mass_active_g', cap.get('mass_active_g', 0.0)):.4f} g",
+            f"  - Temperature:          {consts.get('temp_c', cap.get('temp_c', 24.0)):.1f} °C (Vm={consts.get('Vm_exp', cap.get('Vm_exp', 0.0))} mL/mol)",
+            f"  - Total Flow Rate:      {consts.get('flow_total_ml_min', cap.get('flow_total_ml_min', 100.0)):.1f} mL/min",
+            f"  - Feed Fraction C0:     {consts.get('c0', cap.get('c0', 0.15)):.2f}",
+            f"  - Baseline S_baseline:  {consts.get('s_baseline_a', cap.get('s_baseline_a', 0.0)):.4e} A (k={consts.get('k_factor', cap.get('k_factor', 0.0)):.3e} A⁻¹)",
+            f"  - Blank Ads Reference:  {consts.get('ref_ads_mmol_g', cap.get('ref_ads_mmol_g', 0.0)):.4f} mmol/g",
+            f"  - Blank Des Reference:  {consts.get('ref_des_mmol_g', cap.get('ref_des_mmol_g', 0.0)):.4f} mmol/g",
+            "-" * 78,
+            "2. SUMMARY OF AVERAGE CO2 CAPACITIES (q):",
+            f"  - Net Adsorption (avg): {avgs.get('ads', {}).get('q_net_mean', cap.get('adsorption', {}).get('q_net_mmol_g', 0.0)):.4f} mmol/g  (Dry: {avgs.get('ads', {}).get('q_dry_mean', cap.get('adsorption', {}).get('q_active_mmol_g', 0.0)):.4f} | 100%: {avgs.get('ads', {}).get('q_100_mean', cap.get('adsorption', {}).get('q_raw_mmol_g', 0.0)):.4f})",
+            f"  - Net Desorption (avg): {avgs.get('des', {}).get('q_net_mean', cap.get('desorption', {}).get('q_net_mmol_g', 0.0)):.4f} mmol/g  (Dry: {avgs.get('des', {}).get('q_dry_mean', cap.get('desorption', {}).get('q_active_mmol_g', 0.0)):.4f} | 100%: {avgs.get('des', {}).get('q_100_mean', cap.get('desorption', {}).get('q_raw_mmol_g', 0.0)):.4f})",
+            f"  - Desorption Recovery:  {avgs.get('recovery_pct', cap.get('recovery_pct', 0.0)):.2f} %",
+            "-" * 88,
+            "3. CYCLE-BY-CYCLE BREAKDOWN (EXCEL ANALYTICAL MODEL):",
+            f"  {'Step':<8} {'Origin Area':<13} {'|A| (A·min)':<13} {'S_base (A)':<12} {'k (A⁻¹)':<11} {'nCO2 (mmol)':<12} {'q(100%)':<10} {'q(Dry)':<10}"
         ]
+
+        if rows:
+            for r in rows:
+                lines.append(
+                    f"  {r['type_name']:<8} {r['origin_area']:<13.4e} {r['abs_area']:<13.4e} {r['s_baseline']:<12.4e} {r['k_factor']:<11.3e} {r['n_mmol']:<12.4f} {r['q_100']:<10.4f} {r['q_dry']:<10.4f}"
+                )
+        else:
+            lines.append("  (No cycle breakdown computed yet)")
+
+        lines.extend([
+            "-" * 78,
+            "4. INTEGRATED SIMPSON ROI REGIONS:"
+        ])
 
         for r in self.ranges_list:
             lines.append(
-                f"  [{r.get('type_name')}] t={r['start_min']:.2f}-{r['end_min']:.2f} min (Δt={r.get('duration', 0.0):.2f}) | Area={r.get('calculated_area', 0.0):.4e} A·min | FWHM={r.get('fwhm_val', 0.0):.3f}"
+                f"  [{r.get('type_name')}] t={r['start_min']:.2f}-{r['end_min']:.2f} min (Δt={r.get('duration', 0.0):.2f}) | Area={r.get('calculated_area', 0.0):.4e} A·min | Base={r.get('baseline', 'straight_line')} | FWHM={r.get('fwhm_val', 0.0):.3f}"
             )
 
-        lines.append("=" * 72)
+        lines.append("=" * 78)
         txt = "\n".join(lines)
         self.report_text.delete("1.0", tk.END)
         self.report_text.insert("1.0", txt)
