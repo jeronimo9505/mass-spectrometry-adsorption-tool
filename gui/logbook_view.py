@@ -256,11 +256,13 @@ class LogbookView(ttk.Frame):
             chars = data.get("characterizations", {})
             TECH_BADGES = [
                 ("mass_spec", "🧪 MS"),
-                ("xrd", "🔬 XRD"),
-                ("bet", "📐 BET"),
+                ("thermal_profile", "🌡️ Therm"),
                 ("tga", "🔥 TGA"),
-                ("sem_tem", "🔍 SEM"),
                 ("rheology", "🌊 Rheo"),
+                ("tomography", "🧊 CT"),
+                ("sem_tem", "🔍 SEM"),
+                ("hg_porosimetry", "💧 MIP"),
+                ("bet", "📐 BET"),
                 ("documents", "📁 Docs"),
             ]
             t_badges = []
@@ -341,11 +343,13 @@ class LogbookView(ttk.Frame):
 
         TECH_SPECS = [
             ("mass_spec", "🧪 Mass Spec", "#1d3557", "#ffffff"),
-            ("xrd", "🔬 XRD", "#6a4c93", "#ffffff"),
-            ("bet", "📐 BET", "#00796b", "#ffffff"),
+            ("thermal_profile", "🌡️ Thermal Profile", "#d35400", "#ffffff"),
             ("tga", "🔥 TGA", "#c0392b", "#ffffff"),
-            ("sem_tem", "🔍 SEM / TEM", "#2e7d32", "#ffffff"),
             ("rheology", "🌊 Rheology", "#0277bd", "#ffffff"),
+            ("tomography", "🧊 Tomography", "#4a148c", "#ffffff"),
+            ("sem_tem", "🔍 SEM / TEM", "#2e7d32", "#ffffff"),
+            ("hg_porosimetry", "💧 Hg Porosimetry", "#00695c", "#ffffff"),
+            ("bet", "📐 BET", "#00796b", "#ffffff"),
             ("documents", "📁 Docs", "#455a64", "#ffffff"),
         ]
 

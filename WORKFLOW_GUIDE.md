@@ -7,7 +7,7 @@
 
 **Lab Vault** is a lightweight, desktop application designed for scientific laboratories working on gas adsorption materials (zeolite monoliths, MOFs, porous carbons, amine-functionalized adsorbents). It combines:
 1. **Pillar 1: Sample Logbook**: Centralized database of synthesized samples, composition, and physical properties.
-2. **Pillar 2: Multi-Characterization Hub**: Unified file repository for multiple analytical techniques per sample (Mass Spectrometry, XRD, BET surface area, Raman, TGA, and PDFs/photos).
+2. **Pillar 2: Multi-Characterization Hub**: Unified file repository for multiple analytical techniques per sample (Mass Spectrometry, TGA, Rheology, Computed Tomography, SEM/TEM, Mercury Porosimetry, BET, and Documents/Reports).
 3. **Pillar 3: Origin-Style Mass Spectrometry Analysis Tool**: Interactive tool with Simpson peak integration, mouse-draggable ROI boxes, and rigorous physical $CO_2$ adsorption/desorption capacity ($q$ in mmol/g) calculations.
 
 ### Launching the Application
@@ -57,20 +57,32 @@ When a sample is selected, the Hub displays an active sample banner with key par
    - Click **➕ Attach .asc File** to copy a raw measurement file into the sample vault.
    - Inspect existing files, their analysis status (`Pending` vs `Analyzed`), and calculated capacities ($q_{\text{ads}}$, $q_{\text{des}}$, recovery %).
    - Click **🚀 OPEN IN MASS SPECTROMETRY TOOL** to load the file and sample directly into the analysis engine.
-2. **🔬 X-Ray Diffraction (XRD)**:
-   - Attach pattern files (`.raw`, `.xy`, `.dat`, `.csv`).
-   - Write structural observations in the **Key Observations** box (e.g., crystalline phase purity, peak positions) and click **💾 Save Notes**.
-3. **📐 N₂ Physisorption / BET Surface Area**:
+2. **🔥 TGA Thermal Analysis**:
+   - Attach thermograms (`.xlsx`, `.csv`, `.txt`).
+   - Extract and record residual mass, onset degradation temperature, and DTG peak temperature ($T_{\text{max}}$).
+   - Generate dual-panel publication graphs (TGA & DTG) and export at 300 DPI.
+3. **🌊 Rheological Properties**:
+   - Attach flow curves, viscosity sweeps, and oscillatory shear graphs (`.png`, `.jpg`, `.csv`, `.xlsx`, `.rfd`).
+   - Record zero-shear viscosity ($\eta_0$), yield stress ($\tau_0$), storage modulus ($G'$), loss modulus ($G''$), and loss factor ($\tan \delta$).
+4. **🧊 Computed Tomography (micro-CT)**:
+   - Attach 3D cross-sectional reconstruction slices and volume datasets (`.tif`, `.tiff`, `.png`, `.jpg`, `.bmp`, `.vol`, `.vgi`, `.stl`).
+   - Quantitative morphometry: total 3D porosity (%), mean pore/throat diameter ($\mu m$), strut/wall thickness ($\mu m$), geometric tortuosity ($\tau$), and scanning voxel resolution ($\mu m/\text{voxel}$).
+5. **🔍 SEM / TEM Electron Microscopy**:
+   - Attach high-resolution micrographs and EDX elemental mapping files (`.tif`, `.tiff`, `.png`, `.jpg`, `.dm3`, `.dm4`).
+   - Interactive micrograph viewer with dynamic scaling and morphological metrics (primary particle size, macropore size, wall skeleton).
+6. **💧 Mercury Intrusion Porosimetry (MIP)**:
+   - Attach intrusion/extrusion curves and data (`.txt`, `.csv`, `.xlsx`, `.dat`, `.png`, `.pdf`).
+   - Quantitative MIP parameters: total intrusion volume ($cm^3/g$), median pore diameter ($Vol$ in $\mu m$), total MIP porosity (%), apparent skeletal density ($g/cm^3$), bulk density at filling ($g/cm^3$), and average pore diameter ($4V/A$ in $nm$).
+   - Record Washburn contact angle and surface tension parameters.
+7. **📐 N₂ Physisorption / BET Surface Area**:
    - Attach isotherm files (`.xls`, `.xlsx`, `.csv`).
    - Record key textural parameters:
      - **BET Specific Surface Area** ($S_{\text{BET}}$ in $m^2/g$)
      - **Total Pore Volume** ($cm^3/g$)
      - **Average Pore Diameter** ($nm$)
    - Click **💾 Save BET Parameters**.
-4. **💡 Raman Spectroscopy**:
-   - Attach spectra (`.txt`, `.csv`, `.spc`) and save band identification notes.
-5. **📁 Documents & Reports**:
-   - Attach monolith photos, scanning electron microscopy (SEM) images, calibration sheets, or summary PDFs.
+8. **📁 Documents & Reports**:
+   - Attach monolith photos, calibration sheets, or summary PDF reports.
    - Double-click or click **📂 Open File** to launch in the default Windows application.
 
 ---
@@ -147,10 +159,13 @@ data_vault/
         ├── mass_spec/
         │   ├── raw_data/       # Raw .asc files
         │   ├── analyses/       # Saved ROI boundaries & capacity results
-        │   └── reports/        # Textual & CSV reports
-        ├── xrd/                # XRD patterns & notes
+        ├── thermal_profile/    # Adsorption exotherm profiles (Vertical, Horizontal, Heatmap, Raw Data)
+        ├── tga/                # TGA thermograms & dual-panel plots
+        ├── rheology/           # Rheology curves & shear sweeps
+        ├── tomography/         # Micro-CT slices & 3D morphometry
+        ├── sem_tem/            # SEM/TEM micrographs & EDX spectra
+        ├── hg_porosimetry/     # Mercury intrusion porosimetry data
         ├── bet/                # BET isotherms & surface area values
-        ├── raman/              # Raman spectra
         └── documents/          # Supplementary PDFs, images, notes
 ```
 

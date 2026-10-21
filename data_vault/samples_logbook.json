@@ -15,7 +15,7 @@
     "notes": "Blank monolith without zeolite",
     "status": "Analyzed",
     "created_at": "2026-09-23 18:42:27",
-    "updated_at": "2026-10-21 17:48:31",
+    "updated_at": "2026-10-22 01:15:10",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -32,25 +32,30 @@
             "q_net_ads": 0.2433,
             "q_net_des": 0.2153,
             "recovery_pct": 88.49,
-            "analyzed_at": "2026-10-21 17:48:31"
+            "analyzed_at": "2026-10-22 01:15:10"
           }
         ],
         "notes": ""
       },
-      "xrd": {
-        "files": [],
-        "notes": ""
-      },
-      "bet": {
+      "thermal_profile": {
         "files": []
       },
       "tga": {
         "files": []
       },
+      "rheology": {
+        "files": []
+      },
+      "tomography": {
+        "files": []
+      },
       "sem_tem": {
         "files": []
       },
-      "rheology": {
+      "hg_porosimetry": {
+        "files": []
+      },
+      "bet": {
         "files": []
       },
       "documents": {
@@ -75,7 +80,7 @@
     "notes": "Full 3 continuous cycles",
     "status": "Analyzed",
     "created_at": "2026-09-23 18:42:27",
-    "updated_at": "2026-10-21 17:38:27",
+    "updated_at": "2026-10-22 01:15:10",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -92,25 +97,30 @@
             "q_net_ads": 2.179,
             "q_net_des": 2.3014,
             "recovery_pct": 105.62,
-            "analyzed_at": "2026-10-21 17:38:27"
+            "analyzed_at": "2026-10-22 01:15:10"
           }
         ],
         "notes": ""
       },
-      "xrd": {
-        "files": [],
-        "notes": ""
-      },
-      "bet": {
+      "thermal_profile": {
         "files": []
       },
       "tga": {
         "files": []
       },
+      "rheology": {
+        "files": []
+      },
+      "tomography": {
+        "files": []
+      },
       "sem_tem": {
         "files": []
       },
-      "rheology": {
+      "hg_porosimetry": {
+        "files": []
+      },
+      "bet": {
         "files": []
       },
       "documents": {
@@ -135,7 +145,7 @@
     "notes": "",
     "status": "Analyzed",
     "created_at": "2026-09-23 18:42:27",
-    "updated_at": "2026-10-21 17:45:15",
+    "updated_at": "2026-10-22 01:15:11",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -152,25 +162,108 @@
             "q_net_ads": 3.552,
             "q_net_des": 3.4957,
             "recovery_pct": 98.41,
-            "analyzed_at": "2026-10-21 17:45:15"
+            "analyzed_at": "2026-10-22 01:15:11"
           }
         ],
         "notes": ""
       },
-      "xrd": {
-        "files": [],
-        "notes": ""
-      },
-      "bet": {
-        "files": []
+      "thermal_profile": {
+        "files": [
+          {
+            "id": 96,
+            "sample_id": "ZZ20_01",
+            "technique": "thermal_profile",
+            "filename": "Zeolite powder Raw Ads Time temp best fit porofile.xlsx",
+            "cloned_path": "c:\\Users\\Lenovo\\OneDrive - unizar.es\\AI Antigravity software\\data_vault\\samples\\ZZ20_01\\thermal_profile\\Zeolite powder Raw Ads Time temp best fit porofile.xlsx",
+            "size_bytes": 4459881,
+            "description": "Raw Thermocouple Data",
+            "status": "Pending",
+            "uploaded_at": "2026-10-22 01:19:32"
+          },
+          {
+            "id": 95,
+            "sample_id": "ZZ20_01",
+            "technique": "thermal_profile",
+            "filename": "Zeolite powder Raw Ads Time temp best fit porofile.dat",
+            "cloned_path": "c:\\Users\\Lenovo\\OneDrive - unizar.es\\AI Antigravity software\\data_vault\\samples\\ZZ20_01\\thermal_profile\\Zeolite powder Raw Ads Time temp best fit porofile.dat",
+            "size_bytes": 5351203,
+            "description": "Raw Thermocouple Data",
+            "status": "Pending",
+            "uploaded_at": "2026-10-22 01:19:20"
+          },
+          {
+            "id": 94,
+            "sample_id": "ZZ20_01",
+            "technique": "thermal_profile",
+            "filename": "ZZ 18.5 Vertical Heat Map.png",
+            "cloned_path": "c:\\Users\\Lenovo\\OneDrive - unizar.es\\AI Antigravity software\\data_vault\\samples\\ZZ20_01\\thermal_profile\\ZZ 18.5 Vertical Heat Map.png",
+            "size_bytes": 1043041,
+            "description": "Heatmap",
+            "status": "Pending",
+            "uploaded_at": "2026-10-22 01:17:43"
+          },
+          {
+            "id": 92,
+            "sample_id": "ZZ20_01",
+            "technique": "thermal_profile",
+            "filename": "ZZ 18.5 Horizontal Heat Map.png",
+            "cloned_path": "c:\\Users\\Lenovo\\OneDrive - unizar.es\\AI Antigravity software\\data_vault\\samples\\ZZ20_01\\thermal_profile\\ZZ 18.5 Horizontal Heat Map.png",
+            "size_bytes": 881462,
+            "description": "Heatmap",
+            "status": "Pending",
+            "uploaded_at": "2026-10-22 01:17:42"
+          },
+          {
+            "id": 93,
+            "sample_id": "ZZ20_01",
+            "technique": "thermal_profile",
+            "filename": "ZZ 18.5 Ver time temp profile.png",
+            "cloned_path": "c:\\Users\\Lenovo\\OneDrive - unizar.es\\AI Antigravity software\\data_vault\\samples\\ZZ20_01\\thermal_profile\\ZZ 18.5 Ver time temp profile.png",
+            "size_bytes": 707309,
+            "description": "Vertical",
+            "status": "Pending",
+            "uploaded_at": "2026-10-22 01:17:42"
+          },
+          {
+            "id": 91,
+            "sample_id": "ZZ20_01",
+            "technique": "thermal_profile",
+            "filename": "ZZ 18.5 Hori time temp profile.png",
+            "cloned_path": "c:\\Users\\Lenovo\\OneDrive - unizar.es\\AI Antigravity software\\data_vault\\samples\\ZZ20_01\\thermal_profile\\ZZ 18.5 Hori time temp profile.png",
+            "size_bytes": 631529,
+            "description": "Horizontal",
+            "status": "Pending",
+            "uploaded_at": "2026-10-22 01:17:41"
+          },
+          {
+            "id": 90,
+            "sample_id": "ZZ20_01",
+            "technique": "thermal_profile",
+            "filename": "ZZ 18.5 Hori and Ver time temp profile at same level.png",
+            "cloned_path": "c:\\Users\\Lenovo\\OneDrive - unizar.es\\AI Antigravity software\\data_vault\\samples\\ZZ20_01\\thermal_profile\\ZZ 18.5 Hori and Ver time temp profile at same level.png",
+            "size_bytes": 573963,
+            "description": "Comparison",
+            "status": "Pending",
+            "uploaded_at": "2026-10-22 01:17:40"
+          }
+        ]
       },
       "tga": {
+        "files": []
+      },
+      "rheology": {
+        "files": []
+      },
+      "tomography": {
         "files": []
       },
       "sem_tem": {
         "files": []
       },
-      "rheology": {
+      "hg_porosimetry": {
+        "files": []
+      },
+      "bet": {
         "files": []
       },
       "documents": {
@@ -195,7 +288,7 @@
     "notes": "Complete cyclic adsorption/desorption run",
     "status": "Analyzed",
     "created_at": "2026-09-23 18:42:27",
-    "updated_at": "2026-10-21 17:38:27",
+    "updated_at": "2026-10-22 01:15:11",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -212,16 +305,12 @@
             "q_net_ads": 2.9902,
             "q_net_des": 3.1215,
             "recovery_pct": 104.39,
-            "analyzed_at": "2026-10-21 17:38:27"
+            "analyzed_at": "2026-10-22 01:15:11"
           }
         ],
         "notes": ""
       },
-      "xrd": {
-        "files": [],
-        "notes": ""
-      },
-      "bet": {
+      "thermal_profile": {
         "files": []
       },
       "tga": {
@@ -282,6 +371,57 @@
             "uploaded_at": "2026-09-27 17:21:14"
           }
         ]
+      },
+      "rheology": {
+        "files": [
+          {
+            "id": 74,
+            "sample_id": "ZZ30_01",
+            "technique": "rheology",
+            "filename": "Batch 1 Zeolite.png",
+            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\rheology\\Batch 1 Zeolite.png",
+            "size_bytes": 480076,
+            "description": "Discovered rheology file",
+            "status": "Pending",
+            "uploaded_at": "2026-10-20 19:40:28"
+          },
+          {
+            "id": 75,
+            "sample_id": "ZZ30_01",
+            "technique": "rheology",
+            "filename": "Batch 2 Zeolite.png",
+            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\rheology\\Batch 2 Zeolite.png",
+            "size_bytes": 513958,
+            "description": "Discovered rheology file",
+            "status": "Pending",
+            "uploaded_at": "2026-10-20 19:40:28"
+          },
+          {
+            "id": 76,
+            "sample_id": "ZZ30_01",
+            "technique": "rheology",
+            "filename": "Batch 3 Zeolite.png",
+            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\rheology\\Batch 3 Zeolite.png",
+            "size_bytes": 508271,
+            "description": "Discovered rheology file",
+            "status": "Pending",
+            "uploaded_at": "2026-10-20 19:40:28"
+          },
+          {
+            "id": 77,
+            "sample_id": "ZZ30_01",
+            "technique": "rheology",
+            "filename": "Batch 4 zeolite.png",
+            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\rheology\\Batch 4 zeolite.png",
+            "size_bytes": 504295,
+            "description": "Discovered rheology file",
+            "status": "Pending",
+            "uploaded_at": "2026-10-20 19:40:28"
+          }
+        ]
+      },
+      "tomography": {
+        "files": []
       },
       "sem_tem": {
         "files": [
@@ -375,53 +515,11 @@
           }
         ]
       },
-      "rheology": {
-        "files": [
-          {
-            "id": 74,
-            "sample_id": "ZZ30_01",
-            "technique": "rheology",
-            "filename": "Batch 1 Zeolite.png",
-            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\rheology\\Batch 1 Zeolite.png",
-            "size_bytes": 480076,
-            "description": "Discovered rheology file",
-            "status": "Pending",
-            "uploaded_at": "2026-10-20 19:40:28"
-          },
-          {
-            "id": 75,
-            "sample_id": "ZZ30_01",
-            "technique": "rheology",
-            "filename": "Batch 2 Zeolite.png",
-            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\rheology\\Batch 2 Zeolite.png",
-            "size_bytes": 513958,
-            "description": "Discovered rheology file",
-            "status": "Pending",
-            "uploaded_at": "2026-10-20 19:40:28"
-          },
-          {
-            "id": 76,
-            "sample_id": "ZZ30_01",
-            "technique": "rheology",
-            "filename": "Batch 3 Zeolite.png",
-            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\rheology\\Batch 3 Zeolite.png",
-            "size_bytes": 508271,
-            "description": "Discovered rheology file",
-            "status": "Pending",
-            "uploaded_at": "2026-10-20 19:40:28"
-          },
-          {
-            "id": 77,
-            "sample_id": "ZZ30_01",
-            "technique": "rheology",
-            "filename": "Batch 4 zeolite.png",
-            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\rheology\\Batch 4 zeolite.png",
-            "size_bytes": 504295,
-            "description": "Discovered rheology file",
-            "status": "Pending",
-            "uploaded_at": "2026-10-20 19:40:28"
-          }
-        ]
+      "hg_porosimetry": {
+        "files": []
+      },
+      "bet": {
+        "files": []
       },
       "documents": {
         "files": [
@@ -490,7 +588,7 @@
     "notes": "Zeolite Powder Rapeat",
     "status": "Analyzed",
     "created_at": "2026-10-20 11:45:57",
-    "updated_at": "2026-10-21 17:38:27",
+    "updated_at": "2026-10-22 01:15:12",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -507,25 +605,30 @@
             "q_net_ads": 3.4169,
             "q_net_des": 3.6934,
             "recovery_pct": 108.09,
-            "analyzed_at": "2026-10-21 17:38:27"
+            "analyzed_at": "2026-10-22 01:15:12"
           }
         ],
         "notes": ""
       },
-      "xrd": {
-        "files": [],
-        "notes": ""
-      },
-      "bet": {
+      "thermal_profile": {
         "files": []
       },
       "tga": {
         "files": []
       },
+      "rheology": {
+        "files": []
+      },
+      "tomography": {
+        "files": []
+      },
       "sem_tem": {
         "files": []
       },
-      "rheology": {
+      "hg_porosimetry": {
+        "files": []
+      },
+      "bet": {
         "files": []
       },
       "documents": {
@@ -550,7 +653,7 @@
     "notes": "",
     "status": "Analyzed",
     "created_at": "2026-09-28 18:38:26",
-    "updated_at": "2026-10-21 17:38:27",
+    "updated_at": "2026-10-22 01:15:12",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -567,25 +670,30 @@
             "q_net_ads": 3.6636,
             "q_net_des": 1.2727,
             "recovery_pct": 34.74,
-            "analyzed_at": "2026-10-21 17:38:27"
+            "analyzed_at": "2026-10-22 01:15:12"
           }
         ],
         "notes": ""
       },
-      "xrd": {
-        "files": [],
-        "notes": ""
-      },
-      "bet": {
+      "thermal_profile": {
         "files": []
       },
       "tga": {
         "files": []
       },
+      "rheology": {
+        "files": []
+      },
+      "tomography": {
+        "files": []
+      },
       "sem_tem": {
         "files": []
       },
-      "rheology": {
+      "hg_porosimetry": {
+        "files": []
+      },
+      "bet": {
         "files": []
       },
       "documents": {
@@ -610,7 +718,7 @@
     "notes": "",
     "status": "Analyzed",
     "created_at": "2026-09-23 18:52:29",
-    "updated_at": "2026-10-21 17:38:27",
+    "updated_at": "2026-10-22 01:15:12",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -627,25 +735,30 @@
             "q_net_ads": 3.0014,
             "q_net_des": 12.7484,
             "recovery_pct": 424.75,
-            "analyzed_at": "2026-10-21 17:38:27"
+            "analyzed_at": "2026-10-22 01:15:12"
           }
         ],
         "notes": ""
       },
-      "xrd": {
-        "files": [],
-        "notes": ""
-      },
-      "bet": {
+      "thermal_profile": {
         "files": []
       },
       "tga": {
         "files": []
       },
+      "rheology": {
+        "files": []
+      },
+      "tomography": {
+        "files": []
+      },
       "sem_tem": {
         "files": []
       },
-      "rheology": {
+      "hg_porosimetry": {
+        "files": []
+      },
+      "bet": {
         "files": []
       },
       "documents": {

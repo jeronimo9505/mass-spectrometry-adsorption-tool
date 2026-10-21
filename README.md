@@ -35,10 +35,12 @@ A modular desktop application built in Python (**Tkinter + Matplotlib + SciPy**)
 ### 2. 🔬 Pillar 2: Multi-Characterization Hub
 * **Multi-Technique Support**:
   * 🧪 **Mass Spectrometry / Gas Adsorption** (`.asc`, `.dat`, `.txt`, `.csv`)
-  * 🔬 **X-Ray Diffraction (XRD)** (`.raw`, `.xy`, `.dat`, `.csv`)
-  * 📐 **$\text{N}_2$ Physisorption / BET Surface Area** (`.xls`, `.xlsx`, `.csv`)
-  * 💡 **Raman Spectroscopy** (`.txt`, `.csv`, `.spc`)
   * 🔥 **Thermogravimetric Analysis (TGA)** (`.txt`, `.csv`, `.xls`, `.xlsx`)
+  * 🌊 **Rheological Properties** (`.csv`, `.xlsx`, `.xls`, `.txt`, `.rfd`, `.png`, `.jpg`)
+  * 🧊 **X-Ray Computed Tomography (micro-CT)** (`.tif`, `.tiff`, `.png`, `.vol`, `.vgi`, `.stl`)
+  * 🔍 **SEM / TEM Electron Microscopy** (`.tif`, `.tiff`, `.png`, `.jpg`, `.dm3`, `.dm4`)
+  * 💧 **Mercury Intrusion Porosimetry (MIP)** (`.txt`, `.csv`, `.xlsx`, `.dat`, `.png`, `.pdf`)
+  * 📐 **$\text{N}_2$ Physisorption / BET Surface Area** (`.xls`, `.xlsx`, `.csv`)
   * 📁 **Documents & Reports** (`.pdf`, `.png`, `.docx`, `.xlsx`)
 * **Physical File Cloning**: When attaching an external measurement file, it is automatically cloned into the local machine vault under `<vault>/samples/<sample_id>/<technique>/`.
 * **Seamless Tool Launch**: One-click button (`📈 Open in MS Tool`) to open `.asc` files directly into Pillar 3.
@@ -76,11 +78,14 @@ The application stores data in a clean, self-contained architecture backed by **
     │   │   ├── raw_measurement.asc  # Cloned raw data file
     │   │   ├── analyses/            # Saved ROI & capacity JSON records
     │   │   └── reports/             # Generated TXT analytical reports
-    │   ├── xrd/                     # XRD files
+    │   ├── thermal_profile/         # Adsorption exotherm profiles (Vertical, Horizontal, Heatmaps, Raw Data)
+    │   ├── tga/                     # TGA thermograms & Excel runs
+    │   ├── rheology/                # Rheology curves & shear sweeps
+    │   ├── tomography/              # Micro-CT slices & 3D morphometry
+    │   ├── sem_tem/                 # SEM/TEM micrographs & EDX spectra
+    │   ├── hg_porosimetry/          # Mercury intrusion porosimetry data
     │   ├── bet/                     # BET surface area isotherms & reports
-    │   ├── raman/                   # Raman spectra
-    │   ├── tga/                     # TGA thermograms
-    │   └── documents/               # Attached PDFs, SEM images, papers
+    │   └── documents/               # Attached PDFs, reports, documentation
     └── <Sample_ID_2>/
         └── ...
 ```

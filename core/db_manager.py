@@ -248,6 +248,16 @@ class DBManager:
         self.export_to_json()
         return dest_path
 
+    def update_file_description(self, sample_id, technique, filename, description):
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "UPDATE characterization_files SET description = ? WHERE sample_id = ? AND technique = ? AND filename = ?",
+                (description, sample_id, technique, filename)
+            )
+            conn.commit()
+        self.export_to_json()
+
     def get_technique_files(self, sample_id, technique="mass_spec"):
         with self.get_connection() as conn:
             cursor = conn.cursor()
@@ -438,25 +448,33 @@ class DBManager:
                         "files": self.get_technique_files(s_id, "mass_spec"),
                         "notes": self.get_properties(s_id, "mass_spec").get("notes", "")
                     },
-                    "xrd": {
-                        "files": self.get_technique_files(s_id, "xrd"),
-                        "notes": self.get_properties(s_id, "xrd").get("notes", "")
-                    },
-                    "bet": {
-                        "files": self.get_technique_files(s_id, "bet"),
-                        **self.get_properties(s_id, "bet")
+                    "thermal_profile": {
+                        "files": self.get_technique_files(s_id, "thermal_profile"),
+                        **self.get_properties(s_id, "thermal_profile")
                     },
                     "tga": {
                         "files": self.get_technique_files(s_id, "tga"),
                         **self.get_properties(s_id, "tga")
                     },
+                    "rheology": {
+                        "files": self.get_technique_files(s_id, "rheology"),
+                        **self.get_properties(s_id, "rheology")
+                    },
+                    "tomography": {
+                        "files": self.get_technique_files(s_id, "tomography"),
+                        **self.get_properties(s_id, "tomography")
+                    },
                     "sem_tem": {
                         "files": self.get_technique_files(s_id, "sem_tem"),
                         **self.get_properties(s_id, "sem_tem")
                     },
-                    "rheology": {
-                        "files": self.get_technique_files(s_id, "rheology"),
-                        **self.get_properties(s_id, "rheology")
+                    "hg_porosimetry": {
+                        "files": self.get_technique_files(s_id, "hg_porosimetry"),
+                        **self.get_properties(s_id, "hg_porosimetry")
+                    },
+                    "bet": {
+                        "files": self.get_technique_files(s_id, "bet"),
+                        **self.get_properties(s_id, "bet")
                     },
                     "documents": {
                         "files": self.get_technique_files(s_id, "documents"),

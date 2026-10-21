@@ -13,17 +13,11 @@ CHARACTERIZATION_TYPES = {
         "extensions": [".asc", ".dat", ".txt", ".csv"],
         "icon": "🧪"
     },
-    "xrd": {
-        "name": "X-Ray Diffraction (XRD)",
-        "folder": "xrd",
-        "extensions": [".raw", ".xy", ".dat", ".csv", ".txt"],
-        "icon": "🔬"
-    },
-    "bet": {
-        "name": "N₂ Physisorption / BET Surface Area",
-        "folder": "bet",
-        "extensions": [".xls", ".xlsx", ".csv", ".txt"],
-        "icon": "📐"
+    "thermal_profile": {
+        "name": "Adsorption Exotherm & Thermal Profiles",
+        "folder": "thermal_profile",
+        "extensions": [".png", ".jpg", ".jpeg", ".tif", ".tiff", ".bmp", ".gif", ".csv", ".xlsx", ".xls", ".txt", ".dat"],
+        "icon": "🌡️"
     },
     "tga": {
         "name": "Thermogravimetric Analysis (TGA)",
@@ -31,17 +25,35 @@ CHARACTERIZATION_TYPES = {
         "extensions": [".txt", ".csv", ".xls", ".xlsx"],
         "icon": "🔥"
     },
+    "rheology": {
+        "name": "Rheological Properties (Slurry/Paste)",
+        "folder": "rheology",
+        "extensions": [".csv", ".xlsx", ".xls", ".txt", ".rfd", ".png", ".jpg", ".jpeg"],
+        "icon": "🌊"
+    },
+    "tomography": {
+        "name": "X-Ray Computed Tomography (micro-CT)",
+        "folder": "tomography",
+        "extensions": [".tif", ".tiff", ".png", ".jpg", ".jpeg", ".bmp", ".raw", ".vol", ".vgi", ".stl", ".txt", ".csv", ".pdf"],
+        "icon": "🧊"
+    },
     "sem_tem": {
         "name": "SEM / TEM Electron Microscopy",
         "folder": "sem_tem",
         "extensions": [".tif", ".tiff", ".png", ".jpg", ".dm3", ".dm4", ".txt", ".csv"],
         "icon": "🔍"
     },
-    "rheology": {
-        "name": "Rheological Properties (Slurry/Paste)",
-        "folder": "rheology",
-        "extensions": [".csv", ".xlsx", ".xls", ".txt", ".rfd"],
-        "icon": "🌊"
+    "hg_porosimetry": {
+        "name": "Mercury Intrusion Porosimetry (MIP)",
+        "folder": "hg_porosimetry",
+        "extensions": [".txt", ".csv", ".xls", ".xlsx", ".dat", ".png", ".pdf"],
+        "icon": "💧"
+    },
+    "bet": {
+        "name": "N₂ Physisorption / BET Surface Area",
+        "folder": "bet",
+        "extensions": [".xls", ".xlsx", ".csv", ".txt"],
+        "icon": "📐"
     },
     "documents": {
         "name": "Attached Documents & Reports",
@@ -245,6 +257,8 @@ class SampleVault:
     def ensure_sample_folders(self, sample_id):
         sample_dir = self.get_sample_dir(sample_id)
         os.makedirs(sample_dir, exist_ok=True)
+        for tech, conf in CHARACTERIZATION_TYPES.items():
+            os.makedirs(os.path.join(sample_dir, conf["folder"]), exist_ok=True)
 
     def create_or_update_sample(self, sample_id, metadata):
         sample_id = sample_id.strip()
@@ -296,6 +310,16 @@ class SampleVault:
 
     def delete_characterization_file(self, sample_id, technique, filename):
         self.db.delete_file(sample_id, technique, filename)
+        self.load_logbook()
+        return True
+
+    def update_file_description(self, sample_id, technique, filename, description):
+        self.db.update_file_description(sample_id, technique, filename, description)
+        self.load_logbook()
+        return True
+
+    def save_technique_properties(self, sample_id, technique, properties_dict, notes=""):
+        self.db.save_properties(sample_id, technique, properties_dict, notes=notes)
         self.load_logbook()
         return True
 
