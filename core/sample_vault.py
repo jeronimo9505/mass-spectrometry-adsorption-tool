@@ -217,7 +217,7 @@ class SampleVault:
                 s_data = {
                     "sample_id": s_id,
                     "material_name": mat,
-                    "operator": "Shayan / Jeronimo",
+                    "operator": "Shayan",
                     "date": "2026-08-24" if "2408" in fname else ("2026-09-01" if "0109" in fname else "2026-08-28"),
                     "mass_total_g": mass,
                     "water_loss_pct": water,

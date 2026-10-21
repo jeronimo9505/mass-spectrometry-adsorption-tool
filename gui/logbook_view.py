@@ -8,7 +8,7 @@ class SampleDialog(tk.Toplevel):
     def __init__(self, parent, title="New Sample", sample_data=None):
         super().__init__(parent)
         self.title(title)
-        self.geometry("490x580")
+        self.geometry("480x380")
         self.resizable(False, False)
         self.transient(parent)
         self.grab_set()
@@ -36,51 +36,36 @@ class SampleDialog(tk.Toplevel):
         form.pack(fill=tk.X, expand=True)
 
         row = 0
-        ttk.Label(form, text="Sample ID:*").grid(row=row, column=0, sticky="w", pady=4)
+        ttk.Label(form, text="Sample ID:*").grid(row=row, column=0, sticky="w", pady=6)
         self.id_var = tk.StringVar(value=self.sample_data.get("sample_id", ""))
         self.id_entry = ttk.Entry(form, textvariable=self.id_var, width=28)
-        self.id_entry.grid(row=row, column=1, sticky="ew", pady=4)
+        self.id_entry.grid(row=row, column=1, sticky="ew", pady=6)
         if self.sample_data.get("sample_id"):
             self.id_entry.config(state="readonly")
         row += 1
 
-        ttk.Label(form, text="Material Name / Formulation:*").grid(row=row, column=0, sticky="w", pady=4)
+        ttk.Label(form, text="Material Name / Formulation:*").grid(row=row, column=0, sticky="w", pady=6)
         self.mat_var = tk.StringVar(value=self.sample_data.get("material_name", ""))
-        ttk.Entry(form, textvariable=self.mat_var, width=28).grid(row=row, column=1, sticky="ew", pady=4)
+        ttk.Entry(form, textvariable=self.mat_var, width=28).grid(row=row, column=1, sticky="ew", pady=6)
         row += 1
 
-        ttk.Label(form, text="Operator / Researcher:").grid(row=row, column=0, sticky="w", pady=4)
-        self.op_var = tk.StringVar(value=self.sample_data.get("operator", "Shayan / Jeronimo"))
-        ttk.Entry(form, textvariable=self.op_var, width=28).grid(row=row, column=1, sticky="ew", pady=4)
+        ttk.Label(form, text="Operator / Researcher:").grid(row=row, column=0, sticky="w", pady=6)
+        op_val = self.sample_data.get("operator", "Shayan")
+        if op_val == "Shayan / Jeronimo":
+            op_val = "Shayan"
+        self.op_var = tk.StringVar(value=op_val)
+        ttk.Entry(form, textvariable=self.op_var, width=28).grid(row=row, column=1, sticky="ew", pady=6)
         row += 1
 
-        ttk.Label(form, text="Assay Date (YYYY-MM-DD):").grid(row=row, column=0, sticky="w", pady=4)
+        ttk.Label(form, text="Assay Date (YYYY-MM-DD):").grid(row=row, column=0, sticky="w", pady=6)
         default_date = self.sample_data.get("date") or datetime.now().strftime("%Y-%m-%d")
         self.date_var = tk.StringVar(value=default_date)
-        ttk.Entry(form, textvariable=self.date_var, width=28).grid(row=row, column=1, sticky="ew", pady=4)
+        ttk.Entry(form, textvariable=self.date_var, width=28).grid(row=row, column=1, sticky="ew", pady=6)
         row += 1
 
-        ttk.Separator(form, orient="horizontal").grid(row=row, column=0, columnspan=2, sticky="ew", pady=10)
-        row += 1
-
-        ttk.Label(form, text="Total Initial Mass (g):*").grid(row=row, column=0, sticky="w", pady=4)
-        self.mass_var = tk.DoubleVar(value=float(self.sample_data.get("mass_total_g", 0.5055)))
-        ttk.Spinbox(form, from_=0.0001, to=100.0, increment=0.001, textvariable=self.mass_var, width=26).grid(row=row, column=1, sticky="ew", pady=4)
-        row += 1
-
-        ttk.Label(form, text="Water / Binder Loss (%):").grid(row=row, column=0, sticky="w", pady=4)
-        self.water_var = tk.DoubleVar(value=float(self.sample_data.get("water_loss_pct", 21.4)))
-        ttk.Spinbox(form, from_=0.0, to=100.0, increment=0.5, textvariable=self.water_var, width=26).grid(row=row, column=1, sticky="ew", pady=4)
-        row += 1
-
-        ttk.Label(form, text="Blank Ads Reference (mmol/g):").grid(row=row, column=0, sticky="w", pady=4)
-        self.ref_ads_var = tk.DoubleVar(value=float(self.sample_data.get("ref_ads", 0.23)))
-        ttk.Spinbox(form, from_=0.0, to=5.0, increment=0.01, textvariable=self.ref_ads_var, width=26).grid(row=row, column=1, sticky="ew", pady=4)
-        row += 1
-
-        ttk.Label(form, text="Notes / Observations:").grid(row=row, column=0, sticky="nw", pady=4)
+        ttk.Label(form, text="Notes / Observations:").grid(row=row, column=0, sticky="nw", pady=6)
         self.notes_text = tk.Text(form, height=4, width=28, font=("Segoe UI", 9))
-        self.notes_text.grid(row=row, column=1, sticky="ew", pady=4)
+        self.notes_text.grid(row=row, column=1, sticky="ew", pady=6)
         self.notes_text.insert("1.0", self.sample_data.get("notes", ""))
         row += 1
 
@@ -105,23 +90,15 @@ class SampleDialog(tk.Toplevel):
             messagebox.showwarning("Required Field", "Material name cannot be empty.", parent=self)
             return
 
-        try:
-            mass = float(self.mass_var.get())
-            water = float(self.water_var.get())
-            ref_ads = float(self.ref_ads_var.get())
-        except ValueError:
-            messagebox.showerror("Validation Error", "Mass and percentage values must be valid numbers.", parent=self)
-            return
-
         self.result = {
             "sample_id": sample_id,
             "material_name": mat_name,
-            "operator": self.op_var.get().strip(),
+            "operator": self.op_var.get().strip() or "Shayan",
             "date": self.date_var.get().strip(),
-            "mass_total_g": mass,
-            "water_loss_pct": water,
-            "ref_ads": ref_ads,
-            "ref_des": 0.0,
+            "mass_total_g": float(self.sample_data.get("mass_total_g", 0.5055)),
+            "water_loss_pct": float(self.sample_data.get("water_loss_pct", 21.4)),
+            "ref_ads": float(self.sample_data.get("ref_ads", 0.23)),
+            "ref_des": float(self.sample_data.get("ref_des", 0.00)),
             "c0": float(self.sample_data.get("c0", 0.15)),
             "flow_total": float(self.sample_data.get("flow_total", 100.0)),
             "temp_c": float(self.sample_data.get("temp_c", 24.0)),
@@ -158,8 +135,8 @@ class LogbookView(ttk.Frame):
         self.card_analyzed = self._create_kpi_card(kpi_frame, "✅ Analyzed", "0", "#2a9d8f")
         self.card_analyzed.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=4)
 
-        self.card_mass = self._create_kpi_card(kpi_frame, "⚖️ Average Mass", "0.00 g", "#457b9d")
-        self.card_mass.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=4)
+        self.card_pending = self._create_kpi_card(kpi_frame, "⏳ Pending Analysis", "0", "#e76f51")
+        self.card_pending.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=4)
 
         # 2. Search & Action Toolbar
         toolbar = ttk.Frame(self)
@@ -204,7 +181,7 @@ class LogbookView(ttk.Frame):
         table_frame = ttk.Frame(self)
         table_frame.pack(fill=tk.BOTH, expand=True)
 
-        columns = ("id", "material", "techs", "date", "operator", "mass_tot", "water", "mass_act", "status", "files_cnt")
+        columns = ("id", "material", "techs", "date", "operator", "status", "files_cnt")
         self.tree = ttk.Treeview(table_frame, columns=columns, show="headings", selectmode="browse")
 
         self.tree.heading("id", text="Sample ID")
@@ -212,21 +189,15 @@ class LogbookView(ttk.Frame):
         self.tree.heading("techs", text="Characterizations")
         self.tree.heading("date", text="Date")
         self.tree.heading("operator", text="Operator")
-        self.tree.heading("mass_tot", text="Total Mass (g)")
-        self.tree.heading("water", text="Loss %")
-        self.tree.heading("mass_act", text="Active Mass (g)")
         self.tree.heading("status", text="Status")
         self.tree.heading("files_cnt", text="Files")
 
-        self.tree.column("id", width=105, anchor="center")
-        self.tree.column("material", width=175, anchor="w")
-        self.tree.column("techs", width=165, anchor="w")
-        self.tree.column("date", width=90, anchor="center")
-        self.tree.column("operator", width=130, anchor="w")
-        self.tree.column("mass_tot", width=90, anchor="e")
-        self.tree.column("water", width=75, anchor="e")
-        self.tree.column("mass_act", width=100, anchor="e")
-        self.tree.column("status", width=90, anchor="center")
+        self.tree.column("id", width=110, anchor="center")
+        self.tree.column("material", width=220, anchor="w")
+        self.tree.column("techs", width=200, anchor="w")
+        self.tree.column("date", width=95, anchor="center")
+        self.tree.column("operator", width=120, anchor="center")
+        self.tree.column("status", width=95, anchor="center")
         self.tree.column("files_cnt", width=65, anchor="center")
 
         scroll_y = ttk.Scrollbar(table_frame, orient=tk.VERTICAL, command=self.tree.yview)
@@ -313,9 +284,6 @@ class LogbookView(ttk.Frame):
                 techs_str,
                 data.get("date", "-"),
                 op,
-                f"{mass_tot:.4f}",
-                f"{water_pct:.1f}%",
-                f"{mass_act:.4f}",
                 status,
                 str(total_files)
             ))
@@ -327,8 +295,8 @@ class LogbookView(ttk.Frame):
         # Update KPI Cards
         self.card_total.val_label.config(text=str(tot_samples))
         self.card_analyzed.val_label.config(text=str(analyzed_count))
-        avg_mass = (sum(masses) / len(masses)) if masses else 0.0
-        self.card_mass.val_label.config(text=f"{avg_mass:.3f} g")
+        pending_cnt = max(0, tot_samples - analyzed_count)
+        self.card_pending.val_label.config(text=str(pending_cnt))
 
         # Update contextual technique buttons
         self.update_technique_buttons(self.active_sample_id)

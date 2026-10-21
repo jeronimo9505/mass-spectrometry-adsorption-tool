@@ -693,59 +693,49 @@ class ASCGasPlotterApp:
         self.recalculate_and_plot()
 
     def auto_detect_cycle_pairs(self):
-        """Automatically scan curve for cyclic adsorption and desorption pairs."""
+        """Automatically scan curve for cyclic adsorption and desorption pairs using high-precision breakthrough dip discrimination."""
         if self.current_df is None:
             return
 
+        from core.integration_engine import auto_detect_cycle_pairs
         col = self.get_selected_integ_col()
-        t_min = self.current_df["Time_min"].values
-        y_val = pd.to_numeric(self.current_df[col], errors="coerce").values
+        detected = auto_detect_cycle_pairs(self.current_df, target_col=col)
 
-        med_val = np.median(y_val)
-        is_low = y_val < (med_val * 0.7)
-
-        transitions_down = np.where((is_low[:-1] == False) & (is_low[1:] == True))[0]
-        transitions_up = np.where((is_low[:-1] == True) & (is_low[1:] == False))[0]
-
-        if len(transitions_down) == 0 or len(transitions_up) == 0:
-            messagebox.showinfo("Auto-Detect", "Could not automatically isolate cycle transitions.")
+        if not detected:
+            messagebox.showinfo("Auto-Detect", "No distinct cycle transitions detected. You can add boxes manually.")
             return
 
         self.ranges_list.clear()
+        self.range_id_counter = 1
 
-        cycle_num = 1
-        for t_down_idx in transitions_down:
-            t_down_min = t_min[t_down_idx]
-            ups_after = [idx for idx in transitions_up if idx > t_down_idx]
-            if not ups_after:
-                continue
-            t_up_idx = ups_after[0]
-            t_up_min = t_min[t_up_idx]
+        ads_count = 0
+        des_count = 0
 
-            # 1. Adsorption Box (Yellow, Straight Line)
-            self.add_adsorption_box(
-                start_min=t_down_min - 0.1, 
-                end_min=t_up_min - 0.1, 
-                name=f"C{cycle_num}_Ads"
-            )
+        for d in detected:
+            phase = d.get("phase", "adsorption")
+            s_min = float(d["start_min"])
+            e_min = float(d["end_min"])
+            name = d.get("type_name")
 
-            # 2. Desorption Box (Pink, Horizontal Line Y=Left)
-            next_downs = [idx for idx in transitions_down if idx > t_up_idx]
-            if next_downs:
-                end_des_min = t_min[next_downs[0]] - 0.1
+            if phase == "adsorption":
+                ads_count += 1
+                color = ROI_PRESETS["adsorption"]
+                b_mode = "straight_line"
+                self._add_box_with_preset(s_min, e_min, color, b_mode, name or f"C{ads_count}_Ads")
+            elif phase == "desorption":
+                des_count += 1
+                color = ROI_PRESETS["desorption"]
+                b_mode = "horizontal_left"
+                self._add_box_with_preset(s_min, e_min, color, b_mode, name or f"C{des_count}_Des")
             else:
-                end_des_min = min(t_up_min + 10.0, t_min[-1])
-
-            self.add_desorption_box(
-                start_min=t_up_min - 0.1, 
-                end_min=end_des_min, 
-                name=f"C{cycle_num}_Des"
-            )
-
-            cycle_num += 1
+                gen_preset = ROI_PRESETS.get("general", {"fill": "#99ff99", "border": "#38b000"})
+                self._add_box_with_preset(s_min, e_min, gen_preset, "horizontal_left", name or f"ROI_{self.range_id_counter}")
 
         self.recalculate_and_plot()
-        messagebox.showinfo("Auto-Detect Complete", f"Successfully detected and paired {cycle_num - 1} Adsorption/Desorption cycle pairs!")
+        messagebox.showinfo(
+            "Auto-Detect Complete", 
+            f"Successfully detected {ads_count} Adsorption and {des_count} Desorption cycle regions using acute breakthrough dip discrimination!"
+        )
 
     def add_new_range_pair(self, start_min=None, end_min=None):
         if start_min is None or end_min is None:

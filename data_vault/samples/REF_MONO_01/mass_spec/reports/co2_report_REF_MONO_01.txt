@@ -1,0 +1,45 @@
+==============================================================================
+   MASS SPECTROMETRY CO2 ADSORPTION / DESORPTION REPORT
+==============================================================================
+Sample ID:                REF_MONO_01
+Material Name:            Reference Monolith Valencia
+Operator:                 Shayan
+Measurement Date:         28/08/2026
+Source File:              28082026  ref monolith valencia zz20 sample final 3 cycles ads and desortion.asc
+------------------------------------------------------------------------------
+1. EXPERIMENTAL PARAMETERS:
+  - Total Initial Mass:   0.9200 g
+  - Water / Binder Loss:  0.0 %
+  - Dry Active Mass:      0.9200 g
+  - Temperature:          24.0 °C (Vm=24382.94 mL/mol)
+  - Total Flow Rate:      100.0 mL/min
+  - Feed Fraction C0:     0.15
+  - Baseline S_baseline:  7.4388e-10 A (k=2.016e+08 A⁻¹)
+  - Blank Ads Reference:  0.0000 mmol/g
+  - Blank Des Reference:  0.0000 mmol/g
+------------------------------------------------------------------------------
+2. SUMMARY OF AVERAGE CO2 CAPACITIES (q):
+  - Net Adsorption (avg): 0.2433 mmol/g  (Dry: 0.2433 | 100%: 0.2433)
+  - Net Desorption (avg): 0.2153 mmol/g  (Dry: 0.2153 | 100%: 0.2153)
+  - Desorption Recovery:  88.49 %
+----------------------------------------------------------------------------------------
+3. CYCLE-BY-CYCLE BREAKDOWN (EXCEL ANALYTICAL MODEL):
+  Step     Origin Area   |A| (A·min)   S_base (A)   k (A⁻¹)     nCO2 (mmol)  q(100%)    q(Dry)    
+  Ads_2    -2.7240e-10   2.7240e-10    7.4690e-10   2.008e+08   0.2244       0.2439     0.2439    
+  Des_3    2.1533e-10    2.1533e-10    7.4690e-10   2.008e+08   0.1774       0.1928     0.1928    
+  Ads_5    -2.6982e-10   2.6982e-10    7.4562e-10   2.012e+08   0.2226       0.2420     0.2420    
+  Des_6    2.4118e-10    2.4118e-10    7.4562e-10   2.012e+08   0.1990       0.2163     0.2163    
+  Ads_8    -2.7060e-10   2.7060e-10    7.4145e-10   2.023e+08   0.2245       0.2440     0.2440    
+  Des_9    2.6255e-10    2.6255e-10    7.4145e-10   2.023e+08   0.2178       0.2368     0.2368    
+------------------------------------------------------------------------------
+4. INTEGRATED SIMPSON ROI REGIONS:
+  [Bas_1] t=7.85-9.85 min (Δt=1.99) | Area=0.0000e+00 A·min | Base=mean_signal | FWHM=0.000
+  [Ads_2] t=10.26-16.72 min (Δt=6.45) | Area=-2.7240e-10 A·min | Base=straight_line | FWHM=0.351
+  [Des_3] t=22.55-24.71 min (Δt=2.15) | Area=2.1533e-10 A·min | Base=raw_zero | FWHM=0.271
+  [Bas_4] t=42.93-44.93 min (Δt=1.99) | Area=0.0000e+00 A·min | Base=mean_signal | FWHM=0.000
+  [Ads_5] t=45.08-50.45 min (Δt=5.36) | Area=-2.6982e-10 A·min | Base=straight_line | FWHM=0.351
+  [Des_6] t=52.80-55.53 min (Δt=2.72) | Area=2.4118e-10 A·min | Base=raw_zero | FWHM=0.309
+  [Bas_7] t=71.78-73.78 min (Δt=1.99) | Area=0.0000e+00 A·min | Base=mean_signal | FWHM=0.000
+  [Ads_8] t=75.00-83.35 min (Δt=8.33) | Area=-2.7060e-10 A·min | Base=straight_line | FWHM=0.349
+  [Des_9] t=84.22-87.26 min (Δt=3.02) | Area=2.6255e-10 A·min | Base=raw_zero | FWHM=0.337
+==============================================================================

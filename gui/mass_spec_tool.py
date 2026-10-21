@@ -409,9 +409,9 @@ class MassSpecToolView(ttk.Frame):
         mode_f = ttk.LabelFrame(scroll_c, text=" k Factor & Baseline Calculation Mode ", padding=4)
         mode_f.pack(fill=tk.X, pady=(0, 4))
         
-        ttk.Radiobutton(mode_f, text="1er Punto de Adsorción (Ciclo a Ciclo)", variable=self.cap_k_mode_var, value="ads_first_point", command=self.recalculate_capacity).pack(anchor="w")
-        ttk.Radiobutton(mode_f, text="Región Meseta 'Baseline Signal'", variable=self.cap_k_mode_var, value="baseline_plateau", command=self.recalculate_capacity).pack(anchor="w")
-        ttk.Radiobutton(mode_f, text="Promedio Global (Modo Excel clásico)", variable=self.cap_k_mode_var, value="global_average", command=self.recalculate_capacity).pack(anchor="w")
+        ttk.Radiobutton(mode_f, text="1st Point of Adsorption (Cycle-by-Cycle)", variable=self.cap_k_mode_var, value="ads_first_point", command=self.recalculate_capacity).pack(anchor="w")
+        ttk.Radiobutton(mode_f, text="Plateau Region 'Baseline Signal'", variable=self.cap_k_mode_var, value="baseline_plateau", command=self.recalculate_capacity).pack(anchor="w")
+        ttk.Radiobutton(mode_f, text="Global Average (Classic Excel Mode)", variable=self.cap_k_mode_var, value="global_average", command=self.recalculate_capacity).pack(anchor="w")
 
         # 2. Analytical Breakdown Table (Matching Excel analytical model)
         table_frame = ttk.LabelFrame(scroll_c, text=" Analytical Breakdown (Excel Model) ", padding=4)
@@ -693,13 +693,13 @@ class MassSpecToolView(ttk.Frame):
         if ads_count > 0:
             messagebox.showinfo(
                 "Baseline Synchronized", 
-                f"✅ Se sincronizó el baseline de cada ciclo usando el 1er punto de cada Adsorción ({ads_count} ciclos).\n\n"
-                f"Cada ciclo aplica automáticamente su propio valor de baseline (S_baseline) tanto a la Adsorción como a la Desorción correspondiente."
+                f"✅ Successfully synchronized cycle baselines using the 1st point of each Adsorption ({ads_count} cycles).\n\n"
+                f"Each cycle automatically applies its individual baseline (S_baseline) to both the Adsorption and corresponding Desorption steps."
             )
         else:
             messagebox.showwarning(
                 "No Adsorption ROIs", 
-                "No se encontraron regiones de Adsorción definidas. Agrega regiones o pulsa '⚡ AUTO-DETECT CYCLES' en la pestaña 'Regions & Integration'."
+                "No Adsorption regions found. Please add regions or click '⚡ AUTO-DETECT CYCLES' in the 'Regions & Integration' tab."
             )
 
     def _on_mass_mg_change(self, *args):

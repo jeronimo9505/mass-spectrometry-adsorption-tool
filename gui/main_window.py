@@ -10,7 +10,7 @@ from gui.mass_spec_tool import MassSpecToolView
 class MainWindow(tk.Tk):
     """
     Main Application Window orchestrating the 3 Pillars:
-      1. Sample Logbook (Bitácora)
+      1. Sample Logbook
       2. Multi-Characterization Hub
       3. Mass Spectrometry & Gas Adsorption Tool
     """

@@ -2,7 +2,7 @@
   "REF_MONO_01": {
     "sample_id": "REF_MONO_01",
     "material_name": "Reference Monolith Valencia",
-    "operator": "Shayan / Jeronimo",
+    "operator": "Shayan",
     "date": "2026-08-28",
     "mass_total_g": 0.92,
     "water_loss_pct": 0.0,
@@ -13,9 +13,9 @@
     "flow_total": 100.0,
     "temp_c": 24.0,
     "notes": "Blank monolith without zeolite",
-    "status": "Registered",
+    "status": "Analyzed",
     "created_at": "2026-09-23 18:42:27",
-    "updated_at": "2026-09-23 18:42:27",
+    "updated_at": "2026-10-21 17:48:31",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -24,15 +24,15 @@
             "sample_id": "REF_MONO_01",
             "technique": "mass_spec",
             "filename": "28082026  ref monolith valencia zz20 sample final 3 cycles ads and desortion.asc",
-            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\REF_MONO_01\\mass_spec\\28082026  ref monolith valencia zz20 sample final 3 cycles ads and desortion.asc",
+            "cloned_path": "c:\\Users\\Lenovo\\OneDrive - unizar.es\\AI Antigravity software\\data_vault\\samples\\REF_MONO_01\\mass_spec\\28082026  ref monolith valencia zz20 sample final 3 cycles ads and desortion.asc",
             "size_bytes": 880836,
-            "description": "Measurement file for Reference Monolith Valencia",
-            "status": "Pending",
+            "description": "",
+            "status": "Analyzed",
             "uploaded_at": "2026-09-23 18:42:27",
-            "q_net_ads": null,
-            "q_net_des": null,
-            "recovery_pct": null,
-            "analyzed_at": null
+            "q_net_ads": 0.2433,
+            "q_net_des": 0.2153,
+            "recovery_pct": 88.49,
+            "analyzed_at": "2026-10-21 17:48:31"
           }
         ],
         "notes": ""
@@ -62,7 +62,7 @@
   "ZZ10_01": {
     "sample_id": "ZZ10_01",
     "material_name": "ZZ10 Monolith",
-    "operator": "Shayan / Jeronimo",
+    "operator": "Shayan",
     "date": "2026-09-01",
     "mass_total_g": 0.5,
     "water_loss_pct": 21.4,
@@ -75,7 +75,7 @@
     "notes": "Full 3 continuous cycles",
     "status": "Analyzed",
     "created_at": "2026-09-23 18:42:27",
-    "updated_at": "2026-10-20 19:40:28",
+    "updated_at": "2026-10-21 17:38:27",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -89,10 +89,10 @@
             "description": "",
             "status": "Analyzed",
             "uploaded_at": "2026-09-23 18:42:27",
-            "q_net_ads": 3.8091,
-            "q_net_des": 0.6713,
-            "recovery_pct": 17.62,
-            "analyzed_at": "2026-10-20 19:40:28"
+            "q_net_ads": 2.179,
+            "q_net_des": 2.3014,
+            "recovery_pct": 105.62,
+            "analyzed_at": "2026-10-21 17:38:27"
           }
         ],
         "notes": ""
@@ -135,7 +135,7 @@
     "notes": "",
     "status": "Analyzed",
     "created_at": "2026-09-23 18:42:27",
-    "updated_at": "2026-10-20 19:40:28",
+    "updated_at": "2026-10-21 17:45:15",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -144,15 +144,15 @@
             "sample_id": "ZZ20_01",
             "technique": "mass_spec",
             "filename": "21082026  zz20 monoliths 1st.asc",
-            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ20_01\\mass_spec\\21082026  zz20 monoliths 1st.asc",
+            "cloned_path": "c:\\Users\\Lenovo\\OneDrive - unizar.es\\AI Antigravity software\\data_vault\\samples\\ZZ20_01\\mass_spec\\21082026  zz20 monoliths 1st.asc",
             "size_bytes": 1262256,
-            "description": "Measurement file for ZZ20 Monolith",
+            "description": "",
             "status": "Analyzed",
             "uploaded_at": "2026-09-23 18:42:27",
-            "q_net_ads": 4.5151,
-            "q_net_des": 4.4867,
-            "recovery_pct": 99.37,
-            "analyzed_at": "2026-10-20 19:40:28"
+            "q_net_ads": 3.552,
+            "q_net_des": 3.4957,
+            "recovery_pct": 98.41,
+            "analyzed_at": "2026-10-21 17:45:15"
           }
         ],
         "notes": ""
@@ -182,7 +182,7 @@
   "ZZ30_01": {
     "sample_id": "ZZ30_01",
     "material_name": "ZZ30 Monolith (B6 Zeo)",
-    "operator": "Shayan / Jeronimo",
+    "operator": "Shayan",
     "date": "2026-08-24",
     "mass_total_g": 0.5055,
     "water_loss_pct": 21.4,
@@ -195,7 +195,7 @@
     "notes": "Complete cyclic adsorption/desorption run",
     "status": "Analyzed",
     "created_at": "2026-09-23 18:42:27",
-    "updated_at": "2026-10-20 19:40:29",
+    "updated_at": "2026-10-21 17:38:27",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -204,15 +204,15 @@
             "sample_id": "ZZ30_01",
             "technique": "mass_spec",
             "filename": "24082026  final zz30 monoliths 1st.asc",
-            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\ZZ30_01\\mass_spec\\24082026  final zz30 monoliths 1st.asc",
+            "cloned_path": "c:\\Users\\Lenovo\\OneDrive - unizar.es\\AI Antigravity software\\data_vault\\samples\\ZZ30_01\\mass_spec\\24082026  final zz30 monoliths 1st.asc",
             "size_bytes": 1426094,
             "description": "",
             "status": "Analyzed",
             "uploaded_at": "2026-09-23 18:42:27",
-            "q_net_ads": 3.0156,
-            "q_net_des": 10.7393,
-            "recovery_pct": 356.12,
-            "analyzed_at": "2026-10-20 19:40:29"
+            "q_net_ads": 2.9902,
+            "q_net_des": 3.1215,
+            "recovery_pct": 104.39,
+            "analyzed_at": "2026-10-21 17:38:27"
           }
         ],
         "notes": ""
@@ -490,7 +490,7 @@
     "notes": "Zeolite Powder Rapeat",
     "status": "Analyzed",
     "created_at": "2026-10-20 11:45:57",
-    "updated_at": "2026-10-20 19:40:29",
+    "updated_at": "2026-10-21 17:38:27",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -507,7 +507,7 @@
             "q_net_ads": 3.4169,
             "q_net_des": 3.6934,
             "recovery_pct": 108.09,
-            "analyzed_at": "2026-10-20 19:40:29"
+            "analyzed_at": "2026-10-21 17:38:27"
           }
         ],
         "notes": ""
@@ -550,7 +550,7 @@
     "notes": "",
     "status": "Analyzed",
     "created_at": "2026-09-28 18:38:26",
-    "updated_at": "2026-10-20 19:40:29",
+    "updated_at": "2026-10-21 17:38:27",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -567,7 +567,7 @@
             "q_net_ads": 3.6636,
             "q_net_des": 1.2727,
             "recovery_pct": 34.74,
-            "analyzed_at": "2026-10-20 19:40:29"
+            "analyzed_at": "2026-10-21 17:38:27"
           }
         ],
         "notes": ""
@@ -597,7 +597,7 @@
   "aaa": {
     "sample_id": "aaa",
     "material_name": "aaa",
-    "operator": "Shayan / Jeronimo",
+    "operator": "Shayan",
     "date": "2026-09-23",
     "mass_total_g": 0.5055,
     "water_loss_pct": 21.4,
@@ -610,7 +610,7 @@
     "notes": "",
     "status": "Analyzed",
     "created_at": "2026-09-23 18:52:29",
-    "updated_at": "2026-10-20 19:40:29",
+    "updated_at": "2026-10-21 17:38:27",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -627,7 +627,7 @@
             "q_net_ads": 3.0014,
             "q_net_des": 12.7484,
             "recovery_pct": 424.75,
-            "analyzed_at": "2026-10-20 19:40:29"
+            "analyzed_at": "2026-10-21 17:38:27"
           }
         ],
         "notes": ""

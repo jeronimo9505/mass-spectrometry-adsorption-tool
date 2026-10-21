@@ -149,7 +149,7 @@ class DBManager:
             """, (
                 s_id,
                 sample_data.get("material_name", "-"),
-                sample_data.get("operator", "Shayan / Jeronimo"),
+                sample_data.get("operator", "Shayan"),
                 sample_data.get("date", "-"),
                 mass_tot,
                 water_pct,
