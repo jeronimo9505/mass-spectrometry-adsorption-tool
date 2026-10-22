@@ -1,42 +1,38 @@
-==============================================================================
-   MASS SPECTROMETRY CO2 ADSORPTION / DESORPTION REPORT
-==============================================================================
-Sample ID:                ZZ20_01
-Material Name:            ZZ18.5 B6 Zeo
-Operator:                 Shayan
-Measurement Date:         21/08/2026
-Source File:              21082026  zz20 monoliths 1st.asc
-------------------------------------------------------------------------------
-1. EXPERIMENTAL PARAMETERS:
-  - Total Initial Mass:   0.3790 g
-  - Water / Binder Loss:  0.0 %
-  - Dry Active Mass:      0.3790 g
-  - Temperature:          24.0 °C (Vm=24382.94 mL/mol)
-  - Total Flow Rate:      100.0 mL/min
-  - Feed Fraction C0:     0.15
-  - Baseline S_baseline:  7.5537e-10 A (k=1.986e+08 A⁻¹)
-  - Blank Ads Reference:  0.0000 mmol/g
-  - Blank Des Reference:  0.0000 mmol/g
-------------------------------------------------------------------------------
-2. SUMMARY OF AVERAGE CO2 CAPACITIES (q):
-  - Net Adsorption (avg): 3.5520 mmol/g  (Dry: 3.5520 | 100%: 3.5520)
-  - Net Desorption (avg): 3.4957 mmol/g  (Dry: 3.4957 | 100%: 3.4957)
-  - Desorption Recovery:  98.41 %
-----------------------------------------------------------------------------------------
-3. CYCLE-BY-CYCLE BREAKDOWN (EXCEL ANALYTICAL MODEL):
+=====================================================================================
+   MASS SPECTROMETRY CO2 ADSORPTION / DESORPTION REPORT — ZZ18.5 B6 Zeo
+=====================================================================================
+Sample ID:                 ZZ20_01
+Material Name:             ZZ18.5 B6 Zeo
+Operator:                  Shayan
+Measurement Date:          2026-08-28
+Measurement File:          21082026  zz20 monoliths 1st.asc
+-------------------------------------------------------------------------------------
+1. EXPERIMENTAL MASS & OPERATING INPUTS (EXCEL MODEL):
+  - Weighed Sample Mass:   482.0 mg  (0.4820 g)
+  - Water / Binder Loss:   21.4 %
+  - Dry (Active) Mass:     378.900 mg  (0.378900 g)
+  - Feed Fraction C0:      0.15 (15% CO2 / 85% N2)
+  - Total Gas Flow:        100.0 mL/min
+  - Temperature:           T2 = 24.0 °C (Ref T1 = 25.0 °C)
+  - Molar Volume Vm:       Vm,25 = 24465.0 mL/mol  |  Vm,exp = 24382.9 mL/mol
+  - Total Molar Flow Rate: 4.1012e-03 mol/min
+  - Baseline S_base:       7.5537e-10 A  (Sensitivity k = 1.986e+08 A⁻¹)
+  - Baseline Mode:         global_average
+-------------------------------------------------------------------------------------
+2. PERFORMANCE CAPACITY SUMMARY:
+  - Average Adsorption q:  3.5577 mmol/g (Dry Mass)  |  2.7964 mmol/g (100% Mass)
+  - Average Desorption q:  3.5136 mmol/g (Dry Mass)  |  2.7617 mmol/g (100% Mass)
+  - Desorption Recovery:   98.76 %
+-------------------------------------------------------------------------------------
+3. CYCLE-BY-CYCLE ANALYTICAL BREAKDOWN (MATCHING ORIGIN & EXCEL):
   Step     Origin Area   |A| (A·min)   S_base (A)   k (A⁻¹)     nCO2 (mmol)  q(100%)    q(Dry)    
-  Des_6    1.0110e-09    1.0110e-09    7.5537e-10   1.986e+08   0.8234       2.1726     2.1726    
-  Ads_8    -1.6545e-09   1.6545e-09    7.5711e-10   1.981e+08   1.3444       3.5471     3.5471    
-  Des_9    1.9378e-09    1.9378e-09    7.5711e-10   1.981e+08   1.5746       4.1545     4.1545    
-  Ads_11   -1.6555e-09   1.6555e-09    7.5545e-10   1.986e+08   1.3481       3.5569     3.5569    
-  Des_12   1.9361e-09    1.9361e-09    7.5545e-10   1.986e+08   1.5766       4.1600     4.1600    
-------------------------------------------------------------------------------
-4. INTEGRATED SIMPSON ROI REGIONS:
-  [Des_6] t=38.70-40.05 min (Δt=1.34) | Area=1.0110e-09 A·min | Base=raw_zero | FWHM=1.339
-  [Bas_7] t=40.35-42.35 min (Δt=2.00) | Area=0.0000e+00 A·min | Base=mean_signal | FWHM=0.000
-  [Ads_8] t=42.37-52.37 min (Δt=9.99) | Area=-1.6545e-09 A·min | Base=straight_line | FWHM=1.602
-  [Des_9] t=53.09-60.70 min (Δt=7.60) | Area=1.9378e-09 A·min | Base=raw_zero | FWHM=2.001
-  [Bas_10] t=105.34-107.34 min (Δt=1.99) | Area=0.0000e+00 A·min | Base=mean_signal | FWHM=0.000
-  [Ads_11] t=107.49-117.49 min (Δt=10.00) | Area=-1.6555e-09 A·min | Base=straight_line | FWHM=1.600
-  [Des_12] t=121.88-129.81 min (Δt=7.92) | Area=1.9361e-09 A·min | Base=raw_zero | FWHM=1.905
-==============================================================================
+  Ads_8    -1.6545e-09   1.6545e-09    7.5537e-10   1.986e+08   1.3475       2.7956     3.5567    
+  Des_9    1.6266e-09    1.6266e-09    7.5537e-10   1.986e+08   1.3247       2.7483     3.4966    
+  Ads_11   -1.6555e-09   1.6555e-09    7.5537e-10   1.986e+08   1.3482       2.7971     3.5587    
+  Des_12   1.6423e-09    1.6423e-09    7.5537e-10   1.986e+08   1.3375       2.7750     3.5305    
+-------------------------------------------------------------------------------------
+4. HIGH-RESOLUTION ARTIFACTS:
+  - 600 DPI Print Image:   c:\Users\Lenovo\OneDrive - unizar.es\AI Antigravity software\data_vault\samples\ZZ20_01\mass_spec\reports\ZZ20_01_MS_plot_600dpi.png
+  - 1200 DPI Master Image: c:\Users\Lenovo\OneDrive - unizar.es\AI Antigravity software\data_vault\samples\ZZ20_01\mass_spec\reports\ZZ20_01_MS_plot_1200dpi.png
+  - Excel CSV Table:       c:\Users\Lenovo\OneDrive - unizar.es\AI Antigravity software\data_vault\samples\ZZ20_01\mass_spec\reports\co2_breakdown_ZZ20_01.csv
+=====================================================================================

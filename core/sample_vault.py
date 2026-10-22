@@ -436,6 +436,23 @@ class SampleVault:
             f.write(report_text)
         return txt_path
 
+    def generate_and_save_full_reports(self, sample_id, filename, ranges, capacity_results, fig=None):
+        from core.report_generator import generate_comprehensive_report
+        tech_dir = self.get_technique_dir(sample_id, "mass_spec", create=True)
+        rep_dir = os.path.join(tech_dir, "reports")
+        os.makedirs(rep_dir, exist_ok=True)
+        meta = self.logbook.get(sample_id, {})
+        file_info = {"filename": filename, "date": meta.get("date", "")}
+        return generate_comprehensive_report(
+            sample_id=sample_id,
+            metadata=meta,
+            file_info=file_info,
+            capacity_results=capacity_results,
+            ranges_list=ranges,
+            reports_dir=rep_dir,
+            fig=fig
+        )
+
     def delete_sample(self, sample_id):
         self.db.delete_sample(sample_id)
         sample_folder = self.get_sample_dir(sample_id)

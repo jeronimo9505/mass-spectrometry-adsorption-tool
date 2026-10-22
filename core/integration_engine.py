@@ -221,9 +221,71 @@ def auto_detect_cycle_pairs(df, target_col="'0/6'", dt_ads=10.0, dt_des=8.0, dt_
                 "mean_signal": avg_base_val
             })
 
-        # 4. Create Adsorption Region (10 min standard duration, horizontal baseline at 2-min pre-drop average)
+        # 4. Search for Desorption Region First
+        # Window starts from onset_t + max(5.0, dt_ads - 2.5) to avoid missing early takeoff
+        des_search_start = onset_t + max(5.0, dt_ads - 2.5)
+        des_search_end = min(t_max, onset_t + dt_ads + 8.0, next_onset)
+        m_des_search = (t >= des_search_start) & (t <= des_search_end)
+        sub_t_des = t[m_des_search]
+        sub_y_des = y[m_des_search]
+
+        des_start = round(onset_t + dt_ads, 2)
+        des_end = round(min(t_max, des_start + dt_des, next_onset), 2)
+
+        if len(sub_y_des) > 5:
+            # Find the acute desorption peak
+            pks, _ = find_peaks(sub_y_des, prominence=max(2e-11, 0.04 * y_max), distance=max(2, int(0.4 / dt_avg)))
+            first_pk_idx = pks[0] if len(pks) > 0 else np.argmax(sub_y_des)
+            first_pk_t = float(sub_t_des[first_pk_idx])
+            first_pk_val = float(sub_y_des[first_pk_idx])
+
+            # Measure flat breakthrough plateau before the desorption spike
+            m_plat = (t >= first_pk_t - 2.2) & (t <= first_pk_t - 0.6)
+            plat_mean = float(np.mean(y[m_plat])) if np.any(m_plat) else avg_base_val
+            plat_std = float(np.std(y[m_plat])) if np.any(m_plat) else 1e-12
+
+            # Find forward takeoff point ("jider sy bilkul peak uper jati hai")
+            m_takeoff = (t >= first_pk_t - 1.2) & (t <= first_pk_t)
+            t_takeoff = t[m_takeoff]
+            y_takeoff = y[m_takeoff]
+            rise_thresh = plat_mean + max(2.2 * plat_std, 1.2e-12)
+
+            found_takeoff = None
+            pts_015 = max(3, int(0.15 / dt_avg))
+            for idx_to in range(len(t_takeoff)):
+                if y_takeoff[idx_to] > rise_thresh:
+                    # Initial takeoff begins right at the foot (~0.15 min before steep threshold crossing)
+                    foot_idx = max(0, idx_to - pts_015)
+                    found_takeoff = t_takeoff[foot_idx]
+                    break
+
+            if found_takeoff is not None:
+                des_start = round(float(found_takeoff), 2)
+            else:
+                des_start = round(float(first_pk_t - 0.25), 2)
+
+            # Locate return to zero floor, capped at dt_des
+            max_des_end = min(t_max, des_start + dt_des, next_onset)
+            m_tail = (t >= first_pk_t) & (t <= max_des_end + 0.2)
+            tail_t = t[m_tail]
+            tail_y = y[m_tail]
+            if len(tail_y) > 0:
+                floor_val = float(np.min(tail_y))
+                zero_thresh = max(1.5e-13, floor_val + 6.0e-14, 0.0004 * y_max)
+                zero_found_t = max_des_end
+                for idx_m in range(len(tail_t)):
+                    if tail_t[idx_m] - first_pk_t > 0.8:
+                        if tail_y[idx_m] <= zero_thresh:
+                            if np.all(tail_y[idx_m:min(len(tail_y), idx_m + 3)] <= zero_thresh * 1.5):
+                                zero_found_t = float(tail_t[idx_m])
+                                break
+                des_end = round(min(max_des_end, zero_found_t), 2)
+                if des_end < des_start + 1.5:
+                    des_end = round(min(t_max, des_start + min(5.0, dt_des)), 2)
+
+        # 5. Create Adsorption Region (ends right where Desorption takes off, capped at dt_ads)
         ads_start = onset_t
-        ads_end = round(min(t_max, ads_start + dt_ads, next_onset), 2)
+        ads_end = round(min(des_start, ads_start + dt_ads), 2)
         if ads_end > ads_start + 0.5:
             detected_ranges.append({
                 "id": len(detected_ranges) + 1,
@@ -236,75 +298,16 @@ def auto_detect_cycle_pairs(df, target_col="'0/6'", dt_ads=10.0, dt_des=8.0, dt_
                 "color": "#ffff99"
             })
 
-        # 5. Create Desorption Region
-        # Starts exactly where the signal begins rising ('desde donde empieza a subir')
-        # Ends where the tail returns to zero baseline ('hasta llegar a cero'), capped at max dt_des (<= 8 min)
-        if ads_end < t_max - 0.5:
-            next_onset = t_max
-            if cycle_num < len(cycle_min_indices):
-                next_min_idx = cycle_min_indices[cycle_num]
-                next_onset = float(t[next_min_idx] - 3.0)
-
-            # Search forward from ads_end for the desorption peak
-            search_end = min(t_max, ads_end + 6.0, next_onset)
-            m_des = (t >= ads_end) & (t <= search_end)
-            sub_t_des = t[m_des]
-            sub_y_des = y[m_des]
-
-            if len(sub_y_des) > 3:
-                # Find the FIRST acute desorption peak that takes off from baseline
-                pks, _ = find_peaks(sub_y_des, prominence=max(2e-11, 0.03 * y_max), distance=max(2, int(0.4 / dt_avg)))
-                first_pk_idx = pks[0] if len(pks) > 0 else np.argmax(sub_y_des)
-                first_pk_val = sub_y_des[first_pk_idx]
-                first_pk_t = sub_t_des[first_pk_idx]
-
-                pre_y = sub_y_des[:first_pk_idx + 1]
-                pre_t = sub_t_des[:first_pk_idx + 1]
-                base_des = np.min(pre_y)
-
-                # Find takeoff point (where y rises > 2% of peak above pre-peak baseline)
-                thresh_rise = base_des + 0.02 * (first_pk_val - base_des)
-                takeoff_k = 0
-                for k in range(first_pk_idx, -1, -1):
-                    if pre_y[k] <= thresh_rise:
-                        takeoff_k = k
-                        break
-
-                # Refine to exact local minimum / takeoff in small window [-0.15 min, +0.02 min]
-                w_s = max(0, takeoff_k - int(0.15 / dt_avg))
-                w_e = min(len(pre_y), takeoff_k + int(0.02 / dt_avg) + 1)
-                min_k = w_s + np.argmin(pre_y[w_s:w_e])
-                des_start = round(float(pre_t[min_k]), 2)
-
-                # Locate return to zero floor, capped at dt_des (default 8.0 min max)
-                max_des_end = min(t_max, des_start + dt_des, next_onset)
-                m_tail = (t >= first_pk_t) & (t <= max_des_end + 0.05)
-                tail_t = t[m_tail]
-                tail_y = y[m_tail]
-
-                floor_val = np.min(tail_y) if len(tail_y) > 0 else 0.0
-                zero_thresh = max(1.5e-13, floor_val + 6.0e-14, 0.0003 * y_max)
-
-                zero_found_t = max_des_end
-                for idx_m in range(len(tail_t)):
-                    if tail_t[idx_m] - first_pk_t > 0.8:
-                        if tail_y[idx_m] <= zero_thresh:
-                            if np.all(tail_y[idx_m:min(len(tail_y), idx_m + 3)] <= zero_thresh * 1.5):
-                                zero_found_t = float(tail_t[idx_m])
-                                break
-
-                des_end = round(min(max_des_end, zero_found_t), 2)
-                if des_end < des_start + 1.0:
-                    des_end = round(min(t_max, des_start + min(6.0, dt_des)), 2)
-
-                detected_ranges.append({
-                    "id": len(detected_ranges) + 1,
-                    "type_name": f"Des_{len(detected_ranges) + 1}",
-                    "phase": "desorption",
-                    "start_min": des_start,
-                    "end_min": des_end,
-                    "baseline": "raw_zero",
-                    "color": "#ff99ff"
-                })
+        # 6. Create Desorption Region (from takeoff to zero floor, raw_zero baseline)
+        if des_end > des_start + 0.5:
+            detected_ranges.append({
+                "id": len(detected_ranges) + 1,
+                "type_name": f"Des_{len(detected_ranges) + 1}",
+                "phase": "desorption",
+                "start_min": des_start,
+                "end_min": des_end,
+                "baseline": "raw_zero",
+                "color": "#ff99ff"
+            })
 
     return detected_ranges

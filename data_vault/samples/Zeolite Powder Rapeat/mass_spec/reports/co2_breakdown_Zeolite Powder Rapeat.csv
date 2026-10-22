@@ -1,0 +1,25 @@
+Sample ID,Zeolite Powder Rapeat
+Material Name,Zeolite Powder Rapeat
+Total Mass (mg),620.0
+Total Mass (g),0.6200
+Water Loss (%),21.4
+Dry Mass (mg),487.300
+Dry Mass (g),0.487300
+Feed C0,0.15
+Total Flow (mL/min),100.0
+Temperature T2 (°C),24.0
+
+Step,Origin Area (A*min),|A| (A*min),S_base (A),k (A^-1),nCO2 (mol),nCO2 (mmol),q (mmol/g) 100% Mass,q (mmol/g) (Dry Mass),FWHM (min),Duration (min)
+Ads_2,-2.2003e-09,2.2003e-09,7.8060e-10,1.922e+08,1.7340e-03,1.7340,2.7968,3.5583,0.0000,21.25
+Des_3,2.1841e-09,2.1841e-09,7.8060e-10,1.922e+08,1.7213e-03,1.7213,2.7763,3.5321,0.0000,7.07
+Ads_5,-2.2210e-09,2.2210e-09,7.7830e-10,1.927e+08,1.7555e-03,1.7555,2.8315,3.6024,0.0000,20.96
+Des_6,2.2063e-09,2.2063e-09,7.7830e-10,1.927e+08,1.7439e-03,1.7439,2.8127,3.5786,0.0000,6.87
+Ads_8,-2.1071e-09,2.1071e-09,7.5414e-10,1.989e+08,1.7188e-03,1.7188,2.7723,3.5271,0.0000,21.00
+Des_9,2.0155e-09,2.0155e-09,7.5414e-10,1.989e+08,1.6441e-03,1.6441,2.6518,3.3738,0.0000,5.85
+
+AVERAGES
+Adsorption q (100% Mass),2.8002,mmol/g
+Adsorption q (Dry Mass),3.5626,mmol/g
+Desorption q (100% Mass),2.7469,mmol/g
+Desorption q (Dry Mass),3.4948,mmol/g
+Desorption Recovery,98.10,%

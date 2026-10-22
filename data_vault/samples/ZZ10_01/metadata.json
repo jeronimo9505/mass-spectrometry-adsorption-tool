@@ -1,0 +1,65 @@
+{
+  "sample_id": "ZZ10_01",
+  "material_name": "ZZ 10 B6 Zeolite",
+  "operator": "Shayan",
+  "date": "2026-09-01",
+  "mass_total_g": 0.3785,
+  "water_loss_pct": 21.4,
+  "mass_active_g": 0.297501,
+  "ref_ads": 0.0,
+  "ref_des": 0.0,
+  "c0": 0.15,
+  "flow_total": 100.0,
+  "temp_c": 24.0,
+  "notes": "Full 3 continuous cycles",
+  "status": "Analyzed",
+  "created_at": "2026-09-23 18:42:27",
+  "updated_at": "2026-10-22 17:25:10",
+  "characterizations": {
+    "mass_spec": {
+      "files": [
+        {
+          "id": 13,
+          "sample_id": "ZZ10_01",
+          "technique": "mass_spec",
+          "filename": "01092026 zz10 monolith final full 3 cycles.asc",
+          "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\ZZ10_01\\mass_spec\\01092026 zz10 monolith final full 3 cycles.asc",
+          "size_bytes": 1352744,
+          "description": "",
+          "status": "Analyzed",
+          "uploaded_at": "2026-09-23 18:42:27",
+          "q_net_ads": 2.179,
+          "q_net_des": 2.3014,
+          "recovery_pct": 105.62,
+          "analyzed_at": "2026-10-22 17:23:31"
+        }
+      ],
+      "notes": ""
+    },
+    "thermal_profile": {
+      "files": []
+    },
+    "tga": {
+      "files": []
+    },
+    "rheology": {
+      "files": []
+    },
+    "tomography": {
+      "files": []
+    },
+    "sem_tem": {
+      "files": []
+    },
+    "hg_porosimetry": {
+      "files": []
+    },
+    "bet": {
+      "files": []
+    },
+    "documents": {
+      "files": [],
+      "notes": ""
+    }
+  }
+}

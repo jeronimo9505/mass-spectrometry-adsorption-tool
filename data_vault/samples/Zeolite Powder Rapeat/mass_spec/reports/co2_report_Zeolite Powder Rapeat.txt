@@ -1,40 +1,40 @@
-==============================================================================
-   MASS SPECTROMETRY CO2 ADSORPTION / DESORPTION REPORT
-==============================================================================
-Sample ID:                Zeolite Powder Rapeat
-Material Name:            Zeolite Powder Rapeat
-Operator:                 Shayan
-Measurement Date:         15/10/2026
-Source File:              15 10 2026 zeolite powder repeat 1st ads des.asc
-------------------------------------------------------------------------------
-1. EXPERIMENTAL PARAMETERS:
-  - Total Initial Mass:   0.6200 g
-  - Water / Binder Loss:  21.4 %
-  - Dry Active Mass:      0.4873 g
-  - Temperature:          24.0 °C (Vm=24382.94 mL/mol)
-  - Total Flow Rate:      100.0 mL/min
-  - Feed Fraction C0:     0.15
-  - Baseline S_baseline:  7.6964e-10 A (k=1.949e+08 A⁻¹)
-  - Blank Ads Reference:  0.2300 mmol/g
-  - Blank Des Reference:  0.0000 mmol/g
-------------------------------------------------------------------------------
-2. SUMMARY OF AVERAGE CO2 CAPACITIES (q):
-  - Net Adsorption (avg): 3.4169 mmol/g  (Dry: 3.6469 | 100%: 2.8665)
-  - Net Desorption (avg): 3.6934 mmol/g  (Dry: 3.6934 | 100%: 2.9030)
-  - Desorption Recovery:  108.09 %
-----------------------------------------------------------------------------------------
-3. CYCLE-BY-CYCLE BREAKDOWN (EXCEL ANALYTICAL MODEL):
+=====================================================================================
+   MASS SPECTROMETRY CO2 ADSORPTION / DESORPTION REPORT — Zeolite Powder Rapeat
+=====================================================================================
+Sample ID:                 Zeolite Powder Rapeat
+Material Name:             Zeolite Powder Rapeat
+Operator:                  Shayan
+Measurement Date:          2026-10-15
+Measurement File:          15 10 2026 zeolite powder repeat 1st ads des.asc
+-------------------------------------------------------------------------------------
+1. EXPERIMENTAL MASS & OPERATING INPUTS (EXCEL MODEL):
+  - Weighed Sample Mass:   620.0 mg  (0.6200 g)
+  - Water / Binder Loss:   21.4 %
+  - Dry (Active) Mass:     487.300 mg  (0.487300 g)
+  - Feed Fraction C0:      0.15 (15% CO2 / 85% N2)
+  - Total Gas Flow:        100.0 mL/min
+  - Temperature:           T2 = 24.0 °C (Ref T1 = 25.0 °C)
+  - Molar Volume Vm:       Vm,25 = 24465.0 mL/mol  |  Vm,exp = 24382.9 mL/mol
+  - Total Molar Flow Rate: 4.1012e-03 mol/min
+  - Baseline S_base:       7.6193e-10 A  (Sensitivity k = 1.969e+08 A⁻¹)
+  - Baseline Mode:         ads_first_point
+-------------------------------------------------------------------------------------
+2. PERFORMANCE CAPACITY SUMMARY:
+  - Average Adsorption q:  3.5626 mmol/g (Dry Mass)  |  2.8002 mmol/g (100% Mass)
+  - Average Desorption q:  3.4948 mmol/g (Dry Mass)  |  2.7469 mmol/g (100% Mass)
+  - Desorption Recovery:   98.10 %
+-------------------------------------------------------------------------------------
+3. CYCLE-BY-CYCLE ANALYTICAL BREAKDOWN (MATCHING ORIGIN & EXCEL):
   Step     Origin Area   |A| (A·min)   S_base (A)   k (A⁻¹)     nCO2 (mmol)  q(100%)    q(Dry)    
-  Ads_2    -2.2252e-09   2.2252e-09    7.7612e-10   1.933e+08   1.7638       2.8448     3.6194    
-  Des_3    2.2036e-09    2.2036e-09    7.7612e-10   1.933e+08   1.7466       2.8172     3.5842    
-  Ads_5    -2.2213e-09   2.2213e-09    7.6316e-10   1.966e+08   1.7906       2.8881     3.6744    
-  Des_6    2.2989e-09    2.2989e-09    7.6316e-10   1.966e+08   1.8531       2.9889     3.8027    
-------------------------------------------------------------------------------
-4. INTEGRATED SIMPSON ROI REGIONS:
-  [Bas_1] t=1.00-5.01 min (Δt=3.99) | Area=0.0000e+00 A·min | Base=mean_signal | FWHM=0.000
-  [Ads_2] t=5.21-27.21 min (Δt=21.98) | Area=-2.2252e-09 A·min | Base=straight_line | FWHM=1.290
-  [Des_3] t=27.58-33.58 min (Δt=5.99) | Area=2.2036e-09 A·min | Base=raw_zero | FWHM=2.131
-  [Bas_4] t=53.05-54.82 min (Δt=1.76) | Area=0.0000e+00 A·min | Base=mean_signal | FWHM=0.000
-  [Ads_5] t=55.15-77.15 min (Δt=21.98) | Area=-2.2213e-09 A·min | Base=straight_line | FWHM=1.322
-  [Des_6] t=77.53-83.50 min (Δt=5.96) | Area=2.2989e-09 A·min | Base=raw_zero | FWHM=3.108
-==============================================================================
+  Ads_2    -2.2003e-09   2.2003e-09    7.8060e-10   1.922e+08   1.7340       2.7968     3.5583    
+  Des_3    2.1841e-09    2.1841e-09    7.8060e-10   1.922e+08   1.7213       2.7763     3.5321    
+  Ads_5    -2.2210e-09   2.2210e-09    7.7830e-10   1.927e+08   1.7555       2.8315     3.6024    
+  Des_6    2.2063e-09    2.2063e-09    7.7830e-10   1.927e+08   1.7439       2.8127     3.5786    
+  Ads_8    -2.1071e-09   2.1071e-09    7.5414e-10   1.989e+08   1.7188       2.7723     3.5271    
+  Des_9    2.0155e-09    2.0155e-09    7.5414e-10   1.989e+08   1.6441       2.6518     3.3738    
+-------------------------------------------------------------------------------------
+4. HIGH-RESOLUTION ARTIFACTS:
+  - 600 DPI Print Image:   c:\Users\Lenovo\OneDrive - unizar.es\AI Antigravity software\data_vault\samples\Zeolite Powder Rapeat\mass_spec\reports\Zeolite Powder Rapeat_MS_plot_600dpi.png
+  - 1200 DPI Master Image: c:\Users\Lenovo\OneDrive - unizar.es\AI Antigravity software\data_vault\samples\Zeolite Powder Rapeat\mass_spec\reports\Zeolite Powder Rapeat_MS_plot_1200dpi.png
+  - Excel CSV Table:       c:\Users\Lenovo\OneDrive - unizar.es\AI Antigravity software\data_vault\samples\Zeolite Powder Rapeat\mass_spec\reports\co2_breakdown_Zeolite Powder Rapeat.csv
+=====================================================================================

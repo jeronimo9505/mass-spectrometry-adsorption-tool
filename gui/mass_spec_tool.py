@@ -50,8 +50,8 @@ class MassSpecToolView(ttk.Frame):
         self.drag_initial_range = None
 
         # Capacity Parameters (Matching Excel experimental parameters)
-        self.cap_mass_mg_var = tk.DoubleVar(value=620.0)
-        self.cap_mass_var = tk.DoubleVar(value=0.62)
+        self.cap_mass_mg_var = tk.DoubleVar(value=378.5)
+        self.cap_mass_var = tk.DoubleVar(value=0.3785)
         self.cap_water_pct_var = tk.DoubleVar(value=21.4)
         self.cap_c0_var = tk.DoubleVar(value=0.15)
         self.cap_flow_co2_var = tk.DoubleVar(value=15.0)
@@ -63,7 +63,7 @@ class MassSpecToolView(ttk.Frame):
         self.cap_ref_ads_var = tk.DoubleVar(value=0.00)
         self.cap_ref_des_var = tk.DoubleVar(value=0.00)
         self.cap_s_baseline_var = tk.DoubleVar(value=0.0)
-        self.cap_k_mode_var = tk.StringVar(value="ads_first_point")
+        self.cap_k_mode_var = tk.StringVar(value="global_average")
         self.cap_area_ads_var = tk.DoubleVar(value=1.5054e-9)
         self.cap_area_des_var = tk.DoubleVar(value=1.06058e-10)
         self.cap_auto_sync_var = tk.BooleanVar(value=True)
@@ -470,8 +470,11 @@ class MassSpecToolView(ttk.Frame):
         t_bar = ttk.Frame(parent)
         t_bar.pack(fill=tk.X, pady=(0, 6))
 
-        ttk.Button(t_bar, text="📋 Copy Report", command=self.on_copy_report).pack(side=tk.LEFT, padx=3)
-        ttk.Button(t_bar, text="💾 Save to Vault", command=self.on_save_report_file).pack(side=tk.LEFT, padx=3)
+        ttk.Button(t_bar, text="📋 Copy Text", command=self.on_copy_report).pack(side=tk.LEFT, padx=2)
+        ttk.Button(t_bar, text="💾 Save to Vault", command=self.on_save_report_file).pack(side=tk.LEFT, padx=2)
+        ttk.Button(t_bar, text="📸 Save 600 & 1200 DPI Images", command=self.on_export_highres_backend).pack(side=tk.LEFT, padx=2)
+        ttk.Button(t_bar, text="🌐 Open HTML Report", command=self.on_open_html_report).pack(side=tk.LEFT, padx=2)
+        ttk.Button(t_bar, text="📊 Open CSV (Excel)", command=self.on_open_csv_breakdown).pack(side=tk.LEFT, padx=2)
 
         self.report_text = tk.Text(parent, wrap="none", font=("Consolas", 9))
         scroll_rt = ttk.Scrollbar(parent, orient=tk.VERTICAL, command=self.report_text.yview)
@@ -528,12 +531,15 @@ class MassSpecToolView(ttk.Frame):
         # Pull parameters from sample metadata
         if sample_id and sample_id in self.vault.logbook:
             meta = self.vault.logbook[sample_id]
-            self.cap_mass_var.set(float(meta.get("mass_total_g", 0.5055)))
+            m_val = float(meta.get("mass_total_g", 0.3785))
+            self.cap_mass_var.set(m_val)
+            self.cap_mass_mg_var.set(m_val * 1000.0)
             self.cap_water_pct_var.set(float(meta.get("water_loss_pct", 21.4)))
             self.cap_c0_var.set(float(meta.get("c0", 0.15)))
             self.cap_flow_total_var.set(float(meta.get("flow_total", 100.0)))
             self.cap_temp_var.set(float(meta.get("temp_c", 24.0)))
-            self.cap_ref_ads_var.set(float(meta.get("ref_ads", 0.23)))
+            self.cap_ref_ads_var.set(float(meta.get("ref_ads", 0.00)))
+            self.cap_ref_des_var.set(float(meta.get("ref_des", 0.00)))
 
         self.lbl_active_banner.config(
             text=f"🏷️ Sample: {sample_id or 'No ID'}  |  File: {os.path.basename(asc_fpath)}"
@@ -1236,16 +1242,96 @@ class MassSpecToolView(ttk.Frame):
             report_text=rep_txt
         )
 
-        # 3. Save report text file inside the sample's directory
-        self.vault.save_sample_report(self.current_sample_id, rep_txt, title="co2_report")
+        # 3. Automatically generate and save 600 DPI & 1200 DPI images, HTML report, and CSV breakdown
+        rep_paths = self.vault.generate_and_save_full_reports(
+            sample_id=self.current_sample_id,
+            filename=fn,
+            ranges=self.ranges_list,
+            capacity_results=self.last_capacity_results,
+            fig=self.fig
+        )
 
         messagebox.showinfo(
-            "Analysis Saved", 
-            f"File '{fn}' cloned into local sample vault.\n"
-            f"CO₂ capacity results recorded into Database for '{self.current_sample_id}'."
+            "Analysis & Artifacts Saved", 
+            f"Measurement '{fn}' recorded into Database for '{self.current_sample_id}'.\n\n"
+            f"Artifacts saved into sample vault:\n"
+            f"• 600 DPI Image:   {os.path.basename(rep_paths.get('600_dpi', ''))}\n"
+            f"• 1200 DPI Image:  {os.path.basename(rep_paths.get('1200_dpi', ''))}\n"
+            f"• Complete HTML:   {os.path.basename(rep_paths.get('html', ''))}\n"
+            f"• Excel CSV Table: {os.path.basename(rep_paths.get('csv', ''))}"
         )
         if self.on_analysis_saved_callback:
             self.on_analysis_saved_callback(self.current_sample_id)
+
+    def on_export_highres_backend(self):
+        if not self.current_sample_id:
+            messagebox.showwarning("No Sample", "No active sample selected in the Logbook.")
+            return
+        fn = os.path.basename(self.current_fpath) if self.current_fpath else "measurement.asc"
+        rep_paths = self.vault.generate_and_save_full_reports(
+            sample_id=self.current_sample_id,
+            filename=fn,
+            ranges=self.ranges_list,
+            capacity_results=self.last_capacity_results,
+            fig=self.fig
+        )
+        messagebox.showinfo(
+            "High-Resolution Images Saved",
+            f"Saved 600 DPI & 1200 DPI images to sample vault:\n\n"
+            f"• 600 DPI:  {rep_paths.get('600_dpi')}\n"
+            f"• 1200 DPI: {rep_paths.get('1200_dpi')}\n"
+            f"• HTML Report: {rep_paths.get('html')}\n"
+            f"• Excel CSV: {rep_paths.get('csv')}"
+        )
+
+    def on_open_html_report(self):
+        if not self.current_sample_id:
+            messagebox.showwarning("No Sample", "No active sample selected in the Logbook.")
+            return
+        tech_dir = self.vault.get_technique_dir(self.current_sample_id, "mass_spec", create=False)
+        html_p = os.path.join(tech_dir, "reports", f"co2_report_{self.current_sample_id}.html")
+        if not os.path.exists(html_p):
+            fn = os.path.basename(self.current_fpath) if self.current_fpath else "measurement.asc"
+            res = self.vault.generate_and_save_full_reports(
+                sample_id=self.current_sample_id,
+                filename=fn,
+                ranges=self.ranges_list,
+                capacity_results=self.last_capacity_results,
+                fig=self.fig
+            )
+            html_p = res.get("html", html_p)
+
+        if os.path.exists(html_p):
+            import webbrowser
+            webbrowser.open(f"file:///{os.path.abspath(html_p)}")
+        else:
+            messagebox.showerror("Not Found", f"HTML report not found:\n{html_p}")
+
+    def on_open_csv_breakdown(self):
+        if not self.current_sample_id:
+            messagebox.showwarning("No Sample", "No active sample selected in the Logbook.")
+            return
+        tech_dir = self.vault.get_technique_dir(self.current_sample_id, "mass_spec", create=False)
+        csv_p = os.path.join(tech_dir, "reports", f"co2_breakdown_{self.current_sample_id}.csv")
+        if not os.path.exists(csv_p):
+            fn = os.path.basename(self.current_fpath) if self.current_fpath else "measurement.asc"
+            res = self.vault.generate_and_save_full_reports(
+                sample_id=self.current_sample_id,
+                filename=fn,
+                ranges=self.ranges_list,
+                capacity_results=self.last_capacity_results,
+                fig=self.fig
+            )
+            csv_p = res.get("csv", csv_p)
+
+        if os.path.exists(csv_p):
+            try:
+                os.startfile(os.path.abspath(csv_p))
+            except Exception:
+                import webbrowser
+                webbrowser.open(f"file:///{os.path.abspath(csv_p)}")
+        else:
+            messagebox.showerror("Not Found", f"CSV file not found:\n{csv_p}")
 
     # ==================== REPORT GENERATION ====================
 

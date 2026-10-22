@@ -1,6 +1,6 @@
 {
   "sample_id": "ZZ20_01",
-  "material_name": "ZZ18.5 B6 Zeo",
+  "material_name": "ZZ18.5 B6 Zeoite",
   "operator": "Shayan",
   "date": "2026-08-28",
   "mass_total_g": 0.379,
@@ -12,9 +12,9 @@
   "flow_total": 100.0,
   "temp_c": 24.0,
   "notes": "",
-  "status": "Registered",
+  "status": "Analyzed",
   "created_at": "2026-09-23 18:42:27",
-  "updated_at": "2026-10-20 13:19:53",
+  "updated_at": "2026-10-22 23:07:34",
   "characterizations": {
     "mass_spec": {
       "files": [
@@ -23,33 +23,94 @@
           "sample_id": "ZZ20_01",
           "technique": "mass_spec",
           "filename": "21082026  zz20 monoliths 1st.asc",
-          "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ20_01\\mass_spec\\21082026  zz20 monoliths 1st.asc",
+          "cloned_path": "c:\\Users\\Lenovo\\OneDrive - unizar.es\\AI Antigravity software\\data_vault\\samples\\ZZ20_01\\mass_spec\\21082026  zz20 monoliths 1st.asc",
           "size_bytes": 1262256,
-          "description": "Measurement file for ZZ20 Monolith",
-          "status": "Pending",
+          "description": "",
+          "status": "Analyzed",
           "uploaded_at": "2026-09-23 18:42:27",
-          "q_net_ads": null,
-          "q_net_des": null,
-          "recovery_pct": null,
-          "analyzed_at": null
+          "q_net_ads": 3.5577,
+          "q_net_des": 3.5136,
+          "recovery_pct": 98.76,
+          "analyzed_at": "2026-10-22 23:07:01"
         }
       ],
       "notes": ""
     },
-    "xrd": {
-      "files": [],
-      "notes": ""
-    },
-    "bet": {
-      "files": []
+    "thermal_profile": {
+      "files": [
+        {
+          "id": 94,
+          "sample_id": "ZZ20_01",
+          "technique": "thermal_profile",
+          "filename": "ZZ 18.5 Vertical Heat Map.png",
+          "cloned_path": "c:\\Users\\Lenovo\\OneDrive - unizar.es\\AI Antigravity software\\data_vault\\samples\\ZZ20_01\\thermal_profile\\ZZ 18.5 Vertical Heat Map.png",
+          "size_bytes": 1043041,
+          "description": "Heatmap",
+          "status": "Pending",
+          "uploaded_at": "2026-10-22 01:17:43"
+        },
+        {
+          "id": 92,
+          "sample_id": "ZZ20_01",
+          "technique": "thermal_profile",
+          "filename": "ZZ 18.5 Horizontal Heat Map.png",
+          "cloned_path": "c:\\Users\\Lenovo\\OneDrive - unizar.es\\AI Antigravity software\\data_vault\\samples\\ZZ20_01\\thermal_profile\\ZZ 18.5 Horizontal Heat Map.png",
+          "size_bytes": 881462,
+          "description": "Heatmap",
+          "status": "Pending",
+          "uploaded_at": "2026-10-22 01:17:42"
+        },
+        {
+          "id": 93,
+          "sample_id": "ZZ20_01",
+          "technique": "thermal_profile",
+          "filename": "ZZ 18.5 Ver time temp profile.png",
+          "cloned_path": "c:\\Users\\Lenovo\\OneDrive - unizar.es\\AI Antigravity software\\data_vault\\samples\\ZZ20_01\\thermal_profile\\ZZ 18.5 Ver time temp profile.png",
+          "size_bytes": 707309,
+          "description": "Vertical",
+          "status": "Pending",
+          "uploaded_at": "2026-10-22 01:17:42"
+        },
+        {
+          "id": 91,
+          "sample_id": "ZZ20_01",
+          "technique": "thermal_profile",
+          "filename": "ZZ 18.5 Hori time temp profile.png",
+          "cloned_path": "c:\\Users\\Lenovo\\OneDrive - unizar.es\\AI Antigravity software\\data_vault\\samples\\ZZ20_01\\thermal_profile\\ZZ 18.5 Hori time temp profile.png",
+          "size_bytes": 631529,
+          "description": "Horizontal",
+          "status": "Pending",
+          "uploaded_at": "2026-10-22 01:17:41"
+        },
+        {
+          "id": 90,
+          "sample_id": "ZZ20_01",
+          "technique": "thermal_profile",
+          "filename": "ZZ 18.5 Hori and Ver time temp profile at same level.png",
+          "cloned_path": "c:\\Users\\Lenovo\\OneDrive - unizar.es\\AI Antigravity software\\data_vault\\samples\\ZZ20_01\\thermal_profile\\ZZ 18.5 Hori and Ver time temp profile at same level.png",
+          "size_bytes": 573963,
+          "description": "Comparison",
+          "status": "Pending",
+          "uploaded_at": "2026-10-22 01:17:40"
+        }
+      ]
     },
     "tga": {
+      "files": []
+    },
+    "rheology": {
+      "files": []
+    },
+    "tomography": {
       "files": []
     },
     "sem_tem": {
       "files": []
     },
-    "rheology": {
+    "hg_porosimetry": {
+      "files": []
+    },
+    "bet": {
       "files": []
     },
     "documents": {

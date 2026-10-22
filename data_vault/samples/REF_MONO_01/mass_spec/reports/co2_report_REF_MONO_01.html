@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CO2 Adsorption/Desorption Report — REF_MONO_01 (Reference Monolith Valencia)</title>
+    <style>
+        :root {
+            --primary: #1d3557;
+            --accent: #457b9d;
+            --success: #2a9d8f;
+            --warm: #e76f51;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+            --text: #2d3748;
+            --text-light: #718096;
+        }
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 24px;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .header {
+            background: linear-gradient(135deg, #1d3557 0%, #457b9d 100%);
+            color: white;
+            padding: 28px 32px;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        .header h1 {
+            margin: 0 0 8px 0;
+            font-size: 24px;
+            letter-spacing: -0.5px;
+        }
+        .header-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 13px;
+            opacity: 0.95;
+            margin-top: 12px;
+        }
+        .header-meta span {
+            background: rgba(255,255,255,0.15);
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+        .grid-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            text-align: center;
+        }
+        .stat-card .label {
+            font-size: 12px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .stat-card .value {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 6px 0;
+        }
+        .stat-card .sub {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        }
+        .card h3 {
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 17px;
+            color: var(--primary);
+            border-bottom: 2px solid #edf2f7;
+            padding-bottom: 8px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        th, td {
+            padding: 10px 12px;
+            text-align: right;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            background-color: #f1f5f9;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        th:first-child, td:first-child {
+            text-align: left;
+        }
+        tr:hover {
+            background-color: #f8fafc;
+        }
+        .highlight-val {
+            color: #1d3557;
+            background-color: #f0fdf4;
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .badge-ads {
+            background-color: #fef08a;
+            color: #854d0e;
+        }
+        .badge-des {
+            background-color: #fbcfe8;
+            color: #9d174d;
+        }
+        .params-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            font-size: 13px;
+        }
+        .param-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px dashed #edf2f7;
+        }
+        .param-row .p-name {
+            color: var(--text-light);
+        }
+        .param-row .p-val {
+            font-weight: 600;
+        }
+        .figure-card {
+            text-align: center;
+        }
+        .img-container {
+            max-width: 100%;
+            overflow: hidden;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin: 12px 0;
+            background: white;
+        }
+        .responsive-img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        .fig-caption {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 6px;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-light);
+            padding: 16px 0 24px 0;
+        }
+        code {
+            background: #f1f5f9;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: Consolas, monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📑 Mass Spectrometry CO₂ Adsorption & Desorption Analysis</h1>
+            <div style="font-size: 15px; font-weight: 500;">Reference Monolith Valencia &nbsp;—&nbsp; Sample <code>REF_MONO_01</code></div>
+            <div class="header-meta">
+                <span>👤 Operator: <strong>Shayan</strong></span>
+                <span>📅 Date: <strong>2026-08-28</strong></span>
+                <span>📁 File: <strong>28082026  ref monolith valencia zz20 sample final 3 cycles ads and desortion.asc</strong></span>
+                <span>🔬 Instrument: <strong>Quadrupole MID Mass Spectrometer</strong></span>
+            </div>
+        </div>
+
+        <!-- Key Performance Indicators (Cards) -->
+        <div class="grid-summary">
+            <div class="stat-card">
+                <div class="label">Adsorption Capacity (Dry)</div>
+                <div class="value">0.235 <span style="font-size: 15px; font-weight: normal;">mmol/g</span></div>
+                <div class="sub">100% Mass: 0.235 mmol/g</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Desorption Capacity (Dry)</div>
+                <div class="value">0.077 <span style="font-size: 15px; font-weight: normal;">mmol/g</span></div>
+                <div class="sub">100% Mass: 0.077 mmol/g</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Desorption Recovery</div>
+                <div class="value" style="color: #e76f51;">32.6 %</div>
+                <div class="sub">Cyclic regeneration efficiency</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Active Dry Mass</div>
+                <div class="value">920.0 <span style="font-size: 15px; font-weight: normal;">mg</span></div>
+                <div class="sub">Weighed: 920.0 mg (Water: 0.0%)</div>
+            </div>
+        </div>
+
+        <!-- Chromatogram Figure -->
+        
+        <div class="card figure-card">
+            <h3>📈 Multi-Cycle Mass Spectrometry Chromatogram & ROI Shading (600 DPI)</h3>
+            <div class="img-container">
+                <img src="REF_MONO_01_MS_plot_600dpi.png" alt="Mass Spectrometry Chromatogram" class="responsive-img"/>
+            </div>
+            <p class="fig-caption">Figure: Continuous Multi-Cycle Adsorption (yellow fill) and Desorption (pink fill) Simpson Composite Integration.</p>
+        </div>
+        
+
+        <!-- Cycle Breakdown Table -->
+        <div class="card">
+            <h3>📊 Cycle-by-Cycle Analytical Breakdown (Excel Model)</h3>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Step</th>
+                            <th>Origin Area (A·min)</th>
+                            <th>|A| (A·min)</th>
+                            <th>S_base (A)</th>
+                            <th>k (A⁻¹)</th>
+                            <th>nCO₂ (mol)</th>
+                            <th>nCO₂ (mmol)</th>
+                            <th>q (100% Mass)</th>
+                            <th>q (Dry Mass) [mmol/g]</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+        <tr>
+            <td><span class="badge badge-ads">Ads_2</span></td>
+            <td><code>-2.6150e-10</code></td>
+            <td><code>2.6150e-10</code></td>
+            <td><code>7.4682e-10</code></td>
+            <td><code>2.009e+08</code></td>
+            <td>2.1540e-04</td>
+            <td><strong>0.2154</strong></td>
+            <td>0.2341</td>
+            <td class="highlight-val"><strong>0.2341</strong></td>
+        </tr>
+        
+        <tr>
+            <td><span class="badge badge-des">Des_3</span></td>
+            <td><code>8.4268e-11</code></td>
+            <td><code>8.4268e-11</code></td>
+            <td><code>7.4682e-10</code></td>
+            <td><code>2.009e+08</code></td>
+            <td>6.9415e-05</td>
+            <td><strong>0.0694</strong></td>
+            <td>0.0755</td>
+            <td class="highlight-val"><strong>0.0755</strong></td>
+        </tr>
+        
+        <tr>
+            <td><span class="badge badge-ads">Ads_5</span></td>
+            <td><code>-2.6107e-10</code></td>
+            <td><code>2.6107e-10</code></td>
+            <td><code>7.4547e-10</code></td>
+            <td><code>2.012e+08</code></td>
+            <td>2.1544e-04</td>
+            <td><strong>0.2154</strong></td>
+            <td>0.2342</td>
+            <td class="highlight-val"><strong>0.2342</strong></td>
+        </tr>
+        
+        <tr>
+            <td><span class="badge badge-des">Des_6</span></td>
+            <td><code>8.1056e-11</code></td>
+            <td><code>8.1056e-11</code></td>
+            <td><code>7.4547e-10</code></td>
+            <td><code>2.012e+08</code></td>
+            <td>6.6890e-05</td>
+            <td><strong>0.0669</strong></td>
+            <td>0.0727</td>
+            <td class="highlight-val"><strong>0.0727</strong></td>
+        </tr>
+        
+        <tr>
+            <td><span class="badge badge-ads">Ads_8</span></td>
+            <td><code>-2.6693e-10</code></td>
+            <td><code>2.6693e-10</code></td>
+            <td><code>7.5114e-10</code></td>
+            <td><code>1.997e+08</code></td>
+            <td>2.1862e-04</td>
+            <td><strong>0.2186</strong></td>
+            <td>0.2376</td>
+            <td class="highlight-val"><strong>0.2376</strong></td>
+        </tr>
+        
+        <tr>
+            <td><span class="badge badge-des">Des_9</span></td>
+            <td><code>9.1748e-11</code></td>
+            <td><code>9.1748e-11</code></td>
+            <td><code>7.5114e-10</code></td>
+            <td><code>1.997e+08</code></td>
+            <td>7.5141e-05</td>
+            <td><strong>0.0751</strong></td>
+            <td>0.0817</td>
+            <td class="highlight-val"><strong>0.0817</strong></td>
+        </tr>
+        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Experimental Parameters -->
+        <div class="card">
+            <h3>⚙️ Experimental Operating Parameters & Thermodynamic Constants</h3>
+            <div class="params-grid">
+                <div>
+                    <div class="param-row"><span class="p-name">Sample Weighed Mass:</span><span class="p-val">920.0 mg (0.9200 g)</span></div>
+                    <div class="param-row"><span class="p-name">Moisture / Water Loss:</span><span class="p-val">0.0 %</span></div>
+                    <div class="param-row"><span class="p-name">Dry Active Mass:</span><span class="p-val">920.000 mg (0.920000 g)</span></div>
+                    <div class="param-row"><span class="p-name">Feed CO₂ Fraction C₀:</span><span class="p-val">0.15 (15% CO₂ in N₂)</span></div>
+                </div>
+                <div>
+                    <div class="param-row"><span class="p-name">Total Gas Flow:</span><span class="p-val">100.0 mL/min</span></div>
+                    <div class="param-row"><span class="p-name">Assay Temperature T₂:</span><span class="p-val">24.0 °C (Ref: 25.0 °C)</span></div>
+                    <div class="param-row"><span class="p-name">Molar Volume Vₘ,exp:</span><span class="p-val">24382.9 mL/mol</span></div>
+                    <div class="param-row"><span class="p-name">Total Molar Flow Rate:</span><span class="p-val">4.1012e-03 mol/min</span></div>
+                </div>
+                <div>
+                    <div class="param-row"><span class="p-name">Mean Baseline Signal S_base:</span><span class="p-val">7.4422e-10 A</span></div>
+                    <div class="param-row"><span class="p-name">Sensitivity Factor k:</span><span class="p-val">2.016e+08 A⁻¹</span></div>
+                    <div class="param-row"><span class="p-name">Calibration Model:</span><span class="p-val">ads_first_point</span></div>
+                    <div class="param-row"><span class="p-name">High-Res Exports:</span><span class="p-val">600 DPI & 1200 DPI PNG Saved</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Methodology & Equations -->
+        <div class="card">
+            <h3>📐 Mathematical Model & Formulas</h3>
+            <div style="font-size: 13px; color: var(--text-light); line-height: 1.7;">
+                <p>• <strong>Molar Volume at Experimental Temperature:</strong> <code>V_m(T₂) = V_m(T₁) × (T₂ + 273.15) / (T₁ + 273.15)</code></p>
+                <p>• <strong>Total Molar Flow Rate:</strong> <code>ṅ_total = Flow_total / V_m(T₂)</code> (mol/min)</p>
+                <p>• <strong>Detector Sensitivity Constant:</strong> <code>k = C₀ / S_base</code> (A⁻¹)</p>
+                <p>• <strong>Moles of Adsorbed / Desorbed CO₂:</strong> <code>nCO₂ = ṅ_total × k × |A|</code> (mol)</p>
+                <p>• <strong>Equilibrium Adsorption Capacity:</strong> <code>q = nCO₂ (mmol) / Mass_active (g)</code> (mmol/g)</p>
+                <p>• <strong>Desorption Recovery Ratio:</strong> <code>Recovery (%) = [ q_des(dry) / q_ads(dry) ] × 100%</code></p>
+            </div>
+        </div>
+
+        <div class="footer">
+            Generated by AI Antigravity Software &nbsp;•&nbsp; Automated Research Vault &nbsp;•&nbsp; 600 & 1200 DPI Export Ready
+        </div>
+    </div>
+</body>
+</html>
