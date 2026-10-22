@@ -44,7 +44,7 @@ class SampleDialog(tk.Toplevel):
             self.id_entry.config(state="readonly")
         row += 1
 
-        ttk.Label(form, text="Material Name / Formulation:*").grid(row=row, column=0, sticky="w", pady=6)
+        ttk.Label(form, text="Complete Material Information:*").grid(row=row, column=0, sticky="w", pady=6)
         self.mat_var = tk.StringVar(value=self.sample_data.get("material_name", ""))
         ttk.Entry(form, textvariable=self.mat_var, width=28).grid(row=row, column=1, sticky="ew", pady=6)
         row += 1
@@ -185,7 +185,7 @@ class LogbookView(ttk.Frame):
         self.tree = ttk.Treeview(table_frame, columns=columns, show="headings", selectmode="browse")
 
         self.tree.heading("id", text="Sample ID")
-        self.tree.heading("material", text="Material / Formulation")
+        self.tree.heading("material", text="Complete Material Information")
         self.tree.heading("techs", text="Characterizations")
         self.tree.heading("date", text="Date")
         self.tree.heading("operator", text="Operator")
@@ -193,7 +193,7 @@ class LogbookView(ttk.Frame):
         self.tree.heading("files_cnt", text="Files")
 
         self.tree.column("id", width=110, anchor="center")
-        self.tree.column("material", width=220, anchor="w")
+        self.tree.column("material", width=250, anchor="w")
         self.tree.column("techs", width=200, anchor="w")
         self.tree.column("date", width=95, anchor="center")
         self.tree.column("operator", width=120, anchor="center")

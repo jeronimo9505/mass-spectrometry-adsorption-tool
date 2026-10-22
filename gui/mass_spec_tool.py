@@ -18,7 +18,7 @@ from core.capacity_calculator import compute_co2_capacity, compute_co2_capacity_
 
 ROI_PRESETS = {
     "baseline_signal": {"fill": "#cce5ff", "border": "#3399ff", "label": "Baseline", "baseline": "mean_signal"},
-    "adsorption": {"fill": "#ffff99", "border": "#d4af37", "label": "Adsorption", "baseline": "straight_line"},
+    "adsorption": {"fill": "#ffff99", "border": "#d4af37", "label": "Adsorption", "baseline": "avg_ads_baseline"},
     "desorption": {"fill": "#ff99ff", "border": "#c77dff", "label": "Desorption", "baseline": "raw_zero"},
     "general": {"fill": "#99ff99", "border": "#38b000", "label": "General", "baseline": "straight_line"}
 }
@@ -72,7 +72,7 @@ class MassSpecToolView(ttk.Frame):
         self.last_capacity_results = {}
 
         # Suggested Δt for Auto-Detection (Configurable)
-        self.autodetect_dt_ads_var = tk.DoubleVar(value=22.0)
+        self.autodetect_dt_ads_var = tk.DoubleVar(value=10.0)
         self.autodetect_dt_des_var = tk.DoubleVar(value=8.0)
         self.autodetect_dt_base_var = tk.DoubleVar(value=2.0)
 
@@ -150,14 +150,14 @@ class MassSpecToolView(ttk.Frame):
 
         self.gas_vars = {}
         for col, meta in GAS_MAPPING.items():
-            is_def = (col in ["'0/2'", "'0/3'", "'0/6'"])
+            is_def = (col == "'0/6'")  # By default ONLY CO2 is checked; N2, H2O, etc. remain unchecked
             var = tk.BooleanVar(value=is_def)
             self.gas_vars[col] = var
             cb = ttk.Checkbutton(
                 gas_frame,
                 text=f"{meta['label']} — {meta['full_name']}",
                 variable=var,
-                command=lambda: self.update_plot(preserve_zoom=True)
+                command=self.on_gas_channel_toggle
             )
             cb.pack(anchor="w", pady=1)
 
@@ -494,7 +494,15 @@ class MassSpecToolView(ttk.Frame):
         self.toolbar = NavigationToolbar2Tk(self.canvas, toolbar_frame)
         self.toolbar.update()
 
-        ttk.Button(toolbar_frame, text="🖼️ Export PNG/PDF", command=self.export_plot_image).pack(side=tk.RIGHT, padx=4)
+        export_box = ttk.Frame(toolbar_frame)
+        export_box.pack(side=tk.RIGHT, padx=4)
+
+        ttk.Label(export_box, text="DPI:", font=("Segoe UI", 8, "bold")).pack(side=tk.LEFT, padx=(4, 2))
+        self.export_dpi_var = tk.StringVar(value="600")
+        dpi_combo = ttk.Combobox(export_box, textvariable=self.export_dpi_var, values=["300", "600", "1200"], width=5, state="readonly")
+        dpi_combo.pack(side=tk.LEFT, padx=(0, 4))
+
+        ttk.Button(export_box, text="📸 Export High-Res Graph", command=self.export_plot_image).pack(side=tk.LEFT, padx=2)
 
         # Mouse Events for dragging ROI boundaries
         self.canvas.mpl_connect("button_press_event", self.on_mouse_press)
@@ -567,13 +575,17 @@ class MassSpecToolView(ttk.Frame):
 
     # ==================== PLOTTING ENGINE ====================
 
-    def update_plot(self, preserve_zoom=False):
+    def on_gas_channel_toggle(self):
+        # Auto-rescale Y-axis to dynamically fit the currently visible channels, preserving X zoom
+        self.update_plot(preserve_zoom=True, auto_rescale_y=True)
+
+    def update_plot(self, preserve_zoom=False, auto_rescale_y=False):
         if self.current_df is None:
             self.show_placeholder_plot()
             return
 
         x_lim = self.ax.get_xlim() if preserve_zoom else None
-        y_lim = self.ax.get_ylim() if preserve_zoom else None
+        y_lim = self.ax.get_ylim() if (preserve_zoom and not auto_rescale_y) else None
 
         self.ax.clear()
         x_mode = self.xaxis_var.get()
@@ -585,6 +597,8 @@ class MassSpecToolView(ttk.Frame):
 
         # Plot Selected Gas Channels
         has_curve = False
+        active_mins = []
+        active_maxs = []
         for col, meta in GAS_MAPPING.items():
             if col in self.current_df.columns and self.gas_vars.get(col, tk.BooleanVar()).get():
                 has_curve = True
@@ -593,6 +607,11 @@ class MassSpecToolView(ttk.Frame):
                 if is_log:
                     y_data = np.where(y_data > 0, y_data, np.nan)
                 self.ax.plot(x_data, y_data, label=meta["label"], color=meta["color"], linewidth=1.2, alpha=0.9)
+
+                valid_y = y_data[~np.isnan(y_data)]
+                if len(valid_y) > 0:
+                    active_mins.append(float(np.min(valid_y)))
+                    active_maxs.append(float(np.max(valid_y)))
 
         # Plot ROI Boxes and Simpson baseline
         if integ_col in self.current_df.columns and self.ranges_list:
@@ -617,7 +636,13 @@ class MassSpecToolView(ttk.Frame):
                 elif b_mode == "horizontal_left":
                     baseline = np.full_like(sub_y, y1)
                 elif b_mode == "avg_ads_baseline":
-                    b_val = getattr(self, "current_avg_baseline", y1)
+                    b_val = r.get("avg_baseline_val")
+                    if b_val is None or b_val <= 1e-12:
+                        prec_bases = [b for b in self.ranges_list if b.get("phase") == "baseline_signal" and b.get("end_min", 0.0) <= s_min + 0.5]
+                        if prec_bases:
+                            b_val = prec_bases[-1].get("mean_signal", prec_bases[-1].get("baseline_y0"))
+                    if b_val is None or b_val <= 1e-12:
+                        b_val = getattr(self, "current_avg_baseline", y1)
                     baseline = np.full_like(sub_y, b_val)
                 elif b_mode == "mean_signal":
                     mean_val = float(np.mean(sub_y))
@@ -660,9 +685,29 @@ class MassSpecToolView(ttk.Frame):
         if has_curve:
             self.ax.legend(fontsize=8, loc="upper right", frameon=True)
 
-        if preserve_zoom and x_lim and y_lim:
+        if preserve_zoom and x_lim:
             self.ax.set_xlim(x_lim)
+
+        if preserve_zoom and y_lim and not auto_rescale_y:
             self.ax.set_ylim(y_lim)
+        elif has_curve and active_maxs:
+            y_max_all = max(active_maxs)
+            y_min_all = min(active_mins)
+            if is_log:
+                pos_mins = [m for m in active_mins if m > 0]
+                low_b = min(pos_mins) * 0.5 if pos_mins else 1e-14
+                self.ax.set_ylim(max(1e-14, low_b), max(1e-11, y_max_all * 3.0))
+            else:
+                if y_max_all <= 1.5e-9:
+                    # CO2 alone: center curve with comfortable headroom up to 2.0e-9
+                    y_top = max(y_max_all * 1.6, 2.0e-9)
+                    y_bottom = min(-0.06 * y_top, y_min_all - 0.02 * y_top)
+                else:
+                    # Multi-channel or higher peaks: auto-scale headroom dynamically
+                    y_top = y_max_all * 1.15
+                    span = y_max_all - y_min_all
+                    y_bottom = min(-0.04 * y_max_all, y_min_all - 0.05 * span)
+                self.ax.set_ylim(y_bottom, y_top)
 
         self.fig.tight_layout()
         self.canvas.draw_idle()
@@ -776,7 +821,7 @@ class MassSpecToolView(ttk.Frame):
             dt_des = float(self.autodetect_dt_des_var.get())
             dt_base = float(self.autodetect_dt_base_var.get())
         except Exception:
-            dt_ads, dt_des, dt_base = 22.0, 8.0, 2.0
+            dt_ads, dt_des, dt_base = 10.0, 8.0, 2.0
 
         detected = auto_detect_cycle_pairs(
             self.current_df,
@@ -824,12 +869,30 @@ class MassSpecToolView(ttk.Frame):
         for r in self.ranges_list:
             s_min = r["start_min"]
             e_min = r["end_min"]
+            b_mode = r.get("baseline", "straight_line")
+
+            b_val = r.get("avg_baseline_val")
+            if b_mode == "avg_ads_baseline":
+                if b_val is None or b_val <= 1e-12:
+                    prec_bases = [b for b in self.ranges_list if b.get("phase") == "baseline_signal" and b.get("end_min", 0.0) <= s_min + 0.5]
+                    if prec_bases:
+                        b_val = prec_bases[-1].get("mean_signal", prec_bases[-1].get("baseline_y0"))
+                    if b_val is None or b_val <= 1e-12:
+                        t_arr = self.current_df["Time_min"].values
+                        m_pre = (t_arr >= max(0.0, s_min - 2.0)) & (t_arr <= s_min)
+                        if np.any(m_pre):
+                            y_pre = pd.to_numeric(self.current_df.loc[m_pre, integ_col], errors="coerce").dropna().values
+                            if len(y_pre) > 0:
+                                b_val = float(np.mean(y_pre))
+                    r["avg_baseline_val"] = b_val
+
             res = calculate_roi_integration(
                 self.current_df,
                 integ_col,
                 s_min,
                 e_min,
-                baseline_mode=r.get("baseline", "straight_line")
+                baseline_mode=b_mode,
+                avg_baseline_val=b_val
             )
             r["calculated_area"] = res["area"]
             r["duration"] = res["duration"]
@@ -852,7 +915,7 @@ class MassSpecToolView(ttk.Frame):
                 area_str = f"Sig: {mean_sig:.3e}"
                 fwhm_str = "-"
             else:
-                area_str = f"{ar:.4e}"
+                area_str = f"{abs(ar):.4e}"
                 fwhm_str = f"{r.get('fwhm_val', 0.0):.3f}"
             item_id = self.tree_ranges.insert("", tk.END, values=(
                 r["id"],
@@ -1261,24 +1324,44 @@ class MassSpecToolView(ttk.Frame):
         messagebox.showinfo("Saved", f"Report saved to:\n{p}")
 
     def export_plot_image(self):
+        try:
+            dpi_val = int(self.export_dpi_var.get())
+        except Exception:
+            dpi_val = 600
+
         fpath = filedialog.asksaveasfilename(
-            title="Export Plot Image",
+            title=f"Export High-Resolution Graph ({dpi_val} DPI)",
             defaultextension=".png",
-            filetypes=[("PNG Image (300 DPI)", "*.png"), ("PDF Document", "*.pdf"), ("SVG Vector Image", "*.svg")]
+            filetypes=[
+                (f"High-Res PNG Image ({dpi_val} DPI)", "*.png"),
+                ("PDF Vector Document (Infinite Vector Resolution)", "*.pdf"),
+                ("SVG Scalable Vector Graphics", "*.svg"),
+                (f"TIFF High-Res Image ({dpi_val} DPI)", "*.tif"),
+                ("JPEG Image", "*.jpg")
+            ]
         )
-        if fpath:
-            self.fig.savefig(fpath, dpi=300, bbox_inches="tight")
-            messagebox.showinfo("Export Successful", f"Plot image saved to:\n{fpath}")
+        if not fpath:
+            return
+
+        try:
+            ext = os.path.splitext(fpath)[1].lower()
+            if ext in [".pdf", ".svg"]:
+                self.fig.savefig(fpath, bbox_inches="tight")
+            else:
+                self.fig.savefig(fpath, dpi=dpi_val, bbox_inches="tight", facecolor=self.fig.get_facecolor(), edgecolor="none")
+            messagebox.showinfo("Export Successful", f"High-Resolution graph successfully saved at {dpi_val} DPI:\n{fpath}")
+        except Exception as e:
+            messagebox.showerror("Export Error", f"Could not export graph:\n{e}")
 
     def select_all_gases(self):
         for v in self.gas_vars.values():
             v.set(True)
-        self.update_plot(preserve_zoom=True)
+        self.update_plot(preserve_zoom=True, auto_rescale_y=True)
 
     def clear_all_gases(self):
         for v in self.gas_vars.values():
             v.set(False)
-        self.update_plot(preserve_zoom=True)
+        self.update_plot(preserve_zoom=True, auto_rescale_y=True)
 
     def on_xaxis_change(self):
-        self.update_plot(preserve_zoom=False)
+        self.update_plot(preserve_zoom=False, auto_rescale_y=True)

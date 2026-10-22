@@ -132,9 +132,9 @@ def compute_co2_capacity_breakdown(
                 last_base = preceding_bases[-1]
                 cycle_base_sig = last_base.get("mean_signal", last_base.get("baseline_y0", 0.0))
             
-            # 2. If not found and this is adsorption, use its baseline_y0
+            # 2. If not found and this is adsorption, use its baseline_y0 or avg_baseline_val
             if (cycle_base_sig is None or cycle_base_sig <= 1e-12) and phase == "adsorption":
-                b0 = r.get("y1", r.get("baseline_y0", 0.0))
+                b0 = r.get("avg_baseline_val", r.get("y1", r.get("baseline_y0", 0.0)))
                 if b0 > 1e-12:
                     cycle_base_sig = b0
 
@@ -146,7 +146,7 @@ def compute_co2_capacity_breakdown(
                 ]
                 if preceding_ads:
                     last_ads = preceding_ads[-1]
-                    b0 = last_ads.get("y1", last_ads.get("baseline_y0", 0.0))
+                    b0 = last_ads.get("avg_baseline_val", last_ads.get("y1", last_ads.get("baseline_y0", 0.0)))
                     if b0 > 1e-12:
                         cycle_base_sig = b0
 

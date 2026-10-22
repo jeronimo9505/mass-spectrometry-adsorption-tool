@@ -1,12 +1,12 @@
-========================================================================
+==============================================================================
    MASS SPECTROMETRY CO2 ADSORPTION / DESORPTION REPORT
-========================================================================
+==============================================================================
 Sample ID:                Zeolite powder 1st ads desorption
 Material Name:            Zeolite powder 1st ads desorption
 Operator:                 Shayan
 Measurement Date:         28/09/2026
 Source File:              zeolite powder 28 09 2026 ads des 1st final cycle.asc
-------------------------------------------------------------------------
+------------------------------------------------------------------------------
 1. EXPERIMENTAL PARAMETERS:
   - Total Initial Mass:   0.6200 g
   - Water / Binder Loss:  21.4 %
@@ -14,14 +14,22 @@ Source File:              zeolite powder 28 09 2026 ads des 1st final cycle.asc
   - Temperature:          24.0 °C (Vm=24382.94 mL/mol)
   - Total Flow Rate:      100.0 mL/min
   - Feed Fraction C0:     0.15
+  - Baseline S_baseline:  8.0713e-10 A (k=1.858e+08 A⁻¹)
   - Blank Ads Reference:  0.2300 mmol/g
-------------------------------------------------------------------------
-2. NET CO2 CAPACITIES (q):
-  - Net Adsorption:       3.6636 mmol/g  (1.8974 mmol)
-  - Net Desorption:       1.2727 mmol/g  (0.6202 mmol)
-  - Recovery Ratio:       34.74 %
-------------------------------------------------------------------------
-3. INTEGRATED SIMPSON ROI REGIONS:
-  [Ads_1] t=52.19-74.13 min (Δt=21.93) | Area=-2.4836e-09 A·min | FWHM=1.406
-  [Des_2] t=75.59-78.01 min (Δt=2.41) | Area=8.1182e-10 A·min | FWHM=1.029
-========================================================================
+  - Blank Des Reference:  0.0000 mmol/g
+------------------------------------------------------------------------------
+2. SUMMARY OF AVERAGE CO2 CAPACITIES (q):
+  - Net Adsorption (avg): 3.7863 mmol/g  (Dry: 4.0163 | 100%: 3.1568)
+  - Net Desorption (avg): 2.6959 mmol/g  (Dry: 2.6959 | 100%: 2.1190)
+  - Desorption Recovery:  71.20 %
+----------------------------------------------------------------------------------------
+3. CYCLE-BY-CYCLE BREAKDOWN (EXCEL ANALYTICAL MODEL):
+  Step     Origin Area   |A| (A·min)   S_base (A)   k (A⁻¹)     nCO2 (mmol)  q(100%)    q(Dry)    
+  Ads_2    -2.5604e-09   2.5604e-09    8.0477e-10   1.864e+08   1.9572       3.1568     4.0163    
+  Des_3    1.7186e-09    1.7186e-09    8.0477e-10   1.864e+08   1.3138       2.1190     2.6959    
+------------------------------------------------------------------------------
+4. INTEGRATED SIMPSON ROI REGIONS:
+  [Bas_1] t=50.50-51.78 min (Δt=1.27) | Area=0.0000e+00 A·min | Base=mean_signal | FWHM=0.000
+  [Ads_2] t=52.34-74.09 min (Δt=21.74) | Area=-2.5604e-09 A·min | Base=avg_ads_baseline | FWHM=1.406
+  [Des_3] t=75.71-80.21 min (Δt=4.49) | Area=1.7186e-09 A·min | Base=raw_zero | FWHM=1.231
+==============================================================================

@@ -1,4 +1,5 @@
 import os
+import stat
 import json
 import shutil
 import glob
@@ -240,25 +241,67 @@ class SampleVault:
                 self.db.save_sample(s_data)
                 src_p = os.path.join(root_dir, fname)
                 if os.path.exists(src_p):
-                    dest_dir = self.get_technique_dir(s_id, "mass_spec")
+                    dest_dir = self.get_technique_dir(s_id, "mass_spec", create=True)
                     self.db.register_and_clone_file(s_id, "mass_spec", src_p, dest_dir, f"Measurement file for {mat}")
 
+        self.cleanup_empty_folders()
         self.db.export_to_json()
 
     def get_sample_dir(self, sample_id):
         return os.path.join(self.samples_dir, sample_id)
 
-    def get_technique_dir(self, sample_id, technique="mass_spec"):
+    def get_technique_dir(self, sample_id, technique="mass_spec", create=False):
         folder_name = CHARACTERIZATION_TYPES.get(technique, {}).get("folder", technique)
         tech_dir = os.path.join(self.get_sample_dir(sample_id), folder_name)
-        os.makedirs(tech_dir, exist_ok=True)
+        if create:
+            os.makedirs(tech_dir, exist_ok=True)
         return tech_dir
 
     def ensure_sample_folders(self, sample_id):
+        """Ensures the root directory for the sample exists on disk."""
         sample_dir = self.get_sample_dir(sample_id)
         os.makedirs(sample_dir, exist_ok=True)
-        for tech, conf in CHARACTERIZATION_TYPES.items():
-            os.makedirs(os.path.join(sample_dir, conf["folder"]), exist_ok=True)
+
+    def cleanup_empty_folders(self, sample_id=None):
+        """
+        Removes any empty characterization technique subdirectories across samples,
+        keeping the filesystem pristine with only folders that actually contain data.
+        """
+        if sample_id:
+            s_dirs = [self.get_sample_dir(sample_id)]
+        else:
+            if not os.path.exists(self.samples_dir):
+                return
+            s_dirs = [
+                os.path.join(self.samples_dir, d)
+                for d in os.listdir(self.samples_dir)
+                if os.path.isdir(os.path.join(self.samples_dir, d))
+            ]
+
+        def _handle_remove_readonly(func, p, exc):
+            try:
+                os.chmod(p, stat.S_IWRITE)
+                func(p)
+            except Exception:
+                pass
+
+        for s_dir in s_dirs:
+            if not os.path.isdir(s_dir):
+                continue
+            for tech, conf in CHARACTERIZATION_TYPES.items():
+                folder_name = conf["folder"]
+                tech_folder = os.path.join(s_dir, folder_name)
+                if os.path.isdir(tech_folder):
+                    has_files = False
+                    for _, _, files in os.walk(tech_folder):
+                        if files:
+                            has_files = True
+                            break
+                    if not has_files:
+                        try:
+                            shutil.rmtree(tech_folder, onerror=_handle_remove_readonly)
+                        except Exception:
+                            pass
 
     def create_or_update_sample(self, sample_id, metadata):
         sample_id = sample_id.strip()
@@ -268,6 +311,7 @@ class SampleVault:
         # Save into SQLite database
         self.db.save_sample(metadata)
         self.load_logbook()
+        self.cleanup_empty_folders(sample_id)
 
         # Update metadata.json inside the sample directory on the machine
         meta_file = os.path.join(self.get_sample_dir(sample_id), "metadata.json")
@@ -287,7 +331,7 @@ class SampleVault:
         if sample_id not in self.logbook:
             raise KeyError(f"Sample '{sample_id}' not found.")
 
-        dest_dir = self.get_technique_dir(sample_id, technique)
+        dest_dir = self.get_technique_dir(sample_id, technique, create=True)
         cloned_path = self.db.register_and_clone_file(
             sample_id=sample_id,
             technique=technique,
@@ -299,7 +343,7 @@ class SampleVault:
         return cloned_path
 
     def get_characterization_file_path(self, sample_id, technique, filename):
-        dest_folder = self.get_technique_dir(sample_id, technique)
+        dest_folder = self.get_technique_dir(sample_id, technique, create=False)
         p = os.path.join(dest_folder, filename)
         if os.path.exists(p):
             return p
@@ -310,6 +354,7 @@ class SampleVault:
 
     def delete_characterization_file(self, sample_id, technique, filename):
         self.db.delete_file(sample_id, technique, filename)
+        self.cleanup_empty_folders(sample_id)
         self.load_logbook()
         return True
 
@@ -330,7 +375,7 @@ class SampleVault:
         """
         # Ensure file is cloned locally if it exists outside
         file_path = self.get_characterization_file_path(sample_id, "mass_spec", filename)
-        dest_dir = self.get_technique_dir(sample_id, "mass_spec")
+        dest_dir = self.get_technique_dir(sample_id, "mass_spec", create=True)
         if file_path and os.path.exists(file_path):
             self.db.register_and_clone_file(sample_id, "mass_spec", file_path, dest_dir)
 
@@ -371,7 +416,7 @@ class SampleVault:
             return res
 
         # Fallback to disk JSON
-        tech_dir = self.get_technique_dir(sample_id, "mass_spec")
+        tech_dir = self.get_technique_dir(sample_id, "mass_spec", create=False)
         analysis_fn = f"analysis_{os.path.splitext(filename)[0]}.json"
         p = os.path.join(tech_dir, "analyses", analysis_fn)
         if os.path.exists(p):
@@ -383,7 +428,7 @@ class SampleVault:
         return None
 
     def save_sample_report(self, sample_id, report_text, title="co2_report"):
-        tech_dir = self.get_technique_dir(sample_id, "mass_spec")
+        tech_dir = self.get_technique_dir(sample_id, "mass_spec", create=True)
         rep_dir = os.path.join(tech_dir, "reports")
         os.makedirs(rep_dir, exist_ok=True)
         txt_path = os.path.join(rep_dir, f"{title}_{sample_id}.txt")

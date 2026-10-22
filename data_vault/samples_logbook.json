@@ -15,7 +15,7 @@
     "notes": "Blank monolith without zeolite",
     "status": "Analyzed",
     "created_at": "2026-09-23 18:42:27",
-    "updated_at": "2026-10-22 01:15:10",
+    "updated_at": "2026-10-22 11:56:49",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -32,7 +32,7 @@
             "q_net_ads": 0.2433,
             "q_net_des": 0.2153,
             "recovery_pct": 88.49,
-            "analyzed_at": "2026-10-22 01:15:10"
+            "analyzed_at": "2026-10-22 11:56:49"
           }
         ],
         "notes": ""
@@ -80,7 +80,7 @@
     "notes": "Full 3 continuous cycles",
     "status": "Analyzed",
     "created_at": "2026-09-23 18:42:27",
-    "updated_at": "2026-10-22 01:15:10",
+    "updated_at": "2026-10-22 11:56:49",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -97,7 +97,7 @@
             "q_net_ads": 2.179,
             "q_net_des": 2.3014,
             "recovery_pct": 105.62,
-            "analyzed_at": "2026-10-22 01:15:10"
+            "analyzed_at": "2026-10-22 11:56:49"
           }
         ],
         "notes": ""
@@ -145,7 +145,7 @@
     "notes": "",
     "status": "Analyzed",
     "created_at": "2026-09-23 18:42:27",
-    "updated_at": "2026-10-22 01:15:11",
+    "updated_at": "2026-10-22 11:56:49",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -162,35 +162,13 @@
             "q_net_ads": 3.552,
             "q_net_des": 3.4957,
             "recovery_pct": 98.41,
-            "analyzed_at": "2026-10-22 01:15:11"
+            "analyzed_at": "2026-10-22 11:56:49"
           }
         ],
         "notes": ""
       },
       "thermal_profile": {
         "files": [
-          {
-            "id": 96,
-            "sample_id": "ZZ20_01",
-            "technique": "thermal_profile",
-            "filename": "Zeolite powder Raw Ads Time temp best fit porofile.xlsx",
-            "cloned_path": "c:\\Users\\Lenovo\\OneDrive - unizar.es\\AI Antigravity software\\data_vault\\samples\\ZZ20_01\\thermal_profile\\Zeolite powder Raw Ads Time temp best fit porofile.xlsx",
-            "size_bytes": 4459881,
-            "description": "Raw Thermocouple Data",
-            "status": "Pending",
-            "uploaded_at": "2026-10-22 01:19:32"
-          },
-          {
-            "id": 95,
-            "sample_id": "ZZ20_01",
-            "technique": "thermal_profile",
-            "filename": "Zeolite powder Raw Ads Time temp best fit porofile.dat",
-            "cloned_path": "c:\\Users\\Lenovo\\OneDrive - unizar.es\\AI Antigravity software\\data_vault\\samples\\ZZ20_01\\thermal_profile\\Zeolite powder Raw Ads Time temp best fit porofile.dat",
-            "size_bytes": 5351203,
-            "description": "Raw Thermocouple Data",
-            "status": "Pending",
-            "uploaded_at": "2026-10-22 01:19:20"
-          },
           {
             "id": 94,
             "sample_id": "ZZ20_01",
@@ -288,7 +266,7 @@
     "notes": "Complete cyclic adsorption/desorption run",
     "status": "Analyzed",
     "created_at": "2026-09-23 18:42:27",
-    "updated_at": "2026-10-22 01:15:11",
+    "updated_at": "2026-10-22 11:56:49",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -305,7 +283,7 @@
             "q_net_ads": 2.9902,
             "q_net_des": 3.1215,
             "recovery_pct": 104.39,
-            "analyzed_at": "2026-10-22 01:15:11"
+            "analyzed_at": "2026-10-22 11:56:49"
           }
         ],
         "notes": ""
@@ -588,7 +566,7 @@
     "notes": "Zeolite Powder Rapeat",
     "status": "Analyzed",
     "created_at": "2026-10-20 11:45:57",
-    "updated_at": "2026-10-22 01:15:12",
+    "updated_at": "2026-10-22 11:56:49",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -605,7 +583,7 @@
             "q_net_ads": 3.4169,
             "q_net_des": 3.6934,
             "recovery_pct": 108.09,
-            "analyzed_at": "2026-10-22 01:15:12"
+            "analyzed_at": "2026-10-22 11:56:49"
           }
         ],
         "notes": ""
@@ -653,7 +631,7 @@
     "notes": "",
     "status": "Analyzed",
     "created_at": "2026-09-28 18:38:26",
-    "updated_at": "2026-10-22 01:15:12",
+    "updated_at": "2026-10-22 11:56:50",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -662,15 +640,15 @@
             "sample_id": "Zeolite powder 1st ads desorption",
             "technique": "mass_spec",
             "filename": "zeolite powder 28 09 2026 ads des 1st final cycle.asc",
-            "cloned_path": "c:\\Users\\Lenovo\\Desktop\\AI Antigravity software\\data_vault\\samples\\Zeolite powder 1st ads desorption\\mass_spec\\zeolite powder 28 09 2026 ads des 1st final cycle.asc",
+            "cloned_path": "c:\\Users\\Lenovo\\OneDrive - unizar.es\\AI Antigravity software\\data_vault\\samples\\Zeolite powder 1st ads desorption\\mass_spec\\zeolite powder 28 09 2026 ads des 1st final cycle.asc",
             "size_bytes": 895695,
             "description": "",
             "status": "Analyzed",
             "uploaded_at": "2026-09-28 18:39:13",
-            "q_net_ads": 3.6636,
-            "q_net_des": 1.2727,
-            "recovery_pct": 34.74,
-            "analyzed_at": "2026-10-22 01:15:12"
+            "q_net_ads": 3.7863,
+            "q_net_des": 2.6959,
+            "recovery_pct": 71.2,
+            "analyzed_at": "2026-10-22 11:56:50"
           }
         ],
         "notes": ""
@@ -718,7 +696,7 @@
     "notes": "",
     "status": "Analyzed",
     "created_at": "2026-09-23 18:52:29",
-    "updated_at": "2026-10-22 01:15:12",
+    "updated_at": "2026-10-22 11:56:50",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -735,7 +713,7 @@
             "q_net_ads": 3.0014,
             "q_net_des": 12.7484,
             "recovery_pct": 424.75,
-            "analyzed_at": "2026-10-22 01:15:12"
+            "analyzed_at": "2026-10-22 11:56:50"
           }
         ],
         "notes": ""

@@ -5,59 +5,163 @@
   "ranges": [
     {
       "id": 1,
-      "type_name": "Ads_1",
-      "phase": "adsorption",
-      "start_min": 52.19,
-      "end_min": 74.13,
-      "baseline": "straight_line",
-      "color": "#ffff99",
-      "calculated_area": -2.4835727452670868e-09,
-      "duration": 21.928166666666662,
-      "fwhm_val": 1.4063,
-      "baseline_y0": 8.05231e-10
+      "type_name": "Bas_1",
+      "phase": "baseline_signal",
+      "start_min": 50.5,
+      "end_min": 51.78,
+      "baseline": "mean_signal",
+      "color": "#cce5ff",
+      "mean_signal": 8.071286631578947e-10,
+      "calculated_area": 0.0,
+      "duration": 1.2715000000000032,
+      "fwhm_val": 0.0,
+      "baseline_y0": 8.071286631578947e-10,
+      "y1": 8.06936e-10,
+      "y2": 8.05435e-10
     },
     {
       "id": 2,
-      "type_name": "Des_2",
+      "type_name": "Ads_2",
+      "phase": "adsorption",
+      "start_min": 52.34,
+      "end_min": 74.09,
+      "baseline": "avg_ads_baseline",
+      "avg_baseline_val": 8.066240675675677e-10,
+      "color": "#ffff99",
+      "calculated_area": -2.5603988711503635e-09,
+      "duration": 21.738999999999997,
+      "fwhm_val": 1.4063,
+      "baseline_y0": 8.066240675675677e-10,
+      "y1": 8.04767e-10,
+      "y2": 8.00615e-10
+    },
+    {
+      "id": 3,
+      "type_name": "Des_3",
       "phase": "desorption",
-      "start_min": 75.59,
-      "end_min": 78.01,
-      "baseline": "straight_line",
+      "start_min": 75.71,
+      "end_min": 80.21,
+      "baseline": "raw_zero",
       "color": "#ff99ff",
-      "calculated_area": 8.118198340682738e-10,
-      "duration": 2.4073333333333267,
-      "fwhm_val": 1.0288,
-      "baseline_y0": 7.98743e-10
+      "calculated_area": 1.7186309035627558e-09,
+      "duration": 4.489166666666648,
+      "fwhm_val": 1.231,
+      "baseline_y0": 0.0,
+      "y1": 7.9844e-10,
+      "y2": 1.68391e-12
     }
   ],
   "capacity": {
     "temp_c": 24.0,
     "Vm_exp": 24382.94,
     "n_total_mol_min": 0.00410122748301108,
-    "k_factor": 186281948.90658703,
+    "k_factor": 185843976.11791447,
     "mass_total_g": 0.62,
     "water_loss_pct": 21.4,
     "mass_active_g": 0.4873,
     "c0": 0.15,
     "flow_total_ml_min": 100.0,
-    "s_baseline_a": 8.05231e-10,
+    "s_baseline_a": 8.071286631578947e-10,
     "ref_ads_mmol_g": 0.23,
     "ref_des_mmol_g": 0.0,
     "adsorption": {
-      "area_a_min": 2.4835727452670868e-09,
-      "n_mmol": 1.8974,
-      "q_raw_mmol_g": 3.0603,
-      "q_active_mmol_g": 3.8936,
-      "q_net_mmol_g": 3.6636
+      "area_a_min": 2.5603988711503635e-09,
+      "n_mmol": 1.9572,
+      "q_raw_mmol_g": 3.1568,
+      "q_active_mmol_g": 4.0163,
+      "q_net_mmol_g": 3.7863
     },
     "desorption": {
-      "area_a_min": 8.118198340682738e-10,
-      "n_mmol": 0.6202,
-      "q_raw_mmol_g": 1.0004,
-      "q_active_mmol_g": 1.2727,
-      "q_net_mmol_g": 1.2727
+      "area_a_min": 1.7186309035627558e-09,
+      "n_mmol": 1.3138,
+      "q_raw_mmol_g": 2.119,
+      "q_active_mmol_g": 2.6959,
+      "q_net_mmol_g": 2.6959
     },
-    "recovery_pct": 34.74
+    "recovery_pct": 71.2,
+    "constants": {
+      "T1_K": 298.15,
+      "T2_K": 297.15,
+      "temp_c": 24.0,
+      "temp_ref_c": 25.0,
+      "Vm_25": 24465.0,
+      "Vm_exp": 24382.94,
+      "flow_total_ml_min": 100.0,
+      "n_total_mol_min": 0.00410122748301108,
+      "s_baseline_a": 8.071286631578947e-10,
+      "k_factor": 185843976.11791447,
+      "k_mode": "ads_first_point",
+      "mass_total_g": 0.62,
+      "water_loss_pct": 21.4,
+      "mass_active_g": 0.4873,
+      "c0": 0.15,
+      "ref_ads_mmol_g": 0.23,
+      "ref_des_mmol_g": 0.0,
+      "baselines_detected": [
+        8.071286631578947e-10
+      ]
+    },
+    "rows": [
+      {
+        "id": 2,
+        "type_name": "Ads_2",
+        "phase": "adsorption",
+        "origin_area": -2.5603988711503635e-09,
+        "abs_area": 2.5603988711503635e-09,
+        "s_baseline": 8.04767e-10,
+        "k_factor": 186389352.44611174,
+        "n_mol": 0.001957233252202019,
+        "n_mmol": 1.9572332522020188,
+        "q_100": 3.1568278261322886,
+        "q_dry": 4.016320389481283,
+        "q_net": 3.786320389481283,
+        "start_min": 52.34,
+        "end_min": 74.09,
+        "duration": 21.738999999999997,
+        "baseline_mode": "avg_ads_baseline"
+      },
+      {
+        "id": 3,
+        "type_name": "Des_3",
+        "phase": "desorption",
+        "origin_area": 1.7186309035627558e-09,
+        "abs_area": 1.7186309035627558e-09,
+        "s_baseline": 8.04767e-10,
+        "k_factor": 186389352.44611174,
+        "n_mol": 0.0013137646601147422,
+        "n_mmol": 1.3137646601147421,
+        "q_100": 2.118975258249584,
+        "q_dry": 2.695897275126697,
+        "q_net": 2.695897275126697,
+        "start_min": 75.71,
+        "end_min": 80.21,
+        "duration": 4.489166666666648,
+        "baseline_mode": "raw_zero"
+      }
+    ],
+    "averages": {
+      "ads": {
+        "count": 1,
+        "abs_area_mean": 2.5603988711503635e-09,
+        "n_mmol_mean": 1.9572332522020188,
+        "q_100_mean": 3.1568278261322886,
+        "q_dry_mean": 4.016320389481283,
+        "q_net_mean": 3.786320389481283,
+        "k_mean": 186389352.44611174,
+        "s_base_mean": 8.04767e-10
+      },
+      "des": {
+        "count": 1,
+        "abs_area_mean": 1.7186309035627558e-09,
+        "n_mmol_mean": 1.3137646601147421,
+        "q_100_mean": 2.118975258249584,
+        "q_dry_mean": 2.695897275126697,
+        "q_net_mean": 2.695897275126697,
+        "k_mean": 186389352.44611174,
+        "s_base_mean": 8.04767e-10
+      },
+      "recovery_pct": 71.2
+    }
   },
-  "analyzed_at": "2026-09-28 18:41:15"
+  "analyzed_at": "2026-10-22 11:10:52"
 }

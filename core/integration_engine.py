@@ -109,7 +109,7 @@ def calculate_roi_integration(df, target_col, start_min, end_min, baseline_mode=
         "x2": float(x2)
     }
 
-def auto_detect_cycle_pairs(df, target_col="'0/6'", dt_ads=22.0, dt_des=8.0, dt_base=2.0):
+def auto_detect_cycle_pairs(df, target_col="'0/6'", dt_ads=10.0, dt_des=8.0, dt_base=2.0):
     """
     Intelligently identifies Adsorption and Desorption cycles by detecting the acute
     breakthrough drop minima from the 15% CO2 baseline, placing suggested Base, Ads,
@@ -206,6 +206,9 @@ def auto_detect_cycle_pairs(df, target_col="'0/6'", dt_ads=22.0, dt_des=8.0, dt_
         # 3. Create Baseline Region (dt_base before Ads onset)
         base_end = round(max(0.2, onset_t - 0.15), 2)
         base_start = round(max(0.0, base_end - dt_base), 2)
+        m_base = (t >= base_start) & (t <= base_end)
+        avg_base_val = float(np.mean(y[m_base])) if np.any(m_base) else float(local_base)
+
         if base_end > base_start:
             detected_ranges.append({
                 "id": len(detected_ranges) + 1,
@@ -214,10 +217,11 @@ def auto_detect_cycle_pairs(df, target_col="'0/6'", dt_ads=22.0, dt_des=8.0, dt_
                 "start_min": base_start,
                 "end_min": base_end,
                 "baseline": "mean_signal",
-                "color": "#cce5ff"
+                "color": "#cce5ff",
+                "mean_signal": avg_base_val
             })
 
-        # 4. Create Adsorption Region
+        # 4. Create Adsorption Region (10 min standard duration, horizontal baseline at 2-min pre-drop average)
         ads_start = onset_t
         ads_end = round(min(t_max, ads_start + dt_ads, next_onset), 2)
         if ads_end > ads_start + 0.5:
@@ -227,7 +231,8 @@ def auto_detect_cycle_pairs(df, target_col="'0/6'", dt_ads=22.0, dt_des=8.0, dt_
                 "phase": "adsorption",
                 "start_min": ads_start,
                 "end_min": ads_end,
-                "baseline": "straight_line",
+                "baseline": "avg_ads_baseline",
+                "avg_baseline_val": avg_base_val,
                 "color": "#ffff99"
             })
 

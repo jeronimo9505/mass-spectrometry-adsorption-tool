@@ -510,9 +510,13 @@ class CharacterizationHubView(ttk.Frame):
     def on_open_tech_folder(self, tech_key):
         if not self.current_sample_id:
             return
-        folder = self.vault.get_technique_dir(self.current_sample_id, tech_key)
+        folder = self.vault.get_technique_dir(self.current_sample_id, tech_key, create=False)
         if os.path.exists(folder):
             os.startfile(folder)
+        else:
+            s_folder = self.vault.get_sample_dir(self.current_sample_id)
+            if os.path.exists(s_folder):
+                os.startfile(s_folder)
 
     # ==================== TAB: BET SURFACE AREA ====================
 
