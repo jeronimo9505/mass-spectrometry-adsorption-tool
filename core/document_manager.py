@@ -5,11 +5,12 @@ import pandas as pd
 
 DOCUMENT_CATEGORIES = [
     ("🎤 Conference Certificate (Oral / Poster / Attendance)", "Conference Certificate"),
+    ("📜 Training Certificate (Course / Workshop / Equipment)", "Training Certificate"),
     ("🔬 Standard Operating Procedure (SOP)", "SOP"),
     ("📑 PhD Research Plan & Project Proposal", "Research Plan"),
     ("💾 Data Management Plan (DMP)", "Data Management Plan"),
     ("📜 Certificate of Analysis (CoA) & Material Spec", "Certificate"),
-    ("⚖️ Instrument Calibration & Training Certificate", "Calibration"),
+    ("⚖️ Instrument Calibration Certificate", "Calibration"),
     ("🎓 PhD Milestone & Progress Evaluation", "PhD Milestone"),
     ("📝 Manuscript Draft & Peer Review", "Manuscript"),
     ("🛡️ Safety Data Sheet (MSDS) & Risk Protocol", "Safety / MSDS"),
@@ -289,7 +290,9 @@ class OfficialDocumentManager:
                 cat = "General"
                 lower_fn = fname.lower()
                 if "conf" in lower_fn or "conference" in lower_fn:
-                    cat = "Conference"
+                    cat = "Conference Certificate"
+                elif "train" in lower_fn or "workshop" in lower_fn:
+                    cat = "Training Certificate"
                 elif "sop" in lower_fn:
                     cat = "SOP"
                 elif "data_management" in lower_fn or "dmp" in lower_fn:

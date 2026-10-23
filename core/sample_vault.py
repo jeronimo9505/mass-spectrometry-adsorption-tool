@@ -62,10 +62,9 @@ from .master_excel_manager import MasterExcelManager
 from .document_manager import OfficialDocumentManager
 
 class SampleVault:
-    """
     Manages the Sample Logbook and Multi-Characterization Vault.
     Backed by SQLite (vault.db) with automated JSON export (samples_logbook.json)
-    and live Master Excel Summary synchronization (Master_CO2_Adsorption_Summary.xlsx).
+    and live Master Excel Summary synchronization (Sample_Register_and_Summary_Analysis.xlsx).
     """
     LOGBOOK_FILENAME = "samples_logbook.json"
     DB_FILENAME = "vault.db"

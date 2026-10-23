@@ -40,13 +40,14 @@ class MasterExcelManager:
         os.makedirs(self.vault_path, exist_ok=True)
         dest_path = self.get_master_path()
 
-        # Remove legacy named file if present
-        legacy_path = os.path.join(self.vault_path, "Master_CO2_Adsorption_Summary.xlsx")
-        if os.path.exists(legacy_path):
-            try:
-                os.remove(legacy_path)
-            except Exception:
-                pass
+        # Ensure strictly only one Master Excel file exists and remove any legacy/alternate files
+        for stray_fn in ["Master_CO2_Adsorption_Summary.xlsx", "Master_CO2_Adsorption_Summary_Updated.xlsx", "Sample_Register_and_Summary_Analysis_Updated.xlsx"]:
+            stray_path = os.path.join(self.vault_path, stray_fn)
+            if os.path.exists(stray_path):
+                try:
+                    os.remove(stray_path)
+                except Exception:
+                    pass
 
         wb = openpyxl.Workbook()
         # Default sheet
@@ -174,18 +175,18 @@ class MasterExcelManager:
         # =========================================================================
         self._populate_breakdown_sheet(ws_det, sample_data_list)
 
-        # Save workbook safely
+        # Save workbook strictly to Sample_Register_and_Summary_Analysis.xlsx
         try:
             wb.save(dest_path)
             return dest_path
         except PermissionError:
-            # If user has the file currently open in Microsoft Excel, save to alternate name
-            alt_path = os.path.join(self.vault_path, "Master_CO2_Adsorption_Summary_Updated.xlsx")
-            try:
-                wb.save(alt_path)
-                return alt_path
-            except Exception:
-                return dest_path
+            # If the user currently has the file open in Microsoft Excel, Windows locks it.
+            # We never create alternate Excel files - we notify and return dest_path.
+            print(f"[MasterExcelManager] Notice: '{self.MASTER_FILENAME}' is locked by another process (e.g. open in Excel). Please close it to allow auto-updates.")
+            return dest_path
+        except Exception as e:
+            print(f"[MasterExcelManager] Error saving '{dest_path}': {e}")
+            return dest_path
 
     def _populate_capacity_sheet(self, ws, sample_data_list, max_cycles):
         # Styles

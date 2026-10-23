@@ -6,11 +6,12 @@ from datetime import datetime
 DOCUMENT_CATEGORIES_DISPLAY = [
     "All Categories",
     "🎤 Conference Certificate (Oral / Poster / Attendance)",
+    "📜 Training Certificate (Course / Workshop / Equipment)",
     "🔬 Standard Operating Procedure (SOP)",
     "📑 PhD Research Plan & Project Proposal",
     "💾 Data Management Plan (DMP)",
     "📜 Certificate of Analysis (CoA) & Material Spec",
-    "⚖️ Instrument Calibration & Training Certificate",
+    "⚖️ Instrument Calibration Certificate",
     "🎓 PhD Milestone & Progress Evaluation",
     "📝 Manuscript Draft & Peer Review",
     "🛡️ Safety Data Sheet (MSDS) & Risk Protocol",
@@ -23,6 +24,9 @@ CATEGORY_NAME_MAP = {
     "🎤 Conference Certificate (Oral / Poster / Attendance)": "Conference Certificate",
     "Conference Certificate": "Conference Certificate",
     "Conference": "Conference Certificate",
+    "📜 Training Certificate (Course / Workshop / Equipment)": "Training Certificate",
+    "Training Certificate": "Training Certificate",
+    "Training": "Training Certificate",
     "🔬 Standard Operating Procedure (SOP)": "SOP",
     "SOP": "SOP",
     "📑 PhD Research Plan & Project Proposal": "Research Plan",
@@ -31,6 +35,7 @@ CATEGORY_NAME_MAP = {
     "Data Management Plan": "Data Management Plan",
     "📜 Certificate of Analysis (CoA) & Material Spec": "Certificate",
     "Certificate": "Certificate",
+    "⚖️ Instrument Calibration Certificate": "Calibration",
     "⚖️ Instrument Calibration & Training Certificate": "Calibration",
     "Calibration": "Calibration",
     "🎓 PhD Milestone & Progress Evaluation": "PhD Milestone",
@@ -50,11 +55,13 @@ CATEGORY_NAME_MAP = {
 CATEGORY_REV_MAP = {
     "Conference Certificate": "🎤 Conference Certificate (Oral / Poster / Attendance)",
     "Conference": "🎤 Conference Certificate (Oral / Poster / Attendance)",
+    "Training Certificate": "📜 Training Certificate (Course / Workshop / Equipment)",
+    "Training": "📜 Training Certificate (Course / Workshop / Equipment)",
     "SOP": "🔬 Standard Operating Procedure (SOP)",
     "Research Plan": "📑 PhD Research Plan & Project Proposal",
     "Data Management Plan": "💾 Data Management Plan (DMP)",
     "Certificate": "📜 Certificate of Analysis (CoA) & Material Spec",
-    "Calibration": "⚖️ Instrument Calibration & Training Certificate",
+    "Calibration": "⚖️ Instrument Calibration Certificate",
     "PhD Milestone": "🎓 PhD Milestone & Progress Evaluation",
     "Manuscript": "📝 Manuscript Draft & Peer Review",
     "Safety / MSDS": "🛡️ Safety Data Sheet (MSDS) & Risk Protocol",
@@ -388,7 +395,11 @@ class OfficialDocumentsView(ttk.Frame):
         # Update KPI cards based on all documents
         all_docs = self.doc_manager.list_documents()
         total_cnt = len(all_docs)
-        conf_cnt = sum(1 for d in all_docs if d.get("category") in ["Conference", "PhD Milestone", "Manuscript", "Fellowship / Grant"])
+        conf_cnt = sum(1 for d in all_docs if d.get("category") in [
+            "Conference Certificate", "Conference", 
+            "Training Certificate", "Training", 
+            "PhD Milestone", "Manuscript", "Fellowship / Grant"
+        ])
         sops_cnt = sum(1 for d in all_docs if d.get("category") in ["SOP", "Calibration", "Safety / MSDS"])
         plans_cnt = sum(1 for d in all_docs if d.get("category") in ["Research Plan", "Data Management Plan", "Certificate", "Official Report", "General"])
 
