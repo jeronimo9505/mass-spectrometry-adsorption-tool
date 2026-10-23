@@ -1,8 +1,8 @@
 =====================================================================================
-   MASS SPECTROMETRY CO2 ADSORPTION / DESORPTION REPORT — Zeolite Powder Rapeat
+   MASS SPECTROMETRY CO2 ADSORPTION / DESORPTION REPORT — Zeolite Powder Rapeat Final
 =====================================================================================
 Sample ID:                 Zeolite Powder Rapeat
-Material Name:             Zeolite Powder Rapeat
+Material Name:             Zeolite Powder Rapeat Final
 Operator:                  Shayan
 Measurement Date:          2026-10-15
 Measurement File:          15 10 2026 zeolite powder repeat 1st ads des.asc

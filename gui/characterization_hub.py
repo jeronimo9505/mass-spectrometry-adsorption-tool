@@ -94,11 +94,6 @@ class CharacterizationHubView(ttk.Frame):
         self.tech_notebook.add(self.tab_bet, text=" 📐 N₂ Physisorption / BET ")
         self._build_bet_tab(self.tab_bet)
 
-        # Tab 8: Documents & Reports
-        self.tab_docs = ttk.Frame(self.tech_notebook, padding=8)
-        self.tech_notebook.add(self.tab_docs, text=" 📁 Documents & Reports ")
-        self._build_generic_tab(self.tab_docs, "documents", "Supplementary Files (PDF, Images, Reports):", [("Documents", "*.pdf;*.png;*.jpg;*.xlsx;*.docx;*.txt"), ("All Files", "*.*")])
-
         # Listen to tab change for lazy loading heavy tabs (TGA)
         self.tech_notebook.bind("<<NotebookTabChanged>>", self.on_tech_tab_changed)
 
@@ -159,8 +154,7 @@ class CharacterizationHubView(ttk.Frame):
             str(self.tab_tomography): ("tomography", self._refresh_tomography_tab),
             str(self.tab_sem_tem): ("sem_tem", self._refresh_sem_tem_tab),
             str(self.tab_hg_porosimetry): ("hg_porosimetry", self._refresh_hg_porosimetry_tab),
-            str(self.tab_bet): ("bet", self._refresh_bet_tab),
-            str(self.tab_docs): ("documents", lambda: self._refresh_generic_table("documents")),
+            str(self.tab_bet): ("bet", self._refresh_bet_tab)
         }
 
         entry = tab_map.get(current_tab_id)
@@ -189,8 +183,7 @@ class CharacterizationHubView(ttk.Frame):
             "tomography": self.tab_tomography,
             "sem_tem": self.tab_sem_tem,
             "hg_porosimetry": self.tab_hg_porosimetry,
-            "bet": self.tab_bet,
-            "documents": self.tab_docs,
+            "bet": self.tab_bet
         }
         tab = tab_map.get(tech_key)
         if tab:

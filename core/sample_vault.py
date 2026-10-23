@@ -55,20 +55,17 @@ CHARACTERIZATION_TYPES = {
         "folder": "bet",
         "extensions": [".xls", ".xlsx", ".csv", ".txt"],
         "icon": "📐"
-    },
-    "documents": {
-        "name": "Attached Documents & Reports",
-        "folder": "documents",
-        "extensions": [".pdf", ".png", ".jpg", ".docx", ".xlsx", ".txt"],
-        "icon": "📁"
     }
 }
+
+from .master_excel_manager import MasterExcelManager
+from .document_manager import OfficialDocumentManager
 
 class SampleVault:
     """
     Manages the Sample Logbook and Multi-Characterization Vault.
-    Backed by SQLite (vault.db) with automated JSON export (samples_logbook.json).
-    Automatically clones files into the local machine vault and tracks all analysis results.
+    Backed by SQLite (vault.db) with automated JSON export (samples_logbook.json)
+    and live Master Excel Summary synchronization (Master_CO2_Adsorption_Summary.xlsx).
     """
     LOGBOOK_FILENAME = "samples_logbook.json"
     DB_FILENAME = "vault.db"
@@ -85,8 +82,11 @@ class SampleVault:
         self.ensure_structure()
 
         self.db = DBManager(self.db_path, self.logbook_path)
+        self.doc_manager = OfficialDocumentManager(self.vault_path, self.db)
+        self.excel_manager = MasterExcelManager(self.vault_path, self.db)
         self.reconcile_vault_filesystem()
         self.logbook = self.load_logbook()
+        self.sync_master_excel()
 
     def set_vault_path(self, new_path):
         self.vault_path = config.set_vault_path(new_path)
@@ -95,9 +95,25 @@ class SampleVault:
         self.db_path = os.path.join(self.vault_path, self.DB_FILENAME)
         self.ensure_structure()
         self.db = DBManager(self.db_path, self.logbook_path)
+        self.doc_manager = OfficialDocumentManager(self.vault_path, self.db)
+        self.excel_manager = MasterExcelManager(self.vault_path, self.db)
         self.reconcile_vault_filesystem()
         self.logbook = self.load_logbook()
+        self.sync_master_excel()
         return self.vault_path
+
+    def sync_master_excel(self):
+        """Generates or updates the live Master Excel Summary file in the vault."""
+        try:
+            return self.excel_manager.generate_master_excel()
+        except Exception:
+            return None
+
+    def get_master_excel_path(self):
+        return self.excel_manager.get_master_path()
+
+    def open_master_excel(self):
+        return self.excel_manager.open_master_excel()
 
     def ensure_structure(self):
         os.makedirs(self.samples_dir, exist_ok=True)
@@ -302,6 +318,14 @@ class SampleVault:
                             shutil.rmtree(tech_folder, onerror=_handle_remove_readonly)
                         except Exception:
                             pass
+            # Also clean up legacy empty 'documents' folder if present
+            legacy_doc = os.path.join(s_dir, "documents")
+            if os.path.isdir(legacy_doc):
+                try:
+                    if not os.listdir(legacy_doc):
+                        shutil.rmtree(legacy_doc, onerror=_handle_remove_readonly)
+                except Exception:
+                    pass
 
     def create_or_update_sample(self, sample_id, metadata):
         sample_id = sample_id.strip()
@@ -321,6 +345,7 @@ class SampleVault:
         except Exception:
             pass
 
+        self.sync_master_excel()
         return self.logbook.get(sample_id, metadata)
 
     def add_characterization_file(self, sample_id, technique, source_file_path, description=""):
@@ -407,6 +432,7 @@ class SampleVault:
         )
 
         self.load_logbook()
+        self.sync_master_excel()
         return res
 
     def load_mass_spec_analysis(self, sample_id, filename):
@@ -462,5 +488,6 @@ class SampleVault:
             except Exception:
                 pass
         self.load_logbook()
+        self.sync_master_excel()
 
 sample_vault = SampleVault()

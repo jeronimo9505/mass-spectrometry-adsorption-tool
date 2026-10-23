@@ -1,8 +1,8 @@
 =====================================================================================
-   MASS SPECTROMETRY CO2 ADSORPTION / DESORPTION REPORT — ZZ18.5 B6 Zeo
+   MASS SPECTROMETRY CO2 ADSORPTION / DESORPTION REPORT — ZZ18.5 B6 Zeoite
 =====================================================================================
 Sample ID:                 ZZ20_01
-Material Name:             ZZ18.5 B6 Zeo
+Material Name:             ZZ18.5 B6 Zeoite
 Operator:                  Shayan
 Measurement Date:          2026-08-28
 Measurement File:          21082026  zz20 monoliths 1st.asc
@@ -17,19 +17,19 @@ Measurement File:          21082026  zz20 monoliths 1st.asc
   - Molar Volume Vm:       Vm,25 = 24465.0 mL/mol  |  Vm,exp = 24382.9 mL/mol
   - Total Molar Flow Rate: 4.1012e-03 mol/min
   - Baseline S_base:       7.5537e-10 A  (Sensitivity k = 1.986e+08 A⁻¹)
-  - Baseline Mode:         global_average
+  - Baseline Mode:         ads_first_point
 -------------------------------------------------------------------------------------
 2. PERFORMANCE CAPACITY SUMMARY:
-  - Average Adsorption q:  3.5577 mmol/g (Dry Mass)  |  2.7964 mmol/g (100% Mass)
-  - Average Desorption q:  3.5136 mmol/g (Dry Mass)  |  2.7617 mmol/g (100% Mass)
+  - Average Adsorption q:  3.5534 mmol/g (Dry Mass)  |  2.7930 mmol/g (100% Mass)
+  - Average Desorption q:  3.5094 mmol/g (Dry Mass)  |  2.7583 mmol/g (100% Mass)
   - Desorption Recovery:   98.76 %
 -------------------------------------------------------------------------------------
 3. CYCLE-BY-CYCLE ANALYTICAL BREAKDOWN (MATCHING ORIGIN & EXCEL):
   Step     Origin Area   |A| (A·min)   S_base (A)   k (A⁻¹)     nCO2 (mmol)  q(100%)    q(Dry)    
-  Ads_8    -1.6545e-09   1.6545e-09    7.5537e-10   1.986e+08   1.3475       2.7956     3.5567    
-  Des_9    1.6266e-09    1.6266e-09    7.5537e-10   1.986e+08   1.3247       2.7483     3.4966    
-  Ads_11   -1.6555e-09   1.6555e-09    7.5537e-10   1.986e+08   1.3482       2.7971     3.5587    
-  Des_12   1.6423e-09    1.6423e-09    7.5537e-10   1.986e+08   1.3375       2.7750     3.5305    
+  Ads_8    -1.6545e-09   1.6545e-09    7.5711e-10   1.981e+08   1.3444       2.7891     3.5485    
+  Des_9    1.6266e-09    1.6266e-09    7.5711e-10   1.981e+08   1.3216       2.7420     3.4886    
+  Ads_11   -1.6555e-09   1.6555e-09    7.5545e-10   1.986e+08   1.3481       2.7968     3.5583    
+  Des_12   1.6423e-09    1.6423e-09    7.5545e-10   1.986e+08   1.3374       2.7747     3.5301    
 -------------------------------------------------------------------------------------
 4. HIGH-RESOLUTION ARTIFACTS:
   - 600 DPI Print Image:   c:\Users\Lenovo\OneDrive - unizar.es\AI Antigravity software\data_vault\samples\ZZ20_01\mass_spec\reports\ZZ20_01_MS_plot_600dpi.png

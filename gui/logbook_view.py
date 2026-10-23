@@ -153,6 +153,7 @@ class LogbookView(ttk.Frame):
         ttk.Button(toolbar, text="🗑️ Delete", command=self.on_delete_sample).pack(side=tk.LEFT, padx=3)
         ttk.Button(toolbar, text="📂 Open Folder", command=self.on_open_folder).pack(side=tk.LEFT, padx=3)
         ttk.Button(toolbar, text="🔄 Refresh", command=self.on_refresh).pack(side=tk.LEFT, padx=3)
+        ttk.Button(toolbar, text="📊 Sample Register & Summary", command=self.on_open_master_excel).pack(side=tk.LEFT, padx=3)
 
         self.btn_go_hub = ttk.Button(
             toolbar, 
@@ -263,7 +264,6 @@ class LogbookView(ttk.Frame):
                 ("sem_tem", "🔍 SEM"),
                 ("hg_porosimetry", "💧 MIP"),
                 ("bet", "📐 BET"),
-                ("documents", "📁 Docs"),
             ]
             t_badges = []
             for t_k, t_lbl in TECH_BADGES:
@@ -350,7 +350,6 @@ class LogbookView(ttk.Frame):
             ("sem_tem", "🔍 SEM / TEM", "#2e7d32", "#ffffff"),
             ("hg_porosimetry", "💧 Hg Porosimetry", "#00695c", "#ffffff"),
             ("bet", "📐 BET", "#00796b", "#ffffff"),
-            ("documents", "📁 Docs", "#455a64", "#ffffff"),
         ]
 
         found_any = False
@@ -472,6 +471,14 @@ class LogbookView(ttk.Frame):
             return
         if self.on_select_sample_callback:
             self.on_select_sample_callback(s_id, switch_tab=True)
+
+    def on_open_master_excel(self):
+        try:
+            ok = self.vault.open_master_excel()
+            if not ok:
+                messagebox.showwarning("Master Excel", "Could not open Master Excel file.")
+        except Exception as e:
+            messagebox.showerror("Master Excel Error", f"Failed to generate or open Master Excel file:\n{e}")
 
     def on_refresh(self):
         self.vault.reconcile_vault_filesystem()

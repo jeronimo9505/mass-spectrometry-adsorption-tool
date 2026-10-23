@@ -6,18 +6,20 @@ from core.sample_vault import sample_vault
 from gui.logbook_view import LogbookView
 from gui.characterization_hub import CharacterizationHubView
 from gui.mass_spec_tool import MassSpecToolView
+from gui.documents_view import OfficialDocumentsView
 
 class MainWindow(tk.Tk):
     """
-    Main Application Window orchestrating the 3 Pillars:
+    Main Application Window orchestrating the 4 Pillars:
       1. Sample Logbook
       2. Multi-Characterization Hub
       3. Mass Spectrometry & Gas Adsorption Tool
+      4. Official Documents & Certificates Vault
     """
     def __init__(self):
         super().__init__()
         self.title("Lab Vault — Sample Logbook & CO₂ Adsorption Analysis System")
-        self.geometry("1520x940")
+        self.geometry("1540x940")
         self.minsize(1180, 760)
 
         # Style Configuration
@@ -40,6 +42,9 @@ class MainWindow(tk.Tk):
         menubar = tk.Menu(self)
 
         file_menu = tk.Menu(menubar, tearoff=0)
+        file_menu.add_command(label="📊 Open Sample Register & Summary (.xlsx)", command=self.on_open_master_excel)
+        file_menu.add_command(label="📑 Open Official Documents Folder", command=self.on_open_documents_folder)
+        file_menu.add_separator()
         file_menu.add_command(label="📁 Change Vault Directory...", command=self.on_change_vault_folder)
         file_menu.add_command(label="📂 Open Vault Directory in Explorer", command=self.on_open_vault_folder)
         file_menu.add_separator()
@@ -80,13 +85,45 @@ class MainWindow(tk.Tk):
         )
         self.lbl_vault_info.pack(side=tk.LEFT, padx=(0, 10))
 
+        btn_master_xl = tk.Button(
+            vault_controls,
+            text="📊 Sample Register & Summary",
+            font=("Segoe UI", 8, "bold"),
+            bg="#2a9d8f",
+            fg="#ffffff",
+            activebackground="#21867a",
+            activeforeground="#ffffff",
+            relief=tk.FLAT,
+            padx=8,
+            pady=2,
+            cursor="hand2",
+            command=self.on_open_master_excel
+        )
+        btn_master_xl.pack(side=tk.LEFT, padx=3)
+
+        btn_doc_vault = tk.Button(
+            vault_controls,
+            text="📑 Official Docs",
+            font=("Segoe UI", 8, "bold"),
+            bg="#e76f51",
+            fg="#ffffff",
+            activebackground="#d05a3d",
+            activeforeground="#ffffff",
+            relief=tk.FLAT,
+            padx=8,
+            pady=2,
+            cursor="hand2",
+            command=self.on_open_documents_tab
+        )
+        btn_doc_vault.pack(side=tk.LEFT, padx=3)
+
         btn_change_vault = tk.Button(
             vault_controls,
-            text="📁 Change Folder...",
-            font=("Segoe UI", 8, "bold"),
+            text="📁 Change...",
+            font=("Segoe UI", 8),
             bg="#457b9d",
             fg="#ffffff",
-            activebackground="#2a9d8f",
+            activebackground="#3b6986",
             activeforeground="#ffffff",
             relief=tk.FLAT,
             padx=8,
@@ -100,9 +137,9 @@ class MainWindow(tk.Tk):
             vault_controls,
             text="🔄 Re-scan",
             font=("Segoe UI", 8),
-            bg="#2a9d8f",
+            bg="#3d5a80",
             fg="#ffffff",
-            activebackground="#264653",
+            activebackground="#293d56",
             activeforeground="#ffffff",
             relief=tk.FLAT,
             padx=8,
@@ -114,7 +151,7 @@ class MainWindow(tk.Tk):
 
         btn_open_exp = tk.Button(
             vault_controls,
-            text="📂 Open",
+            text="📂 Open Vault",
             font=("Segoe UI", 8),
             bg="#34495e",
             fg="#ffffff",
@@ -128,7 +165,7 @@ class MainWindow(tk.Tk):
         )
         btn_open_exp.pack(side=tk.LEFT, padx=3)
 
-        # Main Navigation Tabs (3 Pillars)
+        # Main Navigation Tabs (4 Pillars)
         self.main_notebook = ttk.Notebook(self)
         self.main_notebook.pack(fill=tk.BOTH, expand=True, padx=6, pady=6)
 
@@ -158,6 +195,14 @@ class MainWindow(tk.Tk):
         )
         self.main_notebook.add(self.tab_tool, text=" 📈 3. Mass Spectrometry Tool (MID) ")
 
+        # Pillar 4: Official Documents & Certificates Vault
+        self.tab_documents = OfficialDocumentsView(
+            self.main_notebook,
+            doc_manager=self.vault.doc_manager,
+            vault=self.vault
+        )
+        self.main_notebook.add(self.tab_documents, text=" 📑 4. Official Documents & Certificates ")
+
         self.main_notebook.bind("<<NotebookTabChanged>>", self.on_main_tab_changed)
         self.update_vault_header()
 
@@ -168,6 +213,8 @@ class MainWindow(tk.Tk):
             current_tab = self.main_notebook.select()
             if current_tab == str(self.tab_hub):
                 self.tab_hub.refresh_active_tab()
+            elif current_tab == str(self.tab_documents):
+                self.tab_documents.refresh_table()
         except Exception:
             pass
 
@@ -198,6 +245,21 @@ class MainWindow(tk.Tk):
         self.tab_logbook.refresh_table()
         self.tab_hub.set_sample(sample_id, lazy=False)
 
+    def on_open_master_excel(self):
+        try:
+            ok = self.vault.open_master_excel()
+            if not ok:
+                messagebox.showwarning("Master Excel", "Could not open Master Excel file.")
+        except Exception as e:
+            messagebox.showerror("Master Excel Error", f"Failed to generate or open Master Excel file:\n{e}")
+
+    def on_open_documents_tab(self):
+        self.main_notebook.select(3)
+        self.tab_documents.refresh_table()
+
+    def on_open_documents_folder(self):
+        self.vault.doc_manager.open_documents_folder()
+
     # ==================== MENU COMMANDS ====================
 
     def update_vault_header(self):
@@ -217,20 +279,27 @@ class MainWindow(tk.Tk):
                 self.active_sample_id = None
             self.tab_logbook.refresh_table()
             self.tab_hub.set_sample(self.active_sample_id)
+            self.tab_documents.refresh_table()
             sample_count = len(self.vault.db.list_samples())
+            doc_count = len(self.vault.doc_manager.list_documents())
             messagebox.showinfo(
                 "Vault Connected",
                 f"Sample Vault successfully connected to:\n{new_dir}\n\n"
                 f"• Architecture recognized: SQLite database ('vault.db') + 'samples/' tree\n"
+                f"• Live Master Excel: 'Sample_Register_and_Summary_Analysis.xlsx'\n"
+                f"• Official Documents Archive: 'Official_Documents/' ({doc_count} files)\n"
                 f"• Registered Samples: {sample_count}"
             )
 
     def on_rescan_vault(self):
         self.vault.reconcile_vault_filesystem()
+        self.vault.sync_master_excel()
+        self.vault.doc_manager.reconcile_filesystem()
         self.tab_logbook.refresh_table()
         self.tab_hub.set_sample(self.active_sample_id)
+        self.tab_documents.refresh_table()
         sample_count = len(self.vault.db.list_samples())
-        messagebox.showinfo("Vault Re-scanned", f"Vault folder re-scanned and synchronized!\nActive Samples: {sample_count}")
+        messagebox.showinfo("Vault Re-scanned", f"Vault folder and Master Excel re-scanned and synchronized!\nActive Samples: {sample_count}")
 
     def on_open_vault_folder(self):
         if os.path.exists(self.vault.vault_path):

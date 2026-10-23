@@ -15,7 +15,7 @@
     "notes": "Blank monolith without zeolite",
     "status": "Analyzed",
     "created_at": "2026-09-23 18:42:27",
-    "updated_at": "2026-10-22 23:36:52",
+    "updated_at": "2026-10-23 10:17:38",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -32,7 +32,7 @@
             "q_net_ads": 0.2353,
             "q_net_des": 0.0766,
             "recovery_pct": 32.56,
-            "analyzed_at": "2026-10-22 23:36:52"
+            "analyzed_at": "2026-10-23 10:17:38"
           }
         ],
         "notes": ""
@@ -57,10 +57,6 @@
       },
       "bet": {
         "files": []
-      },
-      "documents": {
-        "files": [],
-        "notes": ""
       }
     }
   },
@@ -80,7 +76,7 @@
     "notes": "Full 3 continuous cycles",
     "status": "Analyzed",
     "created_at": "2026-09-23 18:42:27",
-    "updated_at": "2026-10-22 22:57:05",
+    "updated_at": "2026-10-23 10:17:39",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -94,10 +90,10 @@
             "description": "",
             "status": "Analyzed",
             "uploaded_at": "2026-09-23 18:42:27",
-            "q_net_ads": 3.1956,
-            "q_net_des": 3.1777,
-            "recovery_pct": 99.44,
-            "analyzed_at": "2026-10-22 22:57:05"
+            "q_net_ads": 3.1929,
+            "q_net_des": 3.1753,
+            "recovery_pct": 99.45,
+            "analyzed_at": "2026-10-23 10:17:39"
           }
         ],
         "notes": ""
@@ -122,10 +118,6 @@
       },
       "bet": {
         "files": []
-      },
-      "documents": {
-        "files": [],
-        "notes": ""
       }
     }
   },
@@ -145,7 +137,7 @@
     "notes": "",
     "status": "Analyzed",
     "created_at": "2026-09-23 18:42:27",
-    "updated_at": "2026-10-22 23:07:34",
+    "updated_at": "2026-10-23 10:17:39",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -159,10 +151,10 @@
             "description": "",
             "status": "Analyzed",
             "uploaded_at": "2026-09-23 18:42:27",
-            "q_net_ads": 3.5577,
-            "q_net_des": 3.5136,
+            "q_net_ads": 3.5534,
+            "q_net_des": 3.5094,
             "recovery_pct": 98.76,
-            "analyzed_at": "2026-10-22 23:07:01"
+            "analyzed_at": "2026-10-23 10:17:39"
           }
         ],
         "notes": ""
@@ -243,10 +235,6 @@
       },
       "bet": {
         "files": []
-      },
-      "documents": {
-        "files": [],
-        "notes": ""
       }
     }
   },
@@ -266,7 +254,7 @@
     "notes": "Complete cyclic adsorption/desorption run",
     "status": "Analyzed",
     "created_at": "2026-09-23 18:42:27",
-    "updated_at": "2026-10-22 23:11:41",
+    "updated_at": "2026-10-23 10:17:39",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -280,10 +268,10 @@
             "description": "",
             "status": "Analyzed",
             "uploaded_at": "2026-09-23 18:42:27",
-            "q_net_ads": 3.2202,
-            "q_net_des": 3.1215,
+            "q_net_ads": 3.215,
+            "q_net_des": 3.1167,
             "recovery_pct": 96.94,
-            "analyzed_at": "2026-10-22 23:11:41"
+            "analyzed_at": "2026-10-23 10:17:39"
           }
         ],
         "notes": ""
@@ -498,55 +486,6 @@
       },
       "bet": {
         "files": []
-      },
-      "documents": {
-        "files": [
-          {
-            "id": 78,
-            "sample_id": "ZZ30_01",
-            "technique": "documents",
-            "filename": "Shayan_Gul_Data_Management_Plan.docx",
-            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\documents\\Shayan_Gul_Data_Management_Plan.docx",
-            "size_bytes": 35370,
-            "description": "Discovered documents file",
-            "status": "Pending",
-            "uploaded_at": "2026-10-20 19:40:28"
-          },
-          {
-            "id": 79,
-            "sample_id": "ZZ30_01",
-            "technique": "documents",
-            "filename": "Shayan_Gul_Data_Management_Plan.pdf",
-            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\documents\\Shayan_Gul_Data_Management_Plan.pdf",
-            "size_bytes": 256499,
-            "description": "Discovered documents file",
-            "status": "Pending",
-            "uploaded_at": "2026-10-20 19:40:28"
-          },
-          {
-            "id": 80,
-            "sample_id": "ZZ30_01",
-            "technique": "documents",
-            "filename": "Shayan_Gul_Research_Plan.docx",
-            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\documents\\Shayan_Gul_Research_Plan.docx",
-            "size_bytes": 35248,
-            "description": "Discovered documents file",
-            "status": "Pending",
-            "uploaded_at": "2026-10-20 19:40:28"
-          },
-          {
-            "id": 81,
-            "sample_id": "ZZ30_01",
-            "technique": "documents",
-            "filename": "Shayan_Gul_Research_Plan.pdf",
-            "cloned_path": "C:\\Users\\jeron\\Downloads\\shayan\\data_vault\\samples\\ZZ30_01\\documents\\Shayan_Gul_Research_Plan.pdf",
-            "size_bytes": 231203,
-            "description": "Discovered documents file",
-            "status": "Pending",
-            "uploaded_at": "2026-10-20 19:40:28"
-          }
-        ],
-        "notes": ""
       }
     }
   },
@@ -566,7 +505,7 @@
     "notes": "Zeolite Powder Rapeat",
     "status": "Analyzed",
     "created_at": "2026-10-20 11:45:57",
-    "updated_at": "2026-10-22 23:31:13",
+    "updated_at": "2026-10-23 10:17:39",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -583,7 +522,7 @@
             "q_net_ads": 3.5626,
             "q_net_des": 3.4948,
             "recovery_pct": 98.1,
-            "analyzed_at": "2026-10-22 23:30:42"
+            "analyzed_at": "2026-10-23 10:17:39"
           }
         ],
         "notes": ""
@@ -608,10 +547,6 @@
       },
       "bet": {
         "files": []
-      },
-      "documents": {
-        "files": [],
-        "notes": ""
       }
     }
   },
@@ -631,7 +566,7 @@
     "notes": "",
     "status": "Analyzed",
     "created_at": "2026-09-28 18:38:26",
-    "updated_at": "2026-10-22 22:57:07",
+    "updated_at": "2026-10-23 10:17:39",
     "characterizations": {
       "mass_spec": {
         "files": [
@@ -645,10 +580,10 @@
             "description": "",
             "status": "Analyzed",
             "uploaded_at": "2026-09-28 18:39:13",
-            "q_net_ads": 3.7879,
-            "q_net_des": 2.9836,
-            "recovery_pct": 78.77,
-            "analyzed_at": "2026-10-22 22:57:07"
+            "q_net_ads": 4.0095,
+            "q_net_des": 2.7793,
+            "recovery_pct": 69.32,
+            "analyzed_at": "2026-10-23 10:17:39"
           }
         ],
         "notes": ""
@@ -673,10 +608,6 @@
       },
       "bet": {
         "files": []
-      },
-      "documents": {
-        "files": [],
-        "notes": ""
       }
     }
   },
@@ -694,28 +625,12 @@
     "flow_total": 100.0,
     "temp_c": 24.0,
     "notes": "",
-    "status": "Analyzed",
+    "status": "Registered",
     "created_at": "2026-09-23 18:52:29",
-    "updated_at": "2026-10-22 22:57:07",
+    "updated_at": "2026-10-23 10:17:38",
     "characterizations": {
       "mass_spec": {
-        "files": [
-          {
-            "id": 16,
-            "sample_id": "aaa",
-            "technique": "mass_spec",
-            "filename": "24082026  final zz30 monoliths 1st.asc",
-            "cloned_path": "c:\\Users\\Lenovo\\OneDrive - unizar.es\\AI Antigravity software\\data_vault\\samples\\aaa\\mass_spec\\24082026  final zz30 monoliths 1st.asc",
-            "size_bytes": 1426094,
-            "description": "",
-            "status": "Analyzed",
-            "uploaded_at": "2026-09-23 19:00:40",
-            "q_net_ads": 3.0548,
-            "q_net_des": 3.1167,
-            "recovery_pct": 102.03,
-            "analyzed_at": "2026-10-22 22:57:07"
-          }
-        ],
+        "files": [],
         "notes": ""
       },
       "thermal_profile": {
@@ -738,10 +653,6 @@
       },
       "bet": {
         "files": []
-      },
-      "documents": {
-        "files": [],
-        "notes": ""
       }
     }
   }

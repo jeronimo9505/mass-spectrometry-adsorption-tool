@@ -17,21 +17,21 @@ Measurement File:          01092026 zz10 monolith final full 3 cycles.asc
   - Molar Volume Vm:       Vm,25 = 24465.0 mL/mol  |  Vm,exp = 24382.9 mL/mol
   - Total Molar Flow Rate: 4.1012e-03 mol/min
   - Baseline S_base:       7.5489e-10 A  (Sensitivity k = 1.987e+08 A⁻¹)
-  - Baseline Mode:         global_average
+  - Baseline Mode:         ads_first_point
 -------------------------------------------------------------------------------------
 2. PERFORMANCE CAPACITY SUMMARY:
-  - Average Adsorption q:  3.1956 mmol/g (Dry Mass)  |  2.5118 mmol/g (100% Mass)
-  - Average Desorption q:  3.1777 mmol/g (Dry Mass)  |  2.4977 mmol/g (100% Mass)
-  - Desorption Recovery:   99.44 %
+  - Average Adsorption q:  3.1929 mmol/g (Dry Mass)  |  2.5096 mmol/g (100% Mass)
+  - Average Desorption q:  3.1753 mmol/g (Dry Mass)  |  2.4958 mmol/g (100% Mass)
+  - Desorption Recovery:   99.45 %
 -------------------------------------------------------------------------------------
 3. CYCLE-BY-CYCLE ANALYTICAL BREAKDOWN (MATCHING ORIGIN & EXCEL):
   Step     Origin Area   |A| (A·min)   S_base (A)   k (A⁻¹)     nCO2 (mmol)  q(100%)    q(Dry)    
-  Ads_5    -1.1666e-09   1.1666e-09    7.5489e-10   1.987e+08   0.9507       2.5117     3.1955    
-  Des_6    1.1779e-09    1.1779e-09    7.5489e-10   1.987e+08   0.9599       2.5360     3.2265    
-  Ads_8    -1.1815e-09   1.1815e-09    7.5489e-10   1.987e+08   0.9629       2.5439     3.2365    
-  Des_9    1.1365e-09    1.1365e-09    7.5489e-10   1.987e+08   0.9262       2.4470     3.1133    
-  Ads_11   -1.1517e-09   1.1517e-09    7.5489e-10   1.987e+08   0.9386       2.4798     3.1549    
-  Des_12   1.1658e-09    1.1658e-09    7.5489e-10   1.987e+08   0.9500       2.5100     3.1934    
+  Ads_5    -1.1666e-09   1.1666e-09    7.5372e-10   1.990e+08   0.9521       2.5156     3.2005    
+  Des_6    1.1779e-09    1.1779e-09    7.5372e-10   1.990e+08   0.9614       2.5400     3.2315    
+  Ads_8    -1.1815e-09   1.1815e-09    7.5956e-10   1.975e+08   0.9569       2.5282     3.2166    
+  Des_9    1.1365e-09    1.1365e-09    7.5956e-10   1.975e+08   0.9205       2.4320     3.0941    
+  Ads_11   -1.1517e-09   1.1517e-09    7.5326e-10   1.991e+08   0.9406       2.4851     3.1618    
+  Des_12   1.1658e-09    1.1658e-09    7.5326e-10   1.991e+08   0.9521       2.5154     3.2003    
 -------------------------------------------------------------------------------------
 4. HIGH-RESOLUTION ARTIFACTS:
   - 600 DPI Print Image:   c:\Users\Lenovo\OneDrive - unizar.es\AI Antigravity software\data_vault\samples\ZZ10_01\mass_spec\reports\ZZ10_01_MS_plot_600dpi.png

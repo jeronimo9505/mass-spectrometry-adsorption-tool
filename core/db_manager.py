@@ -475,10 +475,6 @@ class DBManager:
                     "bet": {
                         "files": self.get_technique_files(s_id, "bet"),
                         **self.get_properties(s_id, "bet")
-                    },
-                    "documents": {
-                        "files": self.get_technique_files(s_id, "documents"),
-                        "notes": self.get_properties(s_id, "documents").get("notes", "")
                     }
                 }
             }
