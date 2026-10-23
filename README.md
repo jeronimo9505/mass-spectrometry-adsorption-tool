@@ -9,20 +9,20 @@ A modular desktop application built in Python (**Tkinter + Matplotlib + SciPy**)
 
 ---
 
-## 🏛️ The Three Pillars Architecture
+## 🏛️ The Four Pillars Architecture
 
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        LAB VAULT PLATFORM                              │
-└──────────────────────────────────┬─────────────────────────────────────┘
-                                   │
-         ┌─────────────────────────┼─────────────────────────┐
-         ▼                         ▼                         ▼
-┌──────────────────┐      ┌──────────────────┐      ┌──────────────────┐
-│  PILLAR 1:       │      │  PILLAR 2:       │      │  PILLAR 3:       │
-│  Sample Logbook  │◄────►│  Characterization│◄────►│  Mass Spectro-   │
-│  (Bitácora)      │      │  Hub             │      │  metry Tool      │
-└──────────────────┘      └──────────────────┘      └──────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                                   LAB VAULT PLATFORM                                   │
+└───────────────────────────────────────────┬────────────────────────────────────────────┘
+                                            │
+         ┌───────────────────┬──────────────┴──────┬───────────────────┐
+         ▼                   ▼                     ▼                   ▼
+┌──────────────────┐┌──────────────────┐┌──────────────────┐┌──────────────────┐
+│  PILLAR 1:       ││  PILLAR 2:       ││  PILLAR 3:       ││  PILLAR 4:       │
+│  Sample Logbook  ││  Characterization││  Mass Spectro-   ││  Official Docu-  │
+│  (Bitácora)      ││  Hub             ││  metry Tool      ││  ments & Certs   │
+└──────────────────┘└──────────────────┘└──────────────────┘└──────────────────┘
 ```
 
 ### 1. 📋 Pillar 1: Sample Logbook (Bitácora de Muestras)
@@ -31,6 +31,7 @@ A modular desktop application built in Python (**Tkinter + Matplotlib + SciPy**)
 * **Real-time KPIs**: Live count of total samples, analyzed specimens, and average batch mass.
 * **Search & Filters**: Instantly filter samples by ID, material name, or researcher.
 * **Direct Actions**: Add, edit, delete, inspect folder, and jump directly to characterizations.
+* **📊 Live Master Excel**: Automatic synchronization into a single unified workbook: `Sample_Register_and_Summary_Analysis.xlsx` (Sheet 1: Table A dry mass & Table B as-weighed mass capacities; Sheet 2: Material inventory; Sheet 3: Multi-cycle breakdown).
 
 ### 2. 🔬 Pillar 2: Multi-Characterization Hub
 * **Multi-Technique Support**:
@@ -41,7 +42,6 @@ A modular desktop application built in Python (**Tkinter + Matplotlib + SciPy**)
   * 🔍 **SEM / TEM Electron Microscopy** (`.tif`, `.tiff`, `.png`, `.jpg`, `.dm3`, `.dm4`)
   * 💧 **Mercury Intrusion Porosimetry (MIP)** (`.txt`, `.csv`, `.xlsx`, `.dat`, `.png`, `.pdf`)
   * 📐 **$\text{N}_2$ Physisorption / BET Surface Area** (`.xls`, `.xlsx`, `.csv`)
-  * 📁 **Documents & Reports** (`.pdf`, `.png`, `.docx`, `.xlsx`)
 * **Physical File Cloning**: When attaching an external measurement file, it is automatically cloned into the local machine vault under `<vault>/samples/<sample_id>/<technique>/`.
 * **Seamless Tool Launch**: One-click button (`📈 Open in MS Tool`) to open `.asc` files directly into Pillar 3.
 
@@ -61,31 +61,51 @@ A modular desktop application built in Python (**Tkinter + Matplotlib + SciPy**)
   * Desorption Recovery Ratio ($\% = \frac{q_{\text{net,Des}}}{q_{\text{net,Ads}}} \times 100\%$).
 * **Direct Vault Synchronization**: Saving analysis updates the sample status to `Analyzed`, updates maximum capacity in the Logbook, and saves both in SQLite and as a portable JSON record.
 
+### 4. 📜 Pillar 4: Official Documents & Academic Archive
+* **Dedicated Vault Directory**: Cleanly separated from individual sample folders into `<vault>/Official_Documents/`.
+* **Academic & Compliance Categories**:
+  * 🎤 **Conference Certificates** (Oral, Poster, Attendance)
+  * 📜 **Training Certificates** (Courses, Workshops, Equipment Qualifications)
+  * 🔬 **Standard Operating Procedures (SOPs)**
+  * 📑 **PhD Research Plans & Project Proposals**
+  * 💾 **Data Management Plans (DMPs)**
+  * 📜 **Certificates of Analysis (CoA) & Material Specifications**
+  * ⚖️ **Instrument Calibration Certificates**
+  * 🎓 **PhD Milestones & Progress Evaluations**
+  * 📝 **Manuscripts, Peer Reviews & Grant Proposals**
+  * 🛡️ **Safety Data Sheets (MSDS) & Risk Assessments**
+* **Document Metadata Tracking**: Tracks Document Title, Category, Author ("Document Prepared By"), Related Sample, Issue Date, and Notes in `vault.db`.
+
 ---
 
 ## 💾 Storage Architecture & Directory Portability
 
-The application stores data in a clean, self-contained architecture backed by **SQLite** with synchronized **JSON**:
+The application stores data in a clean, self-contained architecture backed by **SQLite** with synchronized **JSON** and **Excel**:
 
 ```text
 <Selected Vault Folder>/
-├── vault.db                         # SQLite Database (Single Source of Truth)
-├── samples_logbook.json             # Portable synchronized JSON logbook
-└── samples/                         # Local storage for all cloned files
+├── vault.db                                     # SQLite Database (Single Source of Truth)
+├── samples_logbook.json                         # Portable synchronized JSON logbook
+├── Sample_Register_and_Summary_Analysis.xlsx    # Unified Master Excel Summary (3 Sheets)
+├── Official_Documents/                          # Top-level academic & compliance archive
+│   ├── CEDIC 2026 Shayan Certificate.pdf
+│   ├── SOP_MW_CO2_Adsorption_Desorption_SG.pdf
+│   ├── Shayan Gul Research Plan.pdf
+│   └── Shayan Gul Data Management Plan.pdf
+└── samples/                                     # Local storage for all sample characterization files
     ├── <Sample_ID_1>/
-    │   ├── metadata.json            # Cached sample metadata
+    │   ├── metadata.json                        # Cached sample metadata
     │   ├── mass_spec/
-    │   │   ├── raw_measurement.asc  # Cloned raw data file
-    │   │   ├── analyses/            # Saved ROI & capacity JSON records
-    │   │   └── reports/             # Generated TXT analytical reports
-    │   ├── thermal_profile/         # Adsorption exotherm profiles (Vertical, Horizontal, Heatmaps, Raw Data)
-    │   ├── tga/                     # TGA thermograms & Excel runs
-    │   ├── rheology/                # Rheology curves & shear sweeps
-    │   ├── tomography/              # Micro-CT slices & 3D morphometry
-    │   ├── sem_tem/                 # SEM/TEM micrographs & EDX spectra
-    │   ├── hg_porosimetry/          # Mercury intrusion porosimetry data
-    │   ├── bet/                     # BET surface area isotherms & reports
-    │   └── documents/               # Attached PDFs, reports, documentation
+    │   │   ├── raw_measurement.asc              # Cloned raw data file
+    │   │   ├── analyses/                        # Saved ROI & capacity JSON records
+    │   │   └── reports/                         # Generated TXT analytical reports
+    │   ├── thermal_profile/                     # Adsorption exotherm profiles (Vertical, Horizontal, Heatmaps)
+    │   ├── tga/                                 # TGA thermograms & Excel runs
+    │   ├── rheology/                            # Rheology curves & shear sweeps
+    │   ├── tomography/                          # Micro-CT slices & 3D morphometry
+    │   ├── sem_tem/                             # SEM/TEM micrographs & EDX spectra
+    │   ├── hg_porosimetry/                      # Mercury intrusion porosimetry data
+    │   └── bet/                                 # BET surface area isotherms & reports
     └── <Sample_ID_2>/
         └── ...
 ```

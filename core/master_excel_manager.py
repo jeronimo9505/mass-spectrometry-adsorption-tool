@@ -9,7 +9,7 @@ from openpyxl.utils import get_column_letter
 class MasterExcelManager:
     """
     Manages the Master Excel Summary file in the Data Vault:
-    'Master_CO2_Adsorption_Summary.xlsx'
+    'Sample_Register_and_Summary_Analysis.xlsx'
     
     Structure:
       Sheet 1: 'CO2 Capacity Summary'
