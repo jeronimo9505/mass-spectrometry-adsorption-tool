@@ -1,0 +1,45 @@
+{
+  "sample_id": "Silica Paste B1",
+  "material_name": "Silica Paste Batch 1",
+  "operator": "Shayan",
+  "date": "2026-10-29",
+  "mass_total_g": 0.0,
+  "water_loss_pct": 0.0,
+  "mass_active_g": 0.0,
+  "ref_ads": 0.0,
+  "ref_des": 0.0,
+  "c0": 0.15,
+  "flow_total": 100.0,
+  "temp_c": 24.0,
+  "notes": "",
+  "status": "Registered",
+  "created_at": "2026-10-29 17:14:37",
+  "updated_at": "2026-10-29 17:14:37",
+  "characterizations": {
+    "mass_spec": {
+      "files": [],
+      "notes": ""
+    },
+    "thermal_profile": {
+      "files": []
+    },
+    "tga": {
+      "files": []
+    },
+    "rheology": {
+      "files": []
+    },
+    "tomography": {
+      "files": []
+    },
+    "sem_tem": {
+      "files": []
+    },
+    "hg_porosimetry": {
+      "files": []
+    },
+    "bet": {
+      "files": []
+    }
+  }
+}

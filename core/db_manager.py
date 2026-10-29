@@ -119,10 +119,17 @@ class DBManager:
         if not s_id:
             raise ValueError("Sample ID cannot be empty.")
 
-        mass_tot = float(sample_data.get("mass_total_g", 0.5055))
-        water_pct = float(sample_data.get("water_loss_pct", 21.4))
-        mass_act = mass_tot * (1.0 - (water_pct / 100.0))
+        raw_mass = sample_data.get("mass_total_g", 0.0)
+        mass_tot = float(raw_mass) if raw_mass not in (None, "", "-") else 0.0
+        raw_water = sample_data.get("water_loss_pct", 0.0)
+        water_pct = float(raw_water) if raw_water not in (None, "", "-") else 0.0
+        mass_act = mass_tot * (1.0 - (water_pct / 100.0)) if mass_tot > 0 else 0.0
         now_str = pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        raw_ref_ads = sample_data.get("ref_ads", sample_data.get("ref_ads_mmol_g", 0.0))
+        ref_ads_val = float(raw_ref_ads) if raw_ref_ads not in (None, "", "-") else 0.0
+        raw_ref_des = sample_data.get("ref_des", sample_data.get("ref_des_mmol_g", 0.0))
+        ref_des_val = float(raw_ref_des) if raw_ref_des not in (None, "", "-") else 0.0
 
         with self.get_connection() as conn:
             cursor = conn.cursor()
@@ -154,14 +161,14 @@ class DBManager:
                 mass_tot,
                 water_pct,
                 round(mass_act, 4),
-                float(sample_data.get("ref_ads", sample_data.get("ref_ads_mmol_g", 0.23))),
-                float(sample_data.get("ref_des", sample_data.get("ref_des_mmol_g", 0.00))),
-                float(sample_data.get("c0", 0.15)),
-                float(sample_data.get("flow_total", 100.0)),
-                float(sample_data.get("temp_c", 24.0)),
+                ref_ads_val,
+                ref_des_val,
+                float(sample_data.get("c0", 0.15) or 0.15),
+                float(sample_data.get("flow_total", 100.0) or 100.0),
+                float(sample_data.get("temp_c", 24.0) or 24.0),
                 sample_data.get("notes", ""),
                 sample_data.get("status", "Registered"),
-                sample_data.get("created_at", now_str),
+                sample_data.get("created_at") or now_str,
                 now_str
             ))
             conn.commit()
@@ -188,7 +195,7 @@ class DBManager:
             LEFT JOIN characterization_files f ON s.sample_id = f.sample_id
             LEFT JOIN mass_spec_analyses a ON s.sample_id = a.sample_id
             GROUP BY s.sample_id
-            ORDER BY s.sample_id ASC
+            ORDER BY COALESCE(s.created_at, s.date, '') DESC, s.date DESC, s.sample_id DESC
             """)
             rows = cursor.fetchall()
             return [dict(r) for r in rows]

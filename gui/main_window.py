@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 
 from core.sample_vault import sample_vault
+from core.sync_manager import sync_to_supervisor
 from gui.logbook_view import LogbookView
 from gui.characterization_hub import CharacterizationHubView
 from gui.mass_spec_tool import MassSpecToolView
@@ -35,6 +36,10 @@ class MainWindow(tk.Tk):
         self.vault = sample_vault
         self.active_sample_id = None
 
+        self.protocol("WM_DELETE_WINDOW", self.on_exit)
+        # Background sync with supervisor folder on launch
+        sync_to_supervisor(async_mode=True)
+
         self.create_menu()
         self.create_widgets()
 
@@ -48,7 +53,9 @@ class MainWindow(tk.Tk):
         file_menu.add_command(label="📁 Change Vault Directory...", command=self.on_change_vault_folder)
         file_menu.add_command(label="📂 Open Vault Directory in Explorer", command=self.on_open_vault_folder)
         file_menu.add_separator()
-        file_menu.add_command(label="Exit", command=self.quit)
+        file_menu.add_command(label="🔄 Sync with Supervisor (Shayan Ph.D. Student)", command=self.on_sync_supervisor)
+        file_menu.add_separator()
+        file_menu.add_command(label="Exit", command=self.on_exit)
         menubar.add_cascade(label="File", menu=file_menu)
 
         help_menu = tk.Menu(menubar, tearoff=0)
@@ -299,7 +306,28 @@ class MainWindow(tk.Tk):
         self.tab_hub.set_sample(self.active_sample_id)
         self.tab_documents.refresh_table()
         sample_count = len(self.vault.db.list_samples())
+        sync_to_supervisor(async_mode=True)
         messagebox.showinfo("Vault Re-scanned", f"Vault folder and Master Excel re-scanned and synchronized!\nActive Samples: {sample_count}")
+
+    def on_sync_supervisor(self):
+        def _done(success, msg):
+            if success:
+                self.after(0, lambda: messagebox.showinfo(
+                    "Sync Complete",
+                    "Successfully synchronized all code, analysis, and data with Supervisor OneDrive folder:\n\n"
+                    "C:\\Users\\Lenovo\\OneDrive - unizar.es\\Shayan Ph.D. Student\\AI Antigravity software"
+                ))
+            else:
+                self.after(0, lambda: messagebox.showerror("Sync Failed", f"Could not sync with supervisor folder:\n{msg}"))
+        sync_to_supervisor(async_mode=True, on_complete=_done)
+
+    def on_exit(self):
+        try:
+            # Sync latest files to supervisor before closing
+            sync_to_supervisor(async_mode=False)
+        except Exception:
+            pass
+        self.destroy()
 
     def on_open_vault_folder(self):
         if os.path.exists(self.vault.vault_path):

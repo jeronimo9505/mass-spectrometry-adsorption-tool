@@ -1,6 +1,6 @@
 {
   "sample_id": "Zeolite Powder Rapeat",
-  "material_name": "Zeolite Powder Rapeat Final",
+  "material_name": "Zeolite Powder Final",
   "operator": "Shayan",
   "date": "2026-10-15",
   "mass_total_g": 0.62,
@@ -13,8 +13,8 @@
   "temp_c": 24.0,
   "notes": "Zeolite Powder Rapeat",
   "status": "Analyzed",
-  "created_at": "2026-10-20 11:45:57",
-  "updated_at": "2026-10-22 23:31:13",
+  "created_at": "2026-10-15 12:00:00",
+  "updated_at": "2026-10-29 18:18:00",
   "characterizations": {
     "mass_spec": {
       "files": [
@@ -31,7 +31,7 @@
           "q_net_ads": 3.5626,
           "q_net_des": 3.4948,
           "recovery_pct": 98.1,
-          "analyzed_at": "2026-10-22 23:30:42"
+          "analyzed_at": "2026-10-29 18:16:22"
         }
       ],
       "notes": ""
@@ -56,10 +56,6 @@
     },
     "bet": {
       "files": []
-    },
-    "documents": {
-      "files": [],
-      "notes": ""
     }
   }
 }

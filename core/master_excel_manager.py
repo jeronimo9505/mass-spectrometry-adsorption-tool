@@ -22,7 +22,7 @@ class MasterExcelManager:
       Sheet 3: 'All Cycles Detailed Breakdown'
         - Analytical integration breakdown for every individual cycle peak.
     """
-    MASTER_FILENAME = "Sample_Register_and_Summary_Analysis.xlsx"
+    MASTER_FILENAME = "Sample_Register_and_Summary_Analysis_Live.xlsx"
 
     def __init__(self, vault_path, db_manager):
         self.vault_path = os.path.abspath(vault_path)
@@ -41,7 +41,12 @@ class MasterExcelManager:
         dest_path = self.get_master_path()
 
         # Ensure strictly only one Master Excel file exists and remove any legacy/alternate files
-        for stray_fn in ["Master_CO2_Adsorption_Summary.xlsx", "Master_CO2_Adsorption_Summary_Updated.xlsx", "Sample_Register_and_Summary_Analysis_Updated.xlsx"]:
+        for stray_fn in [
+            "Master_CO2_Adsorption_Summary.xlsx",
+            "Master_CO2_Adsorption_Summary_Updated.xlsx",
+            "Sample_Register_and_Summary_Analysis_Updated.xlsx",
+            "Sample_Register_and_Summary_Analysis.xlsx",
+        ]:
             stray_path = os.path.join(self.vault_path, stray_fn)
             if os.path.exists(stray_path):
                 try:
@@ -61,17 +66,16 @@ class MasterExcelManager:
         ws_det = wb.create_sheet(title="All Cycles Breakdown")
         ws_det.views.sheetView[0].showGridLines = True
 
-        # Fetch samples and analyses
+        # Fetch samples and analyses (newest added at the TOP)
         samples = self.db.list_samples()
 
-        # Sort samples: Place references first, then alphanumeric by sample_id
         def _sort_key(s):
-            sid = s.get("sample_id", "").lower()
-            mat = s.get("material_name", "").lower()
-            is_ref = 0 if ("ref" in sid or "ref" in mat or "reference" in mat) else 1
-            return (is_ref, s.get("sample_id", ""))
+            created = str(s.get("created_at") or s.get("date") or "")
+            dt = str(s.get("date") or "")
+            sid = str(s.get("sample_id") or "")
+            return (created, dt, sid)
 
-        sorted_samples = sorted(samples, key=_sort_key)
+        sorted_samples = sorted(samples, key=_sort_key, reverse=True)
 
         # Gather sample cycle data
         sample_data_list = []
@@ -175,14 +179,12 @@ class MasterExcelManager:
         # =========================================================================
         self._populate_breakdown_sheet(ws_det, sample_data_list)
 
-        # Save workbook strictly to Sample_Register_and_Summary_Analysis.xlsx
+        # Save workbook strictly to Sample_Register_and_Summary_Analysis_Live.xlsx
         try:
             wb.save(dest_path)
             return dest_path
         except PermissionError:
-            # If the user currently has the file open in Microsoft Excel, Windows locks it.
-            # We never create alternate Excel files - we notify and return dest_path.
-            print(f"[MasterExcelManager] Notice: '{self.MASTER_FILENAME}' is locked by another process (e.g. open in Excel). Please close it to allow auto-updates.")
+            print(f"[MasterExcelManager] Notice: '{self.MASTER_FILENAME}' is open in Excel. Close it to allow auto-updates.")
             return dest_path
         except Exception as e:
             print(f"[MasterExcelManager] Error saving '{dest_path}': {e}")
@@ -493,20 +495,26 @@ class MasterExcelManager:
             avg_a = s_data["avg_ads_dry"]
             avg_d = s_data["avg_des_dry"]
             rec = s_data["pct_diff_dry"]
+            has_ms = bool(s_data["all_rows"])
+            m_tot = float(s.get("mass_total_g", 0.0) or 0.0)
+            w_pct = float(s.get("water_loss_pct", 0.0) or 0.0)
+            m_act = float(s.get("mass_active_g", 0.0) or 0.0)
+            ref_a = float(s.get("ref_ads_mmol_g", 0.0) or 0.0)
+            ref_d = float(s.get("ref_des_mmol_g", 0.0) or 0.0)
 
             row_values = [
                 s.get("sample_id", ""),
                 s.get("material_name", ""),
                 s.get("operator", ""),
                 s.get("date", ""),
-                float(s.get("mass_total_g", 0.0)),
-                float(s.get("water_loss_pct", 0.0)),
-                float(s.get("mass_active_g", 0.0)),
-                float(s.get("ref_ads_mmol_g", 0.0)),
-                float(s.get("ref_des_mmol_g", 0.0)),
-                float(s.get("flow_total", 100.0)),
-                float(s.get("temp_c", 24.0)),
-                float(s.get("c0", 0.15)),
+                m_tot if m_tot > 0 else "-",
+                w_pct if (m_tot > 0 or w_pct > 0) else "-",
+                m_act if m_tot > 0 else "-",
+                ref_a if (has_ms or ref_a > 0) else "-",
+                ref_d if (has_ms or ref_d > 0) else "-",
+                float(s.get("flow_total", 100.0)) if has_ms else "-",
+                float(s.get("temp_c", 24.0)) if has_ms else "-",
+                float(s.get("c0", 0.15)) if has_ms else "-",
                 round(avg_a, 4) if avg_a is not None else "-",
                 round(avg_d, 4) if avg_d is not None else "-",
                 round(rec, 1) if rec is not None else "-",

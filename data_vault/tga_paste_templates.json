@@ -1,0 +1,37 @@
+{
+  "templates": {
+    "__last_used__": [
+      {
+        "component": "Zeolite 13X",
+        "mass_g": 43.97,
+        "role": "zeolite",
+        "note": ""
+      },
+      {
+        "component": "Bentonite",
+        "mass_g": 5.14,
+        "role": "clay",
+        "note": ""
+      },
+      {
+        "component": "PEG-400",
+        "mass_g": 9.0,
+        "role": "organic",
+        "note": "5 g before + 4 g after"
+      },
+      {
+        "component": "Methyl cellulose",
+        "mass_g": 1.31,
+        "role": "organic",
+        "note": ""
+      },
+      {
+        "component": "Water",
+        "mass_g": 57.0,
+        "role": "water",
+        "note": "50 g before + 7 g after"
+      }
+    ]
+  },
+  "last": "Zeolite 13X paste – Batch 7 (default)"
+}

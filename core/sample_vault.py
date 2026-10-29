@@ -62,6 +62,7 @@ from .master_excel_manager import MasterExcelManager
 from .document_manager import OfficialDocumentManager
 
 class SampleVault:
+    """
     Manages the Sample Logbook and Multi-Characterization Vault.
     Backed by SQLite (vault.db) with automated JSON export (samples_logbook.json)
     and live Master Excel Summary synchronization (Sample_Register_and_Summary_Analysis.xlsx).
@@ -178,11 +179,11 @@ class SampleVault:
                             s_data = {
                                 "sample_id": s_id,
                                 "material_name": s_id,
-                                "operator": "Lab Researcher",
+                                "operator": "Shayan",
                                 "date": pd.Timestamp.now().strftime("%Y-%m-%d"),
-                                "mass_total_g": 0.5055,
-                                "water_loss_pct": 21.4,
-                                "ref_ads": 0.23,
+                                "mass_total_g": 0.0,
+                                "water_loss_pct": 0.0,
+                                "ref_ads": 0.0,
                                 "status": "Registered"
                             }
                         self.db.save_sample(s_data)

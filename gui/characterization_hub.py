@@ -6,13 +6,13 @@ Image.MAX_IMAGE_PIXELS = None
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from core.sample_vault import CHARACTERIZATION_TYPES
-from core.tga_engine import load_tga_data, plot_tga_dual_panel
+from gui.tga_panel import TGAPanelMixin
 from core.thermal_engine import (
     PROFILE_CATEGORIES, detect_profile_category,
     load_thermal_data, plot_thermal_curves, plot_thermal_heatmap
 )
 
-class CharacterizationHubView(ttk.Frame):
+class CharacterizationHubView(TGAPanelMixin, ttk.Frame):
     """
     Module 2: Multi-Characterization Hub.
     Allows managing different analytical techniques for the selected sample:
@@ -105,15 +105,19 @@ class CharacterizationHubView(ttk.Frame):
 
         data = self.vault.logbook[self.current_sample_id]
         mat = data.get("material_name", "-")
-        mass_tot = float(data.get("mass_total_g", 0.0))
-        water = float(data.get("water_loss_pct", 0.0))
-        mass_act = mass_tot * (1.0 - (water / 100.0))
+        mass_tot = float(data.get("mass_total_g", 0.0) or 0.0)
+        water = float(data.get("water_loss_pct", 0.0) or 0.0)
+        mass_act = mass_tot * (1.0 - (water / 100.0)) if mass_tot > 0 else 0.0
         op = data.get("operator", "-")
         date_str = data.get("date", "-")
 
+        mass_str = f"{mass_tot:.4f} g" if mass_tot > 0 else "-"
+        water_str = f"{water:.1f}%" if (mass_tot > 0 or water > 0) else "-"
+        act_str = f"{mass_act:.4f} g" if mass_tot > 0 else "-"
+
         self.lbl_banner_title.config(text=f"🏷️ Sample: {self.current_sample_id} — {mat}")
         self.lbl_banner_details.config(
-            text=f"Date: {date_str}  |  Operator: {op}  |  Total Mass: {mass_tot:.4f} g  |  Water Loss: {water:.1f}%  |  Active Mass: {mass_act:.4f} g"
+            text=f"Date: {date_str}  |  Operator: {op}  |  Total Mass: {mass_str}  |  Water Loss: {water_str}  |  Active Mass: {act_str}"
         )
 
     def set_sample(self, sample_id, lazy=False):
@@ -1181,301 +1185,6 @@ class CharacterizationHubView(ttk.Frame):
         }
         self.vault.save_technique_properties(self.current_sample_id, "thermal_profile", props, notes=self.thermal_notes_var.get())
         messagebox.showinfo("Saved", f"Adsorption thermal kinetics parameters saved for sample {self.current_sample_id}.")
-
-    # ==================== TAB: TGA (THERMOGRAVIMETRIC ANALYSIS) ====================
-
-    def _build_tga_tab(self, parent):
-        # Master horizontal PanedWindow: Left = Files & Parameters, Right = Publication Plot Canvas
-        tga_paned = ttk.PanedWindow(parent, orient=tk.HORIZONTAL)
-        tga_paned.pack(fill=tk.BOTH, expand=True)
-
-        left_side = ttk.Frame(tga_paned, width=440)
-        right_side = ttk.Frame(tga_paned)
-        tga_paned.add(left_side, weight=0)
-        tga_paned.add(right_side, weight=1)
-
-        # Left: Toolbar
-        toolbar = ttk.Frame(left_side)
-        toolbar.pack(fill=tk.X, pady=(0, 6))
-
-        filetypes = [("TGA Files", "*.xlsx;*.xls;*.csv;*.txt"), ("All Files", "*.*")]
-        ttk.Button(toolbar, text="➕ Attach TGA File", command=lambda: self.on_attach_tga_file(filetypes)).pack(side=tk.LEFT, padx=2)
-        ttk.Button(toolbar, text="🗑️ Delete File", command=lambda: self.on_delete_file("tga")).pack(side=tk.LEFT, padx=2)
-        ttk.Button(toolbar, text="📂 Open File", command=lambda: self.on_open_selected_file("tga")).pack(side=tk.LEFT, padx=2)
-        ttk.Button(toolbar, text="📁 Folder", command=lambda: self.on_open_tech_folder("tga")).pack(side=tk.LEFT, padx=2)
-
-        # Table of files
-        cols = ("fn", "size")
-        self.tree_tga = ttk.Treeview(left_side, columns=cols, show="headings", selectmode="browse", height=5)
-        self.tree_tga.heading("fn", text="TGA Data File (.xlsx / .csv)")
-        self.tree_tga.heading("size", text="Size")
-        self.tree_tga.column("fn", width=260, anchor="w")
-        self.tree_tga.column("size", width=70, anchor="e")
-        self.tree_tga.pack(fill=tk.X, pady=(0, 6))
-        self.tree_tga.bind("<<TreeviewSelect>>", self.on_tga_file_selected)
-        self.tree_tga.bind("<Double-1>", lambda e: self.on_open_selected_file("tga"))
-
-        # Automated Plot & Analysis Actions
-        act_row = ttk.Frame(left_side)
-        act_row.pack(fill=tk.X, pady=(0, 6))
-        ttk.Button(act_row, text="📊 Plot Selected File", command=self.on_plot_current_tga).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=2)
-        ttk.Button(act_row, text="💾 Export Plot Image...", command=self.on_export_tga_plot).pack(side=tk.RIGHT, fill=tk.X, expand=True, padx=2)
-
-        # Parameters Frame (Auto-populated from Excel)
-        param_frame = ttk.LabelFrame(left_side, text=" TGA Key Properties (Auto-Extracted & Manual) ", padding=8)
-        param_frame.pack(fill=tk.BOTH, expand=True)
-
-        p_grid = ttk.Frame(param_frame)
-        p_grid.pack(fill=tk.X)
-
-        ttk.Label(p_grid, text="Initial Weight (%):").grid(row=0, column=0, sticky="w", pady=3)
-        self.tga_init_weight_var = tk.DoubleVar(value=100.0)
-        ttk.Spinbox(p_grid, from_=0.0, to=200.0, increment=0.1, textvariable=self.tga_init_weight_var, width=12).grid(row=0, column=1, sticky="w", padx=4, pady=3)
-
-        ttk.Label(p_grid, text="Residual Mass (%):").grid(row=1, column=0, sticky="w", pady=3)
-        self.tga_residual_var = tk.DoubleVar(value=0.0)
-        ttk.Spinbox(p_grid, from_=0.0, to=100.0, increment=0.1, textvariable=self.tga_residual_var, width=12).grid(row=1, column=1, sticky="w", padx=4, pady=3)
-
-        ttk.Label(p_grid, text="Net Weight Loss ΔW (%):", font=("Segoe UI", 9, "bold")).grid(row=2, column=0, sticky="w", pady=3)
-        self.tga_delta_w_var = tk.DoubleVar(value=0.0)
-        ttk.Spinbox(p_grid, from_=0.0, to=100.0, increment=0.1, textvariable=self.tga_delta_w_var, width=12).grid(row=2, column=1, sticky="w", padx=4, pady=3)
-
-        ttk.Label(p_grid, text="DTG Peak Temp T_max (°C):").grid(row=3, column=0, sticky="w", pady=3)
-        self.tga_peak_var = tk.DoubleVar(value=0.0)
-        ttk.Spinbox(p_grid, from_=0.0, to=1200.0, increment=1.0, textvariable=self.tga_peak_var, width=12).grid(row=3, column=1, sticky="w", padx=4, pady=3)
-
-        ttk.Label(p_grid, text="Onset Temp (°C):").grid(row=4, column=0, sticky="w", pady=3)
-        self.tga_onset_var = tk.DoubleVar(value=0.0)
-        ttk.Spinbox(p_grid, from_=0.0, to=1200.0, increment=5.0, textvariable=self.tga_onset_var, width=12).grid(row=4, column=1, sticky="w", padx=4, pady=3)
-
-        ttk.Label(p_grid, text="Purge Atmosphere:").grid(row=5, column=0, sticky="w", pady=3)
-        self.tga_atmosphere_var = tk.StringVar(value="N2")
-        ttk.Combobox(p_grid, values=["N2", "Air", "O2", "Ar", "CO2"], textvariable=self.tga_atmosphere_var, width=10, state="readonly").grid(row=5, column=1, sticky="w", padx=4, pady=3)
-
-        # Plot Title Entry
-        ttk.Label(p_grid, text="Graph Title:").grid(row=6, column=0, sticky="w", pady=3)
-        self.tga_plot_title_var = tk.StringVar(value="Zeo Batch 6 (i)")
-        ttk.Entry(p_grid, textvariable=self.tga_plot_title_var, width=18).grid(row=6, column=1, sticky="w", padx=4, pady=3)
-
-        btn_save_tga = ttk.Button(param_frame, text="💾 Save TGA Parameters to Sample", command=self.on_save_tga_params)
-        btn_save_tga.pack(fill=tk.X, pady=(10, 0))
-
-        # Right: Matplotlib Dual-Panel Canvas
-        right_header = ttk.Frame(right_side)
-        right_header.pack(fill=tk.X, pady=(0, 4))
-        ttk.Label(right_header, text="📈 Dual-Panel TGA / DTG Publication Graph (OriginPro Style)", font=("Segoe UI", 10, "bold"), foreground="#1d3557").pack(side=tk.LEFT)
-
-        self.tga_fig, _ = plt.subplots(figsize=(5.5, 7.5), dpi=100)
-        self.tga_canvas = FigureCanvasTkAgg(self.tga_fig, master=right_side)
-        self.tga_canvas.draw()
-
-        tga_toolbar_f = ttk.Frame(right_side)
-        tga_toolbar_f.pack(side=tk.TOP, fill=tk.X)
-        self.tga_toolbar = NavigationToolbar2Tk(self.tga_canvas, tga_toolbar_f)
-        self.tga_toolbar.update()
-
-        self.tga_canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
-
-        self.current_tga_df = None
-        self.current_tga_meta = {}
-
-    def on_attach_tga_file(self, filetypes):
-        if not self.current_sample_id:
-            messagebox.showinfo("Select Sample", "Please select a sample in the logbook first.")
-            return
-
-        fpath = filedialog.askopenfilename(
-            title="Select TGA Raw Data File (Excel / CSV)",
-            filetypes=filetypes
-        )
-        if fpath:
-            try:
-                self.vault.add_characterization_file(self.current_sample_id, "tga", fpath)
-                self._refresh_tga_tab()
-                # Automatically plot newly attached file
-                self.load_and_display_tga(fpath)
-            except Exception as e:
-                messagebox.showerror("Error Attaching File", f"Could not attach TGA file:\n{e}")
-
-    def on_tga_file_selected(self, event=None):
-        sel = self.tree_tga.selection()
-        if not sel or not self.current_sample_id:
-            return
-        fn = self.tree_tga.item(sel[0], "values")[0]
-        fpath = self.vault.get_characterization_file_path(self.current_sample_id, "tga", fn)
-        if not fpath or not os.path.exists(fpath):
-            return
-
-        ext = os.path.splitext(fn)[1].lower()
-        if ext in [".xlsx", ".xls", ".csv", ".txt", ".dat"]:
-            self.load_and_display_tga(fpath)
-        elif ext in [".png", ".jpg", ".jpeg", ".bmp", ".tif", ".tiff", ".gif"]:
-            self._display_tga_image_notice(fpath, fn)
-        else:
-            self._display_tga_document_notice(fpath, fn)
-
-    def _display_tga_image_notice(self, fpath, fn):
-        self.current_tga_df = None
-        self.current_tga_meta = {}
-        self.tga_fig.clear()
-        ax = self.tga_fig.add_subplot(111)
-        ax.set_facecolor("#f8f9fa")
-        ax.set_xticks([])
-        ax.set_yticks([])
-        for spine in ax.spines.values():
-            spine.set_color("#dee2e6")
-        ax.text(
-            0.5, 0.62,
-            f"🖼️ Attached Graphic / Image\n\n{fn}",
-            ha="center", va="center", fontsize=11, fontweight="bold", color="#1d3557"
-        )
-        ax.text(
-            0.5, 0.40,
-            "This file is an image (not tabular numerical TGA data).\n\n"
-            "• Double-click this row or click '📂 Open File'\n"
-            "  to inspect in full resolution with your system image viewer.\n"
-            "• Select a spreadsheet (.xlsx/.csv) to display dual-panel curves.",
-            ha="center", va="center", fontsize=9, color="#495057", linespacing=1.4
-        )
-        self.tga_canvas.draw_idle()
-
-    def _display_tga_document_notice(self, fpath, fn):
-        self.current_tga_df = None
-        self.current_tga_meta = {}
-        self.tga_fig.clear()
-        ax = self.tga_fig.add_subplot(111)
-        ax.set_facecolor("#f8f9fa")
-        ax.set_xticks([])
-        ax.set_yticks([])
-        for spine in ax.spines.values():
-            spine.set_color("#dee2e6")
-        ax.text(
-            0.5, 0.55,
-            f"📄 Attached Document\n\n{fn}\n\nClick '📂 Open File' or double-click to view.",
-            ha="center", va="center", fontsize=10, fontweight="bold", color="#1d3557"
-        )
-        self.tga_canvas.draw_idle()
-
-    def on_plot_current_tga(self):
-        sel = self.tree_tga.selection()
-        fn = self.tree_tga.item(sel[0], "values")[0] if sel else None
-        if not fn:
-            children = self.tree_tga.get_children()
-            if children:
-                # Find first tabular file
-                for c in children:
-                    cand = self.tree_tga.item(c, "values")[0]
-                    if os.path.splitext(cand)[1].lower() in [".xlsx", ".xls", ".csv", ".txt", ".dat"]:
-                        fn = cand
-                        self.tree_tga.selection_set(c)
-                        break
-                if not fn:
-                    fn = self.tree_tga.item(children[0], "values")[0]
-                    self.tree_tga.selection_set(children[0])
-        if fn and self.current_sample_id:
-            self.on_tga_file_selected()
-        elif self.current_tga_df is not None:
-            title = self.tga_plot_title_var.get().strip() or "TGA / DTG Analysis"
-            plot_tga_dual_panel(self.current_tga_df, self.current_tga_meta, title=title, fig=self.tga_fig)
-            self.tga_canvas.draw()
-
-    def load_and_display_tga(self, fpath):
-        try:
-            df, meta = load_tga_data(fpath)
-            self.current_tga_df = df
-            self.current_tga_meta = meta
-
-            # Auto-populate UI Spinboxes from data
-            self.tga_init_weight_var.set(meta["initial_weight_pct"])
-            self.tga_residual_var.set(meta["residual_weight_pct"])
-            self.tga_delta_w_var.set(meta["delta_weight_pct"])
-            self.tga_peak_var.set(meta["peak_temp_c"])
-            if self.tga_onset_var.get() == 0.0:
-                self.tga_onset_var.set(round(meta["peak_temp_c"] * 0.75, 1))
-
-            # Suggest graph title from active sample or file name
-            fn_clean = os.path.splitext(os.path.basename(fpath))[0]
-            if self.current_sample_id and self.current_sample_id in self.vault.logbook:
-                mat = self.vault.logbook[self.current_sample_id].get("material_name", "")
-                self.tga_plot_title_var.set(mat if mat and mat != "-" else fn_clean)
-            else:
-                self.tga_plot_title_var.set(fn_clean)
-
-            # Render dual panel plot
-            title = self.tga_plot_title_var.get().strip()
-            plot_tga_dual_panel(df, meta, title=title, fig=self.tga_fig)
-            self.tga_canvas.draw()
-        except Exception as e:
-            messagebox.showerror("TGA Load Error", f"Could not process TGA file:\n{e}")
-
-    def on_export_tga_plot(self):
-        if self.current_tga_df is None:
-            messagebox.showinfo("No Plot", "Load or plot a TGA data file first.")
-            return
-
-        out_path = filedialog.asksaveasfilename(
-            title="Export Publication TGA Graph",
-            defaultextension=".png",
-            filetypes=[("PNG Image (High-Res)", "*.png"), ("PDF Document (Vector)", "*.pdf"), ("SVG Vector", "*.svg"), ("All Files", "*.*")]
-        )
-        if out_path:
-            try:
-                title = self.tga_plot_title_var.get().strip() or "TGA / DTG Analysis"
-                plot_tga_dual_panel(self.current_tga_df, self.current_tga_meta, title=title, fig=self.tga_fig)
-                self.tga_fig.savefig(out_path, dpi=300, bbox_inches="tight")
-                messagebox.showinfo("Export Successful", f"High-resolution TGA publication plot saved to:\n{out_path}")
-            except Exception as e:
-                messagebox.showerror("Export Error", f"Could not export plot:\n{e}")
-
-    def _refresh_tga_tab(self):
-        for item in self.tree_tga.get_children():
-            self.tree_tga.delete(item)
-
-        if not self.current_sample_id or self.current_sample_id not in self.vault.logbook:
-            self.tga_onset_var.set(0.0)
-            self.tga_peak_var.set(0.0)
-            self.tga_init_weight_var.set(100.0)
-            self.tga_residual_var.set(0.0)
-            self.tga_delta_w_var.set(0.0)
-            self.tga_atmosphere_var.set("N2")
-            return
-
-        data = self.vault.logbook[self.current_sample_id]
-        tech_data = data.get("characterizations", {}).get("tga", {})
-        files = tech_data.get("files", [])
-        for f in files:
-            sz = f.get("size_bytes", 0) / 1024.0
-            self.tree_tga.insert("", tk.END, values=(
-                f.get("filename", "-"),
-                f"{sz:.1f} KB"
-            ))
-
-        self.tga_onset_var.set(float(tech_data.get("onset_temp_c", 0.0)))
-        self.tga_peak_var.set(float(tech_data.get("peak_temp_c", 0.0)))
-        self.tga_init_weight_var.set(float(tech_data.get("initial_weight_pct", 100.0)))
-        self.tga_residual_var.set(float(tech_data.get("residual_mass_pct", 0.0)))
-        self.tga_delta_w_var.set(float(tech_data.get("delta_weight_pct", 0.0)))
-        self.tga_atmosphere_var.set(tech_data.get("atmosphere", "N2"))
-
-        # Clear previous plot cache / canvas so stale data is not displayed
-        self.current_tga_df = None
-        self.current_tga_meta = {}
-        self.tga_fig.clear()
-        self.tga_canvas.draw_idle()
-
-    def on_save_tga_params(self):
-        if not self.current_sample_id:
-            return
-        data = self.vault.logbook[self.current_sample_id]
-        tga_dict = data.setdefault("characterizations", {}).setdefault("tga", {})
-        tga_dict["onset_temp_c"] = float(self.tga_onset_var.get())
-        tga_dict["peak_temp_c"] = float(self.tga_peak_var.get())
-        tga_dict["initial_weight_pct"] = float(self.tga_init_weight_var.get())
-        tga_dict["residual_mass_pct"] = float(self.tga_residual_var.get())
-        tga_dict["delta_weight_pct"] = float(self.tga_delta_w_var.get())
-        tga_dict["atmosphere"] = self.tga_atmosphere_var.get()
-        self.vault.save_logbook()
-        messagebox.showinfo("Saved", f"TGA thermal properties saved for {self.current_sample_id}.")
 
     # ==================== TAB: SEM / TEM ELECTRON MICROSCOPY ====================
 
